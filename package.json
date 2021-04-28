@@ -1,0 +1,26 @@
+{
+  "name": "flikpik",
+  "version": "1.0.0",
+  "description": "Decide what movie to watch as a group.",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "test": "nodemon app.js",
+    "seed": "node ./tasks/seed.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nickdidio/Web-Programming-2021S.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nickdidio/Web-Programming-2021S/issues"
+  },
+  "homepage": "https://github.com/nickdidio/Web-Programming-2021S#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "express-handlebars": "^5.3.0",
+    "mongodb": "^3.6.6"
+  }
+}
