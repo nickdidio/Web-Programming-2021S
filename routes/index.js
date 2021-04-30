@@ -1,7 +1,12 @@
 // import routes
+const wantToWatchListRoutes = require('./wantToWatchList');
 
 const constructorMethod = (app) => {
   // routes
+
+  //route for building the want to watch list
+  app.use("/wantToWatchList", wantToWatchListRoutes);
+
   app.use("/", (req, res) => {
     res.render("temporary/fakeLanding", { title: "Temporary Landing Page" });
   });
