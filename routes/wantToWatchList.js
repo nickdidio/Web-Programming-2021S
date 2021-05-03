@@ -1,21 +1,24 @@
+const { response } = require('express');
 const express = require('express');
 const router = express.Router();
 const xss = require('xss');
 
 
-// The search bar version of building the list
-router.get('/search', (req, res) => {
-
-});
-
-// The random version for building the list
-router.get('/random', (req, res) => {
-
+// Add a movie to the mongoDB movie database and user wantToWatchList database
+router.post('/add', (req, res) => {
+    //TODO: Implement
+    res.json(true);
 });
 
 // The main home version for building the list
-router.get('/', (req, res) => {
-    res.render('wantToWatchList/home');
+router.get('/add', (req, res) => {
+    res.render('wantToWatchList/addToWatchList');
 });
+
+//How to view and remove items from list
+router.get('/remove', (req, res) => {
+    res.render('wantToWatchList/removeFromWatchList', {movieList: ["happy gilmore", "nirvana: the doc", "hotel transylvania"]});
+});
+
 
 module.exports = router;

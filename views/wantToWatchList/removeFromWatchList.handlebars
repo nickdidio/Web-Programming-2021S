@@ -1,0 +1,11 @@
+<h1>My Watch List:</h1>
+<ul class="movieList">
+    {{#each movieList}}
+        <li>{{this}}</li>
+    {{else}}
+        <p class="error">You watch list is empty</p>
+    {{/each}}
+</ul>
+<script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+        crossorigin="anonymous"></script>
+<script src="/public/js/removeFromWatchList.js"></script>
