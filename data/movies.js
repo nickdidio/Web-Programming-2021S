@@ -1,7 +1,7 @@
 const mongoCollections = require("../config/mongoCollections.js");
 const { ObjectId } = require("mongodb");
 const movies = mongoCollections.movies;
-const dbUtils = require("./dbUtils");
+const utils = require("../utils");
 
 /*
  * NOTE: ALL 'id' PARAMETERS TO FUNCTIONS ARE EXPECTED TO BE STRINGS
@@ -52,7 +52,7 @@ const checkMovieParameters = (
   if (
     typeof releaseYear !== "string" ||
     releaseYear.trim() === "" ||
-    !dbUtils.isValidDateString(releaseYear)
+    !utils.isValidDateString(releaseYear)
   ) {
     throw new Error(
       "Must provide a string in 'YYYY/MM/DD' format as movie's release date parameter."
@@ -126,7 +126,7 @@ const getAllMovies = async () => {
 };
 
 const getMovieById = async (id) => {
-  const parsedId = dbUtils.checkId(id);
+  const parsedId = utils.checkId(id);
 
   const movieCollection = await movies();
   const movie = await movieCollection.findOne({ _id: parsedId });

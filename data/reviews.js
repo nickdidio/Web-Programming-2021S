@@ -1,7 +1,7 @@
 const mongoCollections = require("../config/mongoCollections.js");
 const { ObjectId } = require("mongodb");
 const movies = mongoCollections.movies;
-const dbUtils = require("./dbUtils");
+const utils = require("../utils");
 
 /*
  * NOTE: ALL 'id' FIELDS TO FUNCTIONS ARE EXPECTED TO BE STRINGS
@@ -12,7 +12,7 @@ const checkReviewParameters = (reviewDate, reviewText, rating) => {
   if (
     typeof reviewDate !== "string" ||
     reviewDate.trim() === "" ||
-    !dbUtils.isValidDateString(reviewDate)
+    !utils.isValidDateString(reviewDate)
   ) {
     throw new Error(
       "Must provide a string in 'YYYY/MM/DD' format as 'reviewDate' parameter."
@@ -39,8 +39,8 @@ const createReview = async (
   rating,
   movieId
 ) => {
-  const parsedMovieId = dbUtils.checkId(movieId);
-  const parsedReviewerId = dbUtils.checkId(reviewerId);
+  const parsedMovieId = utils.checkId(movieId);
+  const parsedReviewerId = utils.checkId(reviewerId);
 
   checkReviewParameters(reviewDate, reviewText, rating);
 
@@ -70,7 +70,7 @@ const createReview = async (
 };
 
 const getReviewById = async (id) => {
-  const parsedId = dbUtils.checkId(id);
+  const parsedId = utils.checkId(id);
 
   const movieCollection = await movies();
 
@@ -89,8 +89,10 @@ const getReviewById = async (id) => {
 };
 
 const getMovieReviews = async (movieId) => {
-  const parsedMovieId = dbUtils.checkId(movieId);
+  const parsedMovieId = utils.checkId(movieId);
+
   const movieCollection = await movies();
+
   const reviews = await movieCollection.findOne(
     { _id: parsedMovieId },
     { projection: { _id: 0, reviews: 1 } }
