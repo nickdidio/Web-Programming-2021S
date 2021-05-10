@@ -1,7 +1,11 @@
 <h1>My Watch List:</h1>
+<p class="error"></p>
 <ul class="movieList">
     {{#each movieList}}
-        <li>{{this}}</li>
+        <li>
+            {{this}}
+            <button type="submit" class="removeLink">Remove this movie from my list</button>
+        </li>
     {{else}}
         <p class="error">You watch list is empty</p>
     {{/each}}
