@@ -1,5 +1,6 @@
 // import routes
 const wantToWatchListRoutes = require("./wantToWatchList");
+const movieSelectRoutes = require("./movieSelection");
 const reviewRoutes = require("./reviews");
 
 const constructorMethod = (app) => {
@@ -8,6 +9,9 @@ const constructorMethod = (app) => {
   //route for building the want to watch list
   app.use("/wantToWatchList", wantToWatchListRoutes);
   app.use("/reviews", reviewRoutes);
+
+  //routes for movie selection process
+  app.use("/movieSelection", movieSelectRoutes);
 
   app.use("/", (req, res) => {
     res.render("temporary/fakeLanding", { title: "Temporary Landing Page" });
