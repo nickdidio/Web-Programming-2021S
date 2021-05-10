@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const groups = require('./groups');
+const groups = require('../data/groups');
 
 router.use(express.static('public'));
 
