@@ -1,12 +1,16 @@
 const express = require('express');
 const router = express.Router();
 const groups = require('./groups');
+const users = require('./users')
 
 router.use(express.static('public'));
 
 router.get('/', async (req, res) => {
     // Load user's personal WtW list into group list
-    
+    sesh = req.session.user
+    // User ID stored in session
+    sesh.watchList = await users.getWWList(sesh._id)
+    groups.updateWatchList(sesh.groupID, )
     // This is the landing page for decision rooms
     // Decision rooms != watch groups, so anyone(?) can join a decision room
     res.render('movieSelection/home')
@@ -39,7 +43,7 @@ router.post('/choice', async (req, res) => {
         // (obviously, no need for additional DB call to update 'yes' count)
                     // if it is, set grpSession.selection equal to movie
         if(grpSession.movie == grpSession.threshold - 1) {
-            // 'declareMovie() is a db call that sets currentSession.selection equal to 'movieID'
+            // 'declareMovie()' is a db call that sets currentSession.selection equal to 'movieID'
             groups.declareMovie(sesh.groupID, movie)
         }
         groups.updateMovie(movie)
