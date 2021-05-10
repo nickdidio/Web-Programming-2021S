@@ -5,6 +5,8 @@ const groups = require('./groups');
 router.use(express.static('public'));
 
 router.get('/', async (req, res) => {
+    // Load user's personal WtW list into group list
+    
     // This is the landing page for decision rooms
     // Decision rooms != watch groups, so anyone(?) can join a decision room
     res.render('movieSelection/home')
