@@ -41,11 +41,6 @@ router.get("/TMDbId/:id", async (req, res) => {
   // try to fetch movie by TMDbId id
   try {
     const movie = await movies.getMovieByTMDbId(parseInt(xss(TMDbId)));
-
-    if (Object.keys(movie).length === 0) {
-      throw Error();
-    }
-
     res.json(movie);
   } catch (e) {
     res.status(404).json({ error: xss("Movie not found") });

@@ -29,12 +29,16 @@ const createMovie = async (
     TMDbId
   );
 
+  if (Object.keys(await getMovieByTMDbId(TMDbId)).length !== 0) {
+    throw new Error(
+      "Could not add movie because it already exists in the database."
+    );
+  }
+
   // add new movie
-  // TODO: Decide whether or not img link will be passed in its entirety
   let newMovie = {
     title,
     desc,
-    // img: `https://image.tmdb.org/t/p/w500/${img}`,
     img,
     releaseYear,
     runtime,
