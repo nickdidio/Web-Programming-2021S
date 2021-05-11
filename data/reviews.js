@@ -8,29 +8,6 @@ const utils = require("../utils");
  */
 
 // function to check review parameters
-const checkReviewParameters = (reviewDate, reviewText, rating) => {
-  if (
-    typeof reviewDate !== "string" ||
-    reviewDate.trim() === "" ||
-    !utils.isValidDateString(reviewDate)
-  ) {
-    throw new Error(
-      "Must provide a string in 'YYYY/MM/DD' format as 'reviewDate' parameter."
-    );
-  }
-
-  if (typeof reviewText !== "string" || reviewText.trim() === "") {
-    throw new Error(
-      "Must provide a non-null, non-empty value of type 'string' for reviewText parameter."
-    );
-  }
-
-  if (typeof rating !== "number" || isNaN(rating) || rating > 5 || rating < 1) {
-    throw new Error(
-      "Must provide a real number value for rating parameter that is between 1 and 5 (inclusive)."
-    );
-  }
-};
 
 const createReview = async (
   reviewDate,
@@ -42,7 +19,7 @@ const createReview = async (
   const parsedMovieId = utils.checkId(movieId);
   const parsedReviewerId = utils.checkId(reviewerId);
 
-  checkReviewParameters(reviewDate, reviewText, rating);
+  utils.checkReviewParameters(reviewDate, reviewText, rating);
 
   let newReview = {
     _id: ObjectId(),

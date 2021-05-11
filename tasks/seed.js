@@ -5,35 +5,35 @@ const connection = require("../config/mongoConnection.js");
 
 const howlObj = {
   title: "Howl's Moving Castle",
-  desc:
-    "When Sophie, a shy young woman, is cursed with an old body by a spiteful witch, her only chance of breaking the spell lies with a self-indulgent yet insecure young wizard and his companions in his legged, walking castle.",
+  desc: "When Sophie, a shy young woman, is cursed with an old body by a spiteful witch, her only chance of breaking the spell lies with a self-indulgent yet insecure young wizard and his companions in his legged, walking castle.",
   img: "/TkTPELv4kC3u1lkloush8skOjE.jpg",
   releaseYear: "2004-11-19",
   runtime: 119,
   mpaaRating: "PG",
   genre: ["Fantasy", "Animation", "Adventrue"],
+  TMDbId: 4935,
 };
 
 const inceptionObj = {
   title: "Inception",
-  desc:
-    "Cobb, a skilled thief who commits corporate espionage by infiltrating the subconscious of his targets is offered a chance to regain his old life as payment for a task considered to be impossible: \"inception\", the implantation of another person's idea into a target's subconscious.",
+  desc: "Cobb, a skilled thief who commits corporate espionage by infiltrating the subconscious of his targets is offered a chance to regain his old life as payment for a task considered to be impossible: \"inception\", the implantation of another person's idea into a target's subconscious.",
   img: "/9gk7adHYeDvHkCSEqAvQNLV5Uge.jpg",
   releaseYear: "2010-07-15",
   runtime: 148,
   mpaaRating: "R",
   genre: ["Action", "Science", "Adventure"],
+  TMDbId: 27205,
 };
 
 const sorryObj = {
   title: "Sorry to Bother You",
-  desc:
-    "In an alternate present-day version of Oakland, black telemarketer Cassius Green discovers a magical key to professional success – which propels him into a macabre universe.",
+  desc: "In an alternate present-day version of Oakland, black telemarketer Cassius Green discovers a magical key to professional success – which propels him into a macabre universe.",
   img: "/peTl1V04E9ppvhgvNmSX0r2ALqO.jpg",
   releaseYear: "2010-07-15",
   runtime: 112,
   mpaaRating: "R",
   genre: ["Fantasy", "Science-Fiction", "Comedy"],
+  TMDbId: 424781,
 };
 
 const main = async () => {

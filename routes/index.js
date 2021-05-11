@@ -2,13 +2,15 @@
 const wantToWatchListRoutes = require("./wantToWatchList");
 const movieSelectRoutes = require("./movieSelection");
 const reviewRoutes = require("./reviews");
+const movieRoutes = require("./movies.js");
 
 const constructorMethod = (app) => {
   // routes
+  app.use("/reviews", reviewRoutes);
+  app.use("/movies", movieRoutes);
 
   //route for building the want to watch list
   app.use("/wantToWatchList", wantToWatchListRoutes);
-  app.use("/reviews", reviewRoutes);
 
   //routes for movie selection process
   app.use("/movieSelection", movieSelectRoutes);

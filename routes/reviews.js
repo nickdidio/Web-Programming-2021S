@@ -54,31 +54,11 @@ router.post("/:id", async (req, res) => {
   const data = req.body;
   const { reviewDate, reviewText, rating } = data;
 
-  if (
-    typeof reviewDate !== "string" ||
-    reviewDate.trim() === "" ||
-    !utils.isValidDateString(reviewDate)
-  ) {
+  try {
+    utils.checkReviewParameters(reviewDate, reviewText, rating);
+  } catch (e) {
     res.status(400).json({
-      error: xss(
-        "Must provide a value for review date of type string in YYYY-MM-DD format."
-      ),
-    });
-    return;
-  }
-
-  if (typeof reviewText !== "string" || reviewText.trim() === "") {
-    res.status(400).json({
-      error: xss("Must provide a value for review text of type string."),
-    });
-    return;
-  }
-
-  if (typeof rating !== "number" || isNaN(rating) || rating > 5 || rating < 1) {
-    res.status(400).json({
-      error: xss(
-        "Must provide a value for review rating that is positive integer between 1 and 5 (inclusive)."
-      ),
+      error: xss(e.toString()),
     });
     return;
   }

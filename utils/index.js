@@ -66,7 +66,99 @@ const isValidDateString = (date) => {
   return true;
 };
 
+// Error checks movie object parameters
+const checkMovieParameters = (
+  title,
+  desc,
+  img,
+  releaseYear,
+  runtime,
+  mpaaRating,
+  genre,
+  TMDbId
+) => {
+  // Error check string values of movie object
+  const strArgs = [title, desc, img, mpaaRating];
+  const strArgNames = ["title", "description", "image source", "MPAA rating"];
+
+  strArgs.forEach((arg, idx) => {
+    if (typeof arg !== "string" || arg.trim() === "") {
+      throw new Error(
+        `Must provide a non-null, non-empty value of type 'string' for ${strArgNames[idx]}.`
+      );
+    }
+  });
+
+  // Check that MPAA is a valid rating within the set below
+  const validMPAAs = new Set(["G", "PG", "PG-13", "R", "NC-17", "Not Rated"]);
+
+  if (!validMPAAs.has(mpaaRating)) {
+    throw new Error(
+      "Must provide a valid MPAA rating of G, PG, PG-13, R, or NC-17"
+    );
+  }
+
+  // Check that genre array is non-empty and contains only string values
+  if (!Array.isArray(genre) || genre.length === 0) {
+    throw new Error(
+      "Must provide a non-null, non-empty array for 'genre' parameter."
+    );
+  }
+  if (genre.some((g) => typeof g !== "string" || g.trim() === "")) {
+    throw new Error("Must provide an array of strings for genre parameter");
+  }
+
+  // Check that release year is a valid string in YYYY/MM/DD format
+  if (
+    typeof releaseYear !== "string" ||
+    releaseYear.trim() === "" ||
+    !isValidDateString(releaseYear)
+  ) {
+    throw new Error(
+      "Must provide a string in 'YYYY/MM/DD' format as movie's release date parameter."
+    );
+  }
+
+  if (typeof runtime !== "number" || isNaN(runtime) || runtime < 1) {
+    throw new Error(
+      "Must provide a positive, integer value for the runtime parameter."
+    );
+  }
+
+  if (typeof TMDbId !== "number" || isNaN(TMDbId) || TMDbId < 1) {
+    throw new Error(
+      "Must provide a positive, integer value for the TMDbId parameter."
+    );
+  }
+};
+
+const checkReviewParameters = (reviewDate, reviewText, rating) => {
+  if (
+    typeof reviewDate !== "string" ||
+    reviewDate.trim() === "" ||
+    !isValidDateString(reviewDate)
+  ) {
+    throw new Error(
+      "Must provide a string in 'YYYY/MM/DD' format as 'reviewDate' parameter."
+    );
+  }
+
+  if (typeof reviewText !== "string" || reviewText.trim() === "") {
+    throw new Error(
+      "Must provide a non-null, non-empty value of type 'string' for reviewText parameter."
+    );
+  }
+
+  if (typeof rating !== "number" || isNaN(rating) || rating > 5 || rating < 1) {
+    throw new Error(
+      "Must provide a real number value for rating parameter that is between 1 and 5 (inclusive)."
+    );
+  }
+};
+
 module.exports = {
   checkId,
   isValidDateString,
+  checkMovieParameters,
+  checkReviewParameters,
 };
