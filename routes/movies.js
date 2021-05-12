@@ -3,6 +3,10 @@ const router = express.Router();
 const utils = require("../utils");
 const { movies } = require("../data");
 const xss = require("xss");
+const dotenv = require("dotenv");
+const axios = require("axios");
+dotenv.config();
+const apiKey = process.env.API_KEY;
 
 // GET /movies/:id
 router.get("/:id", async (req, res) => {
@@ -40,7 +44,27 @@ router.get("/TMDbId/:id", async (req, res) => {
 
   // try to fetch movie by TMDbId id
   try {
-    const movie = await movies.getMovieByTMDbId(parseInt(xss(TMDbId)));
+    let movie = await movies.getMovieByTMDbId(parseInt(xss(TMDbId)));
+    if (Object.keys(movie).length === 0) {
+      const { data } = await axios.get(
+        `https://api.themoviedb.org/3/movie/${TMDbId}?api_key=${apiKey}&language=en-US&append_to_response=release_dates`
+      );
+      console.log(data.title);
+      movie = {
+        title: data.title ? data.title : "N/A",
+        desc: data.overview ? data.overview : "N/A",
+        img: data.poster_path
+          ? `https://image.tmdb.org/t/p/w500/${data.poster_path}`
+          : "../public/images/no_image.jpeg",
+        releaseYear: data.release_date,
+        runtime: data.runtime ? data.runtime : "N/A",
+        mpaaRating: data.release_dates.results.find(
+          (elem) => elem.iso_3166_1 == "US"
+        ).release_dates[0].certification,
+        genre: data.genres ? data.genres.map((g) => g.name) : [],
+        TMDbId: data.id,
+      };
+    }
     res.json(movie);
   } catch (e) {
     res.status(404).json({ error: xss("Movie not found") });

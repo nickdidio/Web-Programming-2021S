@@ -1,4 +1,3 @@
-const { response } = require("express");
 const express = require("express");
 const router = express.Router();
 const xss = require("xss");
@@ -36,44 +35,7 @@ router.get("/remove", (req, res) => {
   });
 });
 
-router.get("/generalInfo/:id", async (req, res) => {
-  const id = Number(req.params.id);
-
-  if (!id || id < 0) {
-    res.status(400).json({ error: xss("Invalid id") });
-    return;
-  }
-
-  try {
-    const { data } = await axios.get(
-      `https://api.themoviedb.org/3/movie/${id}?api_key=${apiKey}&language=en-US&append_to_response=release_dates`
-    );
-    res.json(data);
-  } catch (e) {
-    res.status(404).json({ error: xss("Movie not found with given id") });
-    return;
-  }
-});
-
-router.get("/movieInfo/:id", async (req, res) => {
-  const id = Number(req.params.id);
-
-  if (!id || id < 0) {
-    res.status(400).json({ error: xss("Invalid id") });
-    return;
-  }
-
-  try {
-    const { data } = await axios.get(
-      `https://api.themoviedb.org/3/movie/${id}?api_key=${apiKey}`
-    );
-    res.json(data);
-  } catch (e) {
-    res.status(404).json({ error: xss("Movie not found with given id") });
-    return;
-  }
-});
-
+// Use TMDb API to get query results
 router.get("/userQuery/:q", async (req, res) => {
   const q = req.params.q.trim();
 
@@ -93,6 +55,7 @@ router.get("/userQuery/:q", async (req, res) => {
   }
 });
 
+// Use TMdb API to get random page
 router.get("/random/:randPage", async (req, res) => {
   const randPage = Number(req.params.randPage);
 

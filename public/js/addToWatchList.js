@@ -14,77 +14,7 @@
   //TODO: Add avg review rating and reviews
   // ASk about what the formatting of the html should be
 
-  const showDetailsFromTMDb = (movieId) => {
-    $.ajax({
-      method: "GET",
-      url: `/wantToWatchList/generalInfo/${movieId}`,
-      contentType: "application/json",
-    }).then((movie) => {
-      let genres = "";
-      if (movie.genres && movie.genres.length > 0) {
-        for (let i = 0; i < movie.genres.length; i++) {
-          genres += `<li class="genre-li">${movie.genres[i].name}</li>`;
-        }
-      } else {
-        genres = "N/A";
-      }
-
-      // Get the MPAA Rating, default is "Not Rated"
-      let MPAARating = "Not Rated";
-      for (let i = 0; i < movie.release_dates.results.length; i++) {
-        if (movie.release_dates.results[i].iso_3166_1 == "US") {
-          //if the rating exists and is not NR
-          if (
-            movie.release_dates.results[i].release_dates[0].certification &&
-            movie.release_dates.results[i].release_dates[0].certification !=
-              "NR"
-          ) {
-            MPAARating =
-              movie.release_dates.results[i].release_dates[0].certification;
-          }
-          break;
-        }
-      }
-
-      // Show movie image, default is no_image.jpeg
-      if (movie.poster_path) {
-        img = `<br><img src="https://image.tmdb.org/t/p/w500/${movie.poster_path}" alt="${movie.title}" width="270" height="400"> `;
-      } else {
-        img = `<br><img src="../public/images/no_image.jpeg" alt="No Image" width="270" height="400"> `;
-      }
-
-      // Add all data to the movie html
-      movieDiv.empty();
-      movieDiv.append(
-        `<h1>${movie.title ? movie.title : "N/A"}</h1>`,
-        img,
-        `<dl>
-            <dt>Summary</dt>
-            <dd>${movie.overview ? movie.overview : "N/A"}</dd>
-            <dt>MPAA Rating</dt>
-            <dd>${MPAARating}</dd>
-            <dt>Genres</dt>
-            <dd>
-              <ul>                
-                ${genres}
-              </ul>
-            </dd>
-            <dt>Runtime</dt>
-            <dd>
-              ${movie.runtime ? movie.runtime : "N/A"} minutes
-            </dd>
-            <dt>Release Date</dt>
-            <dd>
-              ${movie.release_date ? movie.release_date : "N/A"}
-            </dd>
-          </dl>`
-      );
-      movieDiv.attr("hidden", false);
-      moviesList.attr("hidden", true);
-    });
-  };
-
-  const showDetailsFromMongoDb = (movie) => {
+  const showMovieDetailsHelper = (movie) => {
     const {
       title,
       desc,
@@ -97,16 +27,12 @@
       reviews,
     } = movie;
 
-    console.log(movie);
-
-    let genresList = "";
+    let genresList = "N/A";
     if (genre && genre.length > 0) {
       genresList = genre.map((g) => `<li class="genre-li">${g}</li>`).join("");
-    } else {
-      genresList = "N/A";
     }
 
-    let reviewsList = "";
+    let reviewsList = "No reviews have been made for this movie yet";
 
     if (reviews && reviews.length > 0) {
       reviewsList = reviews
@@ -115,21 +41,23 @@
             `<li class="review-li">${r.reviewerId}<br>${r.reviewText}<br>${r.rating}<br>${r.reviewDate}</li>`
         )
         .join("");
-    } else {
-      reviewsList = "No reviews have been made for this movie yet";
     }
 
-    console.log(reviews);
+    const newReviewButton = `<button type="button" class="newReview" id="newReview${movie.id}">Write a new review for this movie</button>`;
 
     movieDiv.empty();
     movieDiv.append(
       `<h1>${title ? title : "N/A"}</h1>`,
-      `<br><img src=${img}>`,
+      `<br><img src="${img}" alt="${
+        img.includes("../public") ? "Poster Unvailable for" : "Poster for"
+      } ${movie.title}" width="270" height="400">`,
       `<dl>
         <dt>Summary</dt>
         <dd>${desc ? desc : "N/A"}</dd>
         <dt>MPAA Rating</dt>
-        <dd>${mpaaRating}</dd>
+        <dd>${
+          !mpaaRating || mpaaRating === "NR" ? "Not Rated" : mpaaRating
+        }</dd>
         <dt>Genres</dt>
         <dd>
           <ul>                
@@ -148,13 +76,14 @@
         <dd>
           ${userAvgRating ? userAvgRating : "No ratings added yet"}
         </dd>
-      </dl>
-      <dt>Reviews</dt>
-        <dd>
-          <ul>                
-            ${reviewsList}
-          </ul>
-        </dd>`
+        <dt>Reviews</dt>
+        ${newReviewButton}
+          <dd>
+            <ul>                
+              ${reviewsList}
+            </ul>
+          </dd>
+      </dl>`
     );
     movieDiv.attr("hidden", false);
     moviesList.attr("hidden", true);
@@ -168,11 +97,7 @@
       contentType: "application/json",
     }).then((movie) => {
       // Make a list of the movie genres
-      if (Object.keys(movie).length === 0) {
-        showDetailsFromTMDb(movieId);
-      } else {
-        showDetailsFromMongoDb(movie);
-      }
+      showMovieDetailsHelper(movie);
     });
   };
 
@@ -185,15 +110,9 @@
       errorMsg.attr("hidden", true);
       movieDiv.empty();
       const movieId = movieItem.find(".movieLink").attr("id");
-      $.ajax({
-        method: "GET",
-        url: `/wantToWatchList/movieInfo/${movieId}`,
-        contentType: "application/json",
-      }).then((movieData) => {
-        showMovieDetails(movieData.id);
-        addButton.children().html("Add this movie to my list");
-        addButton.attr("hidden", false);
-      });
+      showMovieDetails(movieId);
+      addButton.children().html("Add this movie to my list");
+      addButton.attr("hidden", false);
     });
 
     movieItem.on("click", ".addLink", (event) => {
@@ -216,10 +135,6 @@
           errorMsg.attr("hidden", false);
         }
       });
-    });
-
-    movieItem.on("click", ".newReview", (event) => {
-      event.preventDefault();
     });
   };
 

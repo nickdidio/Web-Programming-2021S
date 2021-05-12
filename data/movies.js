@@ -101,7 +101,7 @@ const getMovieByTMDbId = async (id) => {
   const movieCollection = await movies();
   const movie = await movieCollection.findOne({ TMDbId: id });
 
-  if (movie === null) {
+  if (!movie) {
     return {};
   }
 
