@@ -7,6 +7,7 @@
   const errorMsg = $(".error");
   const randButton = $("#randomButton");
   const addButton = $("#addMovieButton");
+  const date = new Date();
 
   /*
     Usage: Shows the movie details in html for a movie whose id you input
@@ -38,12 +39,10 @@
       reviewsList = reviews
         .map(
           (r) =>
-            `<li class="review-li">${r.reviewerId}<br>${r.reviewText}<br>${r.rating}<br>${r.reviewDate}</li>`
+            `<li class="review-li">${r.username}<br>${r.reviewText}<br>${r.rating}<br>${r.reviewDate}</li>`
         )
         .join("");
     }
-
-    const newReviewButton = `<button type="button" class="newReview" id="newReview${movie.id}">Write a new review for this movie</button>`;
 
     movieDiv.empty();
     movieDiv.append(
@@ -77,7 +76,6 @@
           ${userAvgRating ? userAvgRating : "No ratings added yet"}
         </dd>
         <dt>Reviews</dt>
-        ${newReviewButton}
           <dd>
             <ul>                
               ${reviewsList}
@@ -184,8 +182,6 @@
 
                 const addMovieButton = `<button type="button" class="addLink" id="addLink${movieData.id}">Add this movie to my list</button>`;
 
-                const newReviewButton = `<button type="button" class="newReview" id="newReview${movieData.id}">Write a new review for this movie</button>`;
-
                 moviesList.append(
                   `<li class="movie-li">${
                     movieData.title ? movieData.title : "N/A"
@@ -195,7 +191,6 @@
                         <br>
                         ${addMovieButton}
                         <br>                     
-                        ${newReviewButton}
                         <br>
                         ${img}
                         <br>

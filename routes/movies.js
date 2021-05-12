@@ -29,10 +29,7 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-// GET /movies/TMDbId/:id
-router.get("/TMDbId/:id", async (req, res) => {
-  // validate movie id parameter
-  const TMDbId = req.params.id;
+const TMDbIdGet = async (TMDbId) => {
   if (isNaN(TMDbId) || TMDbId < 1) {
     res.status(400).json({
       error: xss(
@@ -41,20 +38,17 @@ router.get("/TMDbId/:id", async (req, res) => {
     });
     return;
   }
-
-  // try to fetch movie by TMDbId id
   try {
     let movie = await movies.getMovieByTMDbId(parseInt(xss(TMDbId)));
     if (Object.keys(movie).length === 0) {
       const { data } = await axios.get(
         `https://api.themoviedb.org/3/movie/${TMDbId}?api_key=${apiKey}&language=en-US&append_to_response=release_dates`
       );
-      console.log(data.title);
       movie = {
         title: data.title ? data.title : "N/A",
         desc: data.overview ? data.overview : "N/A",
         img: data.poster_path
-          ? `https://image.tmdb.org/t/p/w500/${data.poster_path}`
+          ? `https://image.tmdb.org/t/p/w500${data.poster_path}`
           : "../public/images/no_image.jpeg",
         releaseYear: data.release_date,
         runtime: data.runtime ? data.runtime : "N/A",
@@ -65,14 +59,25 @@ router.get("/TMDbId/:id", async (req, res) => {
         TMDbId: data.id,
       };
     }
+    return movie;
+  } catch (e) {
+    throw new Error(`Movie not found with TMDb id value of ${TMDbId}`);
+  }
+};
+
+// GET /movies/TMDbId/:id
+router.get("/TMDbId/:id", async (req, res) => {
+  // try to fetch movie by TMDbId id
+  try {
+    const movie = await TMDbIdGet(req.params.id);
     res.json(movie);
   } catch (e) {
-    res.status(404).json({ error: xss("Movie not found") });
+    res.status(404).json({ error: xss(e.toString()) });
     return;
   }
 });
 
-// POST /movies/:TMDbId
+// POST /movies/
 router.post("/", async (req, res) => {
   const { title, desc, img, releaseYear, runtime, mpaaRating, genre, TMDbId } =
     req.body;

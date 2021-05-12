@@ -12,21 +12,20 @@ const utils = require("../utils");
 const createReview = async (
   reviewDate,
   reviewText,
-  reviewerId,
   rating,
+  username,
   movieId
 ) => {
   const parsedMovieId = utils.checkId(movieId);
-  const parsedReviewerId = utils.checkId(reviewerId);
 
-  utils.checkReviewParameters(reviewDate, reviewText, rating);
+  utils.checkReviewParameters(reviewDate, reviewText, rating, username);
 
   let newReview = {
     _id: ObjectId(),
     reviewDate,
     reviewText,
-    reviewerId: parsedReviewerId,
     rating,
+    username,
     movieId: parsedMovieId,
   };
 

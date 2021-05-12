@@ -132,7 +132,7 @@ const checkMovieParameters = (
   }
 };
 
-const checkReviewParameters = (reviewDate, reviewText, rating) => {
+const checkReviewParameters = (reviewDate, reviewText, rating, username) => {
   if (
     typeof reviewDate !== "string" ||
     reviewDate.trim() === "" ||
@@ -150,8 +150,15 @@ const checkReviewParameters = (reviewDate, reviewText, rating) => {
   }
 
   if (typeof rating !== "number" || isNaN(rating) || rating > 5 || rating < 1) {
+    console.log(rating);
     throw new Error(
       "Must provide a real number value for rating parameter that is between 1 and 5 (inclusive)."
+    );
+  }
+
+  if (typeof username !== "string" || username.trim() === "") {
+    throw new Error(
+      "Must provide a non-null, non-empty value of type 'string' for username parameter."
     );
   }
 };

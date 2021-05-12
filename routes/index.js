@@ -1,4 +1,5 @@
 // import routes
+// TODO: Make sure website views respond properly to errors
 const wantToWatchListRoutes = require("./wantToWatchList");
 const movieSelectRoutes = require("./movieSelection");
 const reviewRoutes = require("./reviews");

@@ -1,5 +1,4 @@
 const { movies, reviews } = require("../data");
-let { ObjectId } = require("mongodb");
 
 const connection = require("../config/mongoConnection.js");
 
@@ -76,24 +75,24 @@ const main = async () => {
     review1 = await reviews.createReview(
       "2021-05-03",
       "Amazingful",
-      ObjectId().toString(),
       5,
+      "username1",
       howl._id.toString()
     );
 
     review2 = await reviews.createReview(
       "2021-05-02",
       "Okayful",
-      ObjectId().toString(),
       3,
+      "username2",
       howl._id.toString()
     );
 
     review3 = await reviews.createReview(
       "2021-05-01",
       "Awful",
-      ObjectId().toString(),
       1,
+      "username3",
       howl._id.toString()
     );
   } catch (e) {
