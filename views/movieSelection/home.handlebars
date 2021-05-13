@@ -1,12 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{roomName}} Decision Room</title>
-</head>
-<body>
-    {{body}}
-</body>
-</html>
+<h1>Chosen Movie: {{title.title}}</h1>
+<form class="{{state}}" action="/movieSelection/list" method="GET">
+   <input type="submit" value="Pick Flicks">
+</form>
