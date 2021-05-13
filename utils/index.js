@@ -165,6 +165,11 @@ const checkReviewParameters = (reviewDate, reviewText, rating, username) => {
     );
   }
 };
+const emailValidator = (email) => {
+  let emailFormat =
+    /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+  return emailFormat.test(email);
+};
 
 // Get a movie based on its TMDb Id
 const TMDbIdGet = async (TMDbId) => {
@@ -222,5 +227,6 @@ module.exports = {
   isValidDateString,
   checkMovieParameters,
   checkReviewParameters,
+  emailValidator,
   TMDbIdGet,
 };
