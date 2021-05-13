@@ -3,10 +3,6 @@ const router = express.Router();
 const utils = require("../utils");
 const { movies } = require("../data");
 const xss = require("xss");
-const dotenv = require("dotenv");
-const axios = require("axios");
-dotenv.config();
-const apiKey = process.env.API_KEY;
 
 // GET /movies/:id
 router.get("/:id", async (req, res) => {

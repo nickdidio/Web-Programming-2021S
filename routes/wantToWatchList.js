@@ -3,23 +3,21 @@ const router = express.Router();
 const xss = require("xss");
 const dotenv = require("dotenv");
 const axios = require("axios");
-const utils = require('../utils')
+const utils = require("../utils");
 dotenv.config();
 const apiKey = process.env.API_KEY;
-const data = require("../data");
-const movies = data.movies;
-const users = data.users;
-
+const { movies, users } = require("../data");
 
 // Add a movie to the mongoDB movie database and user wantToWatchList database
 router.post("/add", (req, res) => {
   const userId = utils.checkId(req.session.user.id);
-  if(!req.body.movieId || typeof req.body.movieId !== "string") throw "Error: movieId not found"
+  if (!req.body.movieId || typeof req.body.movieId !== "string")
+    throw "Error: movieId not found";
   const tmdbId = xss(req.body.movieId);
   let movie = utils.tmdbIdGet(tmdbId);
 
   // if the movie is not already in the movie database
-  if(!movie || !movie._id){
+  if (!movie || !movie._id) {
     utils.checkMovieParameters(movie);
     movie = movies.createMovie(
       movie.title,
@@ -29,23 +27,24 @@ router.post("/add", (req, res) => {
       movie.runtime,
       movie.mpaaRating,
       movie.genre,
-      movie.TMDbId,
+      movie.TMDbId
     );
   }
 
-  if(users.addToWatchList(userId,movie._id)) res.json(false);
+  if (users.addToWatchList(userId, movie._id)) res.json(false);
   res.json(true);
 });
 
 // Remove a movie from the user wantToWatchList database
 router.post("/remove", (req, res) => {
   const userId = utils.checkId(req.session.user.id);
-  if(!req.body.movieId || typeof req.body.movieId !== "string") throw "Error: movieId not found"
+  if (!req.body.movieId || typeof req.body.movieId !== "string")
+    throw "Error: movieId not found";
   const tmdbId = xss(req.body.movieId);
   let movie = utils.tmdbIdGet(tmdbId);
-  if(!movie || !movie._id) throw "Error: Movie not found in movie database";
+  if (!movie || !movie._id) throw "Error: Movie not found in movie database";
 
-  if(users.removeFromWatchList(userId,movie._id)) res.json(true);
+  if (users.removeFromWatchList(userId, movie._id)) res.json(true);
   res.json(false);
 });
 
@@ -60,14 +59,14 @@ router.get("/add", (req, res) => {
 //How to view and remove items from list
 router.get("/remove", (req, res) => {
   const userId = utils.checkId(req.session.user.id);
-  const watchList = users.getWatchList(userId)
-  if(watchList){
+  const watchList = users.getWatchList(userId);
+  if (watchList) {
     res.status(200);
     res.render("wantToWatchList/removeFromWatchList", {
       movieList: watchList,
       title: "My Watch List",
     });
-  }else{
+  } else {
     res.status(500).json({ error: xss("Watch List Failed") });
     return;
   }
