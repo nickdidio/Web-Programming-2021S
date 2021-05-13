@@ -2,6 +2,7 @@ const mongoCollections = require("../config/mongoCollections.js");
 const { ObjectId } = require("mongodb");
 const groups = mongoCollections.groups;
 const users = mongoCollections.users;
+const movies = mongoCollections.movies;
 const bcrypt = require("bcrypt");
 //const uuid = require("uuid/v4");
 
