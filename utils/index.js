@@ -3,9 +3,12 @@
  */
 
 const { ObjectId } = require("mongodb");
-const axios = require('axios');
-const xss = require('xss');
+const xss = require("xss");
 const { movies } = require("../data");
+const dotenv = require("dotenv");
+const axios = require("axios");
+dotenv.config();
+const apiKey = process.env.API_KEY;
 
 // Checks if a given string is a valid MongoDB object id
 // returns the strings as a MongoDB object id
@@ -220,7 +223,6 @@ const TMDbIdGet = async (TMDbId) => {
     throw new Error(`Movie not found with TMDb id value of ${TMDbId}`);
   }
 };
-
 
 module.exports = {
   checkId,
