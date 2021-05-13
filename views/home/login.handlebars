@@ -1,0 +1,26 @@
+<div class="login-div">
+    <h1 class="cardTitle">Login to FlikPik</h1>
+    <div class="fields">
+
+        <form id="signin-form" method="POST" action="/login">
+            <div class="userName">
+                <label for="username">Enter your username: </label>
+                <input id="username" type="text" name="username" placeholder="username" />
+            </div>
+            <div class="pw">
+                <label for="password">Enter your password: </label>
+                <input id="password" type="text" name="password" placeholder="password" />
+            </div>
+            <div class="subButton">
+                <button class="signon-button" id="logon-button" type="submit">login</button>
+
+        </form>
+    </div>
+    <div class="link">
+
+        <a href="home/signup">Sign Up for an Account</a>
+    </div>
+</div>
+{{#if error}}
+<h5>{{error}}</h5>
+{{/if}}
