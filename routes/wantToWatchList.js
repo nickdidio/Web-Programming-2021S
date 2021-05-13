@@ -3,10 +3,10 @@ const router = express.Router();
 const xss = require("xss");
 const dotenv = require("dotenv");
 const axios = require("axios");
-const utils = rquire('../utils')
+const utils = require('../utils')
 dotenv.config();
 const apiKey = process.env.API_KEY;
-const { data } = require("../data");
+const data = require("../data");
 const movies = data.movies;
 const users = data.users;
 

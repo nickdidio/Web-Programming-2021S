@@ -66,7 +66,7 @@ let exportedMethods = {
     return await this.getUserById(id);
   },
 
-  /* // Add Review to User
+  // Add Review to User
   async addReviewToUser(userId, reviewId, reviewTitle) {
     let currentUser = await this.getUserById(userId);
     console.log(currentUser);
