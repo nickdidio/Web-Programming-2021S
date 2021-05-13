@@ -16,7 +16,7 @@ const constructorMethod = (app) => {
   app.use("/wantToWatchList", wantToWatchListRoutes);
 
   //routes for movie selection process
-  app.use("/movieSelection", movieSelectRoutes);
+  app.use("/pick", movieSelectRoutes);
 
   app.use("/", (req, res) => {
     res.render("temporary/fakeLanding", { title: "Temporary Landing Page" });

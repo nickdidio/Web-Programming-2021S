@@ -12,7 +12,7 @@ router.get('/', async (req, res) => {
     groups.updateWatchList(sesh.groupID, )
     // This is the landing page for decision rooms
     // Decision rooms != watch groups, so anyone(?) can join a decision room
-    res.render('selection/home')
+    res.render('movieSelection/home')
 });
 
 router.get('/list', async (req, res) => {
@@ -33,7 +33,7 @@ router.post('/choice/:dec/:id', async (req, res) => {
     // First check if grpSession.selection != null. If it doesn't then, a movie has been selected,
     // and the user should return to group home page where the chosen movie will be displayed
     if(grpSession.selection != "N/A") {
-        res.redirect('/selection')
+        res.redirect('/pick')
     }
     sesh = req.session.user
     sesh.judged++;
@@ -49,7 +49,7 @@ router.post('/choice/:dec/:id', async (req, res) => {
     } else if(sesh.judged == sesh.movie_count) {
         // if user no longer has movies to judge, send them back to group home to
         // wait for the rest of group members to finish
-        res.redirect('/selection')
+        res.redirect('/pick')
     }
     // get next movie based on user session
     next_movie = await movies.getMovieById(sesh.movie_list[sesh.judged])
