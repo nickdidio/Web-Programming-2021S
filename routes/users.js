@@ -37,14 +37,22 @@ app.use(logMiddleware);
 
 app.get("/", async function (req, res) {
   if (activeSession(req)) {
-    res.render("home/landing", { title: "FlikPik" });
+    res.render("home/signup", { title: "FlikPik" });
   } else {
     res.render("landing", { title: "FlikPik" });
   }
 });
 
-app.post("/login", async function (req, res) {
+app.get("home/login", async function (req, res) {
+  res.render("home/login", { title: "Login to FlikPik" });
+});
+
+app.post("home/login", async function (req, res) {
   const { username, password } = req.body;
+});
+
+app.get("home/signup", async function (req, res) {
+  res.render("home/signup", { title: "Signup for FlikPik" });
 });
 
 app.post("/signup", async function (req, res) {});
