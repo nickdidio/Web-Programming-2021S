@@ -10,12 +10,11 @@ const createGroup = async(groupLeaderId) => {
     } catch(e) {
         throw new Error ("Could not create group: Invalid ID")
     }
-    
     const groupCollection = await groups();   
     let newGroup = {
         groupMembers: [parsedLeaderId], //includes group leader
         currentSession: {
-            sessionDate = new Date().getTime(), //Time since epoch
+            sessionDate: new Date().getTime(),
             sessionMembers: groupMembers,
             voteCountNeeded: 1,
             movieList: [],
@@ -58,31 +57,6 @@ const addGroupMember = async (groupId, userId) => {
 
     return await groupCollection.findOne({ _id: parsedGroupId});
 };
-
-//Only needs to be called before users begin to select for decision night. Gets movies from users and adds them together
-//TODO: finish implementation of movielist in curresnt session then delete this functon
-// const updateMovieList = async (groupId) => {
-//     let parsedGroupId;
-//     try {
-//         parsedGroupId = ObjectId(groupId);
-//     } catch(e) {
-//         throw new Error ("Could not create group: Invalid ID for group")
-//     }
-
-//     const groupCollection = await groups();
-//     const group = await groupCollection.findOne({ _id: parsedGroupId});
-//     let members = group.groupMembers;
-//     let newList = [];
-//     for (let i = 0; i < members; i++) {
-//         newList.concat(members[i].watchList) //check varialbe for user watchlist
-//     }
-
-//     // TODO Filter past sessions newList.filter(movie => !arr2.includes(movie));
-//     const updateInfo = await groupCollection.updateOne({_id: parsedGroupId}, {$set: {groupMovieList: newList}});
-//     if (updateInfo.modifiedCount === 0) throw new Error ('Could not update watchlist');
-
-//     return await groupCollection.findOne({ _id: parsedGroupId});
-// };
 
 
 const getGroupById = async (groupId) => {
@@ -142,10 +116,11 @@ const createSession = async(groupId, voteCountNeeded, filters) => {
         //MPAA Rating
         //Previously watched
     }
-    
+
     //TODO: FILTER past sessions films
+    
     let newSession = {
-        sessionDate = new Date().getTime(), //Time since epoch
+        sessionDate: new Date().getTime(), //Time since epoch
         sessionMembers: groupMembers,
         voteCountNeeded,
         movieList: [],

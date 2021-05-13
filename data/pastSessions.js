@@ -32,7 +32,7 @@ const createPastSession = async(groupId, {sessionDate, sessionMembers, voteCount
     const group = await groupCollection.findOne({ _id: parsedGroupId});
     group.pastSessions.push(newSession);
     const updateInfo = await groupCollection.updateOne({_id: parsedId}, {$set: group});
-    if (updateInfo.modifiedCount === 0) throw 'Could not add past session';
+    if (updateInfo.modifiedCount === 0) throw new Error ('Could not add past session');
 };
 
 const getPastSessionById = async(sessionId) => {
@@ -43,6 +43,6 @@ const getPastSessionById = async(sessionId) => {
         throw new Error ("Could not get group: Invalid ID for group")
     }
     const psCollection = await pastSessions();
-    return await psCollection.findOne({ _id: parsedSessionId});;
+    return psCollection.findOne({ _id: parsedSessionId});;
 }
 module.exports = {createPastSession, getPastSessionById};
