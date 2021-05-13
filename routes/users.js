@@ -55,7 +55,7 @@ app.get("/home/login", async function (req, res) {
 
 // Post login form info
 // Redirect to profile page if authorized
-app.post("/home/login", async function (req, res) {
+app.post("/login", async function (req, res) {
   const { username, password } = req.body;
   // Check if username or password is provided
   if (!username || !password) {
@@ -66,16 +66,22 @@ app.post("/home/login", async function (req, res) {
     });
   }
   // Check username and password against all users
+  console.log("past username and pw");
   let users = await userData.getAllUsers();
+  console.log(users);
   for (const user of users) {
+    console.log("inside for loop");
     if (user.username === username) {
       let match = false;
       try {
-        match = await bcrypt.compare(password, user.hashedPassword);
+        console.log("checking password");
+        match = await bcrypt.compare(password, user.password);
         if (match) {
           // Authenticated user
+          console.log("Authenticated");
           req.session.user = user;
-          return res.redirect("/home/profile");
+          res.redirect("/home/profile");
+          return;
         } else {
           // Non-auth user
           res.status(401);
@@ -83,6 +89,7 @@ app.post("/home/login", async function (req, res) {
             title: "Login Error",
             error: "Invalid username and/or password. Try again.",
           });
+          return;
         }
       } catch (error) {}
     }
@@ -94,6 +101,7 @@ app.post("/home/login", async function (req, res) {
       title: "Login Error",
       error: "Please login.",
     });
+    return;
   }
 });
 
@@ -170,7 +178,8 @@ app.post("/signup", async function (req, res) {
     );
 
     req.session.user = newUser;
-    return res.redirect("/home/profile");
+    res.redirect("/home/profile");
+    return;
   } catch (error) {
     res.status(400);
     res.render("home/signup", { error: "Could not register account." });
@@ -183,6 +192,7 @@ app.use("/home/profile", async function (req, res, next) {
   if (!req.session.user) {
     res.status(403);
     res.redirect("/");
+    return;
   } else {
     next();
   }
@@ -194,12 +204,14 @@ app.get("/home/profile", async function (req, res) {
     title: "FlikPik Profile",
     user: req.session.user,
   });
+  return;
 });
 
 // Destroy cookie and redirect to landing page
 app.get("/logout", async function (req, res) {
   req.session.destroy();
   res.redirect("/");
+  return;
 });
 
 module.exports = app;

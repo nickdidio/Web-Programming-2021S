@@ -18,7 +18,16 @@ body {
 }
 
 .login-div {
-  width: 5500px;
+  width: 500px;
+  height: 600px;
+  padding: 60px 35px 35px 35px;
+  border-radius: 40px;
+  background-color: #ecf0f3;
+  box-shadow: 13px 13px 20px #cbced1 -13px -13px 20px #fff;
+}
+
+.signup-div {
+  width: 500px;
   height: 900px;
   padding: 60px 35px 35px 35px;
   border-radius: 40px;
