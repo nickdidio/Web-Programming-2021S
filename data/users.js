@@ -4,7 +4,8 @@ const groups = mongoCollections.groups;
 const users = mongoCollections.users;
 const movies = mongoCollections.movies;
 const bcrypt = require("bcrypt");
-//const uuid = require("uuid/v4");
+const utils = require("../utils")
+
 
 let exportedMethods = {
   // Get all users
@@ -36,6 +37,7 @@ let exportedMethods = {
       password: await bcrypt.hashSync(password, 16),
       reviews: [],
       decGroups: [],
+      watchList: [],
     };
 
     const newInsertInformation = await userCollection.insertOne(newUser);
@@ -105,6 +107,52 @@ let exportedMethods = {
       throw "Update failed";
 
     return await this.getUserById(userId);
+  },
+
+
+  // See if the movie is already in the user's watchList
+  async checkIfInWatchList(userId, movieId) {
+    const parsedUserId = utils.checkId(userId);
+    const parsedMovieId = utils.checkId(movieId);
+    const userCollection = await users;
+    if(userCollection.find({ "watchList": { $all: [parsedMovieId]}}, {"_id": parsedUserId})) return true;
+    return false;
+  },
+
+  // Add a user's watchList movie to the database
+  async addToWatchList(userId, movieId) {
+    const parsedUserId = utils.checkId(userId);
+    const parsedMovieId = utils.checkId(movieId);
+    const userCollection = await users;
+    if(checkIfInWatchList(userId,movieId)) return false;
+    const updateInfo = await userCollection.updateOne(
+      { _id: parsedUserId },
+      { $push: {watchList: parsedMovieId} }
+    );
+    if (!updateInfo.matchedCount && !updateInfo.modifiedCount) throw "Update failed";
+    return true;
+  },
+
+
+  // Remove a user's watchList movie from their database
+  async removeFromWatchList(userId, movieId) {
+    const parsedUserId = utils.checkId(userId);
+    const parsedMovieId = utils.checkId(movieId);
+    const userCollection = await users;
+    if(!checkIfInWatchList(userId,movieId)) return false;
+    const updateInfo = await userCollection.updateOne(
+      { _id: parsedUserId },
+      { $pull: {watchList: parsedMovieId} }
+    );
+    if (!updateInfo.matchedCount && !updateInfo.modifiedCount) throw "Update failed";
+    return true;
+  },
+
+  // Get a user's watchList
+  async getWatchList(userId){
+    const parsedUserId = utils.checkId(userId);
+    const user = this.getUserById(paresdUserId);
+    return user.watchList;
   },
 };
 
