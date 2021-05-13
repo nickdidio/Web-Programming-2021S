@@ -3,7 +3,7 @@
   const searchForm = $("#searchForm");
   const searchInput = $("#search_term");
   const moviesList = $("#movieList");
-  const movieDiv = $("#movie");
+  const movieDiv = $(".movie");
   const errorMsg = $(".error");
   const randButton = $("#randomButton");
   const addButton = $("#addMovieButton");
@@ -12,7 +12,6 @@
   /*
     Usage: Shows the movie details in html for a movie whose id you input
     */
-  //TODO: Add avg review rating and reviews
   // ASk about what the formatting of the html should be
 
   const showMovieDetailsHelper = (movie) => {
@@ -97,6 +96,8 @@
       // Make a list of the movie genres
       showMovieDetailsHelper(movie);
     });
+    // Set the movieDiv Id to the movieId
+    movieDiv.attr('id', movieId);
   };
 
   // Bind the "add this movie" links to the movie
@@ -113,6 +114,7 @@
       addButton.attr("hidden", false);
     });
 
+    // On click, send to route to add a movie to the database
     movieItem.on("click", ".addLink", (event) => {
       event.preventDefault();
       var requestConfig = {
@@ -120,8 +122,7 @@
         url: "/wantToWatchList/add",
         contentType: "application/json",
         data: JSON.stringify({
-          movie: movieItem,
-          allDetails: false,
+          movieId: movieItem.find(".addLink").attr('id').slice(7)
         }),
       };
       $.ajax(requestConfig).then((response) => {
@@ -274,8 +275,7 @@
       url: "/wantToWatchList/add",
       contentType: "application/json",
       data: JSON.stringify({
-        movie: movieDiv,
-        allDetails: true,
+        movieId: movieDiv.attr('id')
       }),
     };
 
