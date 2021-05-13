@@ -13,9 +13,7 @@ const users = data.users;
 
 // Add a movie to the mongoDB movie database and user wantToWatchList database
 router.post("/add", (req, res) => {
-
-  // TODO Get the current user id
-  const userId = utils.checkId(/*Find user*/);
+  const userId = utils.checkId(req.session.user.id);
   if(!req.body.movieId || typeof req.body.movieId !== "string") throw "Error: movieId not found"
   const tmdbId = xss(req.body.movieId);
   let movie = utils.tmdbIdGet(tmdbId);
@@ -41,8 +39,7 @@ router.post("/add", (req, res) => {
 
 // Remove a movie from the user wantToWatchList database
 router.post("/remove", (req, res) => {
-  // TODO FIX WITH USER ID
-  const userId = utils.checkId(/*Find user*/);
+  const userId = utils.checkId(req.session.user.id);
   if(!req.body.movieId || typeof req.body.movieId !== "string") throw "Error: movieId not found"
   const tmdbId = xss(req.body.movieId);
   let movie = utils.tmdbIdGet(tmdbId);
@@ -62,8 +59,7 @@ router.get("/add", (req, res) => {
 
 //How to view and remove items from list
 router.get("/remove", (req, res) => {
-  // TODO FIX WITH USER ID
-  const userId = utils.checkId(/*Find user*/);
+  const userId = utils.checkId(req.session.user.id);
   const watchList = users.getWatchList(userId)
   if(watchList){
     res.status(200);

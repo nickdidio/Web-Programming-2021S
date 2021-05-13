@@ -51,7 +51,7 @@ app.post("home/login", async function (req, res) {
   const { username, password } = req.body;
 });
 
-app.get("home/signup", async function (req, res) {
+app.get("/home/signup", async function (req, res) {
   res.render("home/signup", { title: "Signup for FlikPik" });
 });
 
