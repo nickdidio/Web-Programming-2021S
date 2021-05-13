@@ -1,11 +1,11 @@
 const express = require("express");
-const router = express.Router();
+const app = express();
 const session = require("express-session");
 const data = require("../data");
 const bcrypt = require("bcrypt");
 const userData = data.users;
 
-router.use(
+app.use(
   session({
     name: "AuthCookie",
     secret: "dontbeasnitch",
@@ -33,18 +33,20 @@ const logMiddleware = async function (req, res, next) {
   next();
 };
 
-router.use(logMiddleware);
+app.use(logMiddleware);
 
-router.get("/", async function (req, res) {
+app.get("/", async function (req, res) {
   if (activeSession(req)) {
-    res.redirect("/profile");
+    res.render("home/landing", { title: "FlikPik" });
   } else {
     res.render("landing", { title: "FlikPik" });
   }
 });
 
-router.post("/login", async function (req, res) {
+app.post("/login", async function (req, res) {
   const { username, password } = req.body;
 });
 
-router.post("/signup", async function (req, res) {});
+app.post("/signup", async function (req, res) {});
+
+module.exports = app;
