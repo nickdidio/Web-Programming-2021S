@@ -3,15 +3,21 @@ const { ObjectId } = require("mongodb");
 const groups = mongoCollections.groups;
 
 
-const createGroup = async(groupLeaderId) => {
+const createGroup = async(groupLeaderId, groupName) => {
     let parsedLeaderId;
     try {
         parsedLeaderId = ObjectId(groupLeaderId);
     } catch(e) {
         throw new Error ("Could not create group: Invalid ID")
     }
+    if (typeof(groupName) != 'string') {
+        throw new Error ("Could not create group: Name must be a string")
+    }
+    
+    groupName = groupName.trim();
     const groupCollection = await groups();   
     let newGroup = {
+        groupName,
         groupMembers: [parsedLeaderId], //includes group leader
         currentSession: {
             sessionDate: new Date().getTime(),
