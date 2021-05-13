@@ -52,13 +52,26 @@ const TMDbIdGet = async (TMDbId) => {
           : "../public/images/no_image.jpeg",
         releaseYear: data.release_date,
         runtime: data.runtime ? data.runtime : "N/A",
-        mpaaRating: data.release_dates.results.find(
-          (elem) => elem.iso_3166_1 == "US"
-        ).release_dates[0].certification,
         genre: data.genres ? data.genres.map((g) => g.name) : [],
         TMDbId: data.id,
       };
+      movie.mpaaRating = "NR";
+
+      for (let i = 0; i < data.release_dates.results.length; i++) {
+        if (data.release_dates.results[i].iso_3166_1 == "US") {
+          // if the rating exists and is not NR
+          if (
+            data.release_dates.results[i].release_dates[0].certification &&
+            data.release_dates.results[i].release_dates[0].certification != "NR"
+          ) {
+            movie.mpaaRating =
+              data.release_dates.results[i].release_dates[0].certification;
+          }
+          break;
+        }
+      }
     }
+
     return movie;
   } catch (e) {
     throw new Error(`Movie not found with TMDb id value of ${TMDbId}`);
