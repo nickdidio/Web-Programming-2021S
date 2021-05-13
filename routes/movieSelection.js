@@ -1,8 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const groups = require('./groups');
-const users = require('./users')
-
+const groups = require('../data/groups');
+const users = require('../data/users')
 router.use(express.static('public'));
 
 router.get('/', async (req, res) => {
