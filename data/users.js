@@ -33,23 +33,13 @@ let exportedMethods = {
       email: email,
       username: username,
       password: await bcrypt.hashSync(password, 16),
-      reviews: [],
-      decGroups: [],
+      userGroups: [],
+      watchedMovieList: [],
     };
 
     const newInsertInformation = await userCollection.insertOne(newUser);
     if (newInsertInformation.insertedCount === 0) throw "Insert failed!";
     return await this.getUserById(newInsertInformation.insertedId);
-  },
-
-  // Remove a User
-  async removeUser(id) {
-    const userCollection = await users();
-    const deletionInfo = await userCollection.removeOne({ _id: id });
-    if (deletionInfo.deletedCount === 0) {
-      throw `Could not delete user with id of ${id}`;
-    }
-    return true;
   },
 
   //Update a User
@@ -73,7 +63,7 @@ let exportedMethods = {
     return await this.getUserById(id);
   },
 
-  // Add Review to User
+  /* // Add Review to User
   async addReviewToUser(userId, reviewId, reviewTitle) {
     let currentUser = await this.getUserById(userId);
     console.log(currentUser);
@@ -104,7 +94,7 @@ let exportedMethods = {
       throw "Update failed";
 
     return await this.getUserById(userId);
-  },
+  }, */
 };
 
 module.exports = exportedMethods;
