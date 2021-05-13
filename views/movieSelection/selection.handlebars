@@ -1,0 +1,39 @@
+<div class="container">
+    <section>
+        <!-- 'src' will be replaced by {{img_src}} -->
+        <img class="thumb-med float-left mr-4" src={{movie.img}} class="rounded mx-auto d-block" alt={{movie.title}}>
+        <div class="container">
+            <h3 class="mv_card display-3">{{movie.title}}</h3>
+            <h4>({{movie.releaseYear}})</h4>
+            <h5></h5>
+            <p> <!-- Temporary text -->
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque consequat tristique orci vitae tempus. Mauris pulvinar mauris non gravida interdum. Curabitur eu euismod mauris. Fusce sit amet est diam. Fusce laoreet sodales tellus, mattis tincidunt nibh suscipit ac. Pellentesque ornare neque sit amet tincidunt tincidunt. Quisque semper sed urna eu blandit. Aliquam vitae tortor auctor, rutrum justo non, commodo velit. Donec ac auctor risus. Aenean risus turpis, luctus ut ligula vel, aliquet euismod tortor. Phasellus nec egestas odio. 
+            {{desc}}
+            </p>
+            <div class="row" align="center">
+             <div class="col-6">
+                <form class="btn btn-success half-b" action="/movieSelection/choice/yes/1" method="post">
+                    <input type="submit" name="yes" value="Yay!"/>
+                </form>
+             </div>
+             <div class="col-6">
+                <form class="btn btn-danger half-b" action="/movieSelection/choice/no/1" method="post">
+                    <input type="submit" name="yes" value="Nay."/>
+                </form>
+             </div>
+            </div>
+        </div>
+        <div class="container" id="reviews">
+            {{#each movie.reviews}}  
+            <div>
+                <div class="container">
+                <h2>{{reviews.reviewDate}}</h2>
+                <h4>{{reviews.reviewerId}}</h4>
+                <p>{{reviews.reviewText}}</p>
+            </div>
+            {{/each}}
+        </div>
+    </section>
+    <section>
+    </section>
+</div>
