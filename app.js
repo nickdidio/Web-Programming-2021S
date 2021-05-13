@@ -1,5 +1,6 @@
 const express = require("express");
 const app = express();
+const bcrypt = require("bcrypt");
 const static = express.static(__dirname + "/public");
 const configRoutes = require("./routes");
 const session = require("express-session")
