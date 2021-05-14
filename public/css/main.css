@@ -104,3 +104,15 @@ body {
   font-size: 15px;
 }
 
+.genre-title {
+  font-style: italic
+}
+
+.gone {
+  display: none;
+}
+
+.appear {
+  display: block;
+}
+

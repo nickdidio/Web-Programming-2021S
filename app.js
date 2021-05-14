@@ -10,7 +10,7 @@ app.use(express.json());
 app.use(
   session({
     name: 'FlikPik',
-    secret: "609da9a2d5ca590fa27fd848",
+    secret: "609dbae6e2ff9c73a4f129e8",
     saveUninitialized: true,
     resave: false
   })
