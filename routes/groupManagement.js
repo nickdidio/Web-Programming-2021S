@@ -17,8 +17,10 @@ router.get('/', async (req, res) => {
             let groupList = [];
             for (let groupId of user.userGroups) {
                 let group = await groupDB.getGroupById(groupId);
-                groupList.push({name: group.groupName, id: groupId});
+                let leader = (group.groupLeaderId == userId)
+                groupList.push({name: group.groupName, id: groupId, leader: leader, active: group.currentSession.active});
             }
+            console.log(groupList);
             res.render('groups/groupList', {groupList: groupList}) //renders page under groups/grouplist.handlebars
             return;
         }

@@ -19,7 +19,16 @@
     {{#if groupList}}
         <ul>
             {{#each groupList}}
-            <li>{{this.name}} | Invite others with this link: Group Code: {{this.id}}</li>
+            <li>
+                <p>{{this.name}} | Invite others with this link: Group Code: {{this.id}}</p>
+                {{#if leader}}
+                <button>Make Session</button>
+                {{#if active}}
+                <button>Join Live Session</button>
+                {{/if}}
+                {{/if}}
+            </li>
+
             {{/each}}
         </ul>
     {{/if}}
