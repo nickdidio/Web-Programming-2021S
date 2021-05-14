@@ -9,6 +9,10 @@
 </div>
 <div>
     {{#if groupList}}
-        
+        <ul>
+            {{#each groupList}}
+            <li>{{this.name}} with Id of: {{this.id}}</li>
+            {{/each}}
+        </ul>
     {{/if}}
 </div>

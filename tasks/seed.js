@@ -1,6 +1,7 @@
-const { movies, reviews, groups, pastSessions } = require("../data");
+const { movies, reviews, groups, pastSessions, users } = require("../data");
 
 const connection = require("../config/mongoConnection.js");
+
 
 
 const howlObj = {
@@ -38,9 +39,18 @@ const sorryObj = {
 
 const main = async () => {
   // let howl, inception, sorry;
+  //Reset database 
+  const db = await connection();
+  await db.dropDatabase();
 
   try {
-    let group1 = await groups.createSession("609de873ec55f1352c28ccf2", 3, [])
+    let fawkes = await users.addUser("job@place.com", "john", "johnson", "notanassassin", "remember5november");
+    let generic = await users.addUser("generic@mail.com", "user", "name", "username", "password");
+    let reilly = await users.addUser("rtfitz99@gmail.com", "Reilly", "Fitzgerald", "ReillyFitz", "coffee");
+    let group1 = await groups.createGroup(reilly._id, "The Boyz")
+    await groups.addGroupMember(group1._id.toString(), fawkes._id.toString());
+    await groups.addGroupMember(group1._id.toString(), generic._id.toString());
+    group1 = await groups.getGroupById(group1._id.toString())
     console.log(group1);
   } catch (e) {
     console.log(e);
@@ -125,7 +135,7 @@ const main = async () => {
   //     console.log(e);
   //   }
 
-  const db = await connection();
+
   await db.serverConfig.close();
 
   console.log("Done!");

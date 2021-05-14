@@ -1,8 +1,11 @@
 const mongoCollections = require("../config/mongoCollections.js");
 const { ObjectId } = require("mongodb");
 const groups = mongoCollections.groups;
-const users = mongoCollections.users;
+const usersCollection = mongoCollections.users;
 const pastSessions = mongoCollections.pastSessions;
+const users = require("./users");
+const utils = require("../utils");
+const { updateUser } = require("./users");
 
 const createGroup = async(groupLeaderId, groupName) => {
     let parsedLeaderId;
@@ -19,16 +22,16 @@ const createGroup = async(groupLeaderId, groupName) => {
     const groupCollection = await groups();   
     let newGroup = {
         groupName,
-        groupMembers: [parsedLeaderId], //includes group leader
+        groupMembers: [groupLeaderId], //includes group leader
         currentSession: {
             sessionDate: new Date().getTime(),
-            sessionMembers: [parsedLeaderId],
+            sessionMembers: [groupLeaderId],
             voteCountNeeded: 1,
             movieList: [],
             filters: []
         }, 
         pastSessions: [],
-        groupLeaderId: parsedLeaderId,
+        groupLeaderId: groupLeaderId,
     };
 
     const insertInfo = await groupCollection.insertOne(newGroup);   
@@ -36,6 +39,11 @@ const createGroup = async(groupLeaderId, groupName) => {
     const newId = insertInfo.insertedId;
     let stringId = newId.toString(); 
     const group = await getGroupById(stringId);
+
+    let leader = await users.getUserById(parsedLeaderId);
+    leader.userGroups.push(stringId);
+    console.log(leader)
+    users.updateUser(parsedLeaderId, leader);
     return group;
 };
 
@@ -44,19 +52,28 @@ const addGroupMember = async (groupId, userId) => {
     let parsedGroupId;
     let parsedUserId;
     try {
-        parsedGroupId = ObjectId(groupId);
-        parsedUserId = ObjectId(userId);
+        parsedGroupId = utils.checkId(groupId);
+        parsedUserId = utils.checkId(userId)
     } catch(e) {
-        throw new Error ("Could not create group: Invalid ID for user or group")
+        throw new Error ("Could not add to group: Invalid ID for user or group")
     }
+    let parsed
     const groupCollection = await groups();
     let group = await getGroupById(groupId);
-    //TODO  check if already in group
-    console.log(group.groupMembers)
+    //Check if user already in group
+    for (let member of group.groupMembers) {
+        if (member == userId) {
+            throw new Error ("User already in group");
+        }
+    }
     group.groupMembers.push(userId);
-    console.log(group.groupMembers)
     const updateInfo = await groupCollection.updateOne({_id: parsedGroupId}, {$set: group});
     if (updateInfo.modifiedCount === 0) throw new Error ('Could not add group member');
+    //Update user's groups
+    let user = await users.getUserById(parsedUserId);
+    user.userGroups.push(groupId);
+    users.updateUser(parsedUserId, user);
+
     return getGroupById(groupId);
 };
 

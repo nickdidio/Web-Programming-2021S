@@ -2,21 +2,26 @@ const express = require('express');
 const router = express.Router();
 const userDB = require('../data/users');
 const groupDB = require('../data/groups')
-
-
+const utils = require("../utils")
+const { ObjectId } = require("mongodb");
 
 //gets user's groups 
 router.get('/', async (req, res) => {
     try{
-        let user = await userDB.getUserById(req.session.user._id); //get userid from request
-        let groupList = user.groupList;
-        let groupNames = [];
-        for (groupId of groupList) {
-            let group = await groupDB.getGroupById(groupId);
-            groupNames.push(group.groupName);
+        let userId = utils.checkId(req.session.user._id)
+        console.log(typeof(userId))
+        let user = await userDB.getUserById(userId); //get userid from request
+        console.log(user)
+        if (user.groupList) {
+            let groupList = [];
+            for (groupId of user.groupList) {
+                let group = await groupDB.getGroupById(groupId);
+                groupList.push({name: group.groupName, id: groupId});
+                res.render('/groups/groupList', {groupList: groupList}) //renders page under groups/grouplist.handlebars
+                return;
+            }
         }
-        console.log("HELP")
-        res.render('groups/groupList', {groupList: groupList, groupNames: groupNames}) //renders page under groups/grouplist.handlebars
+        res.render('/groups/groupList') //renders page under groups/grouplist.handlebars
         return;
     } catch (e) {
         throw new Error ("Could not get user groups");
@@ -40,7 +45,10 @@ router.get('/join/:id', async (req, res) => {
 });
 
 router.post('/create', async (req, res) => {
-    //TODO implement group creation
+    let groupName = req.params.groupName;
+    await groupDB.createGroup(req.session.user._id, groupName);
+    res.redirect('/groups');
+    return;
 });
 
 
