@@ -3,10 +3,6 @@ const router = express.Router();
 const utils = require("../utils");
 const { movies } = require("../data");
 const xss = require("xss");
-const dotenv = require("dotenv");
-const axios = require("axios");
-dotenv.config();
-const apiKey = process.env.API_KEY;
 
 // GET /movies/:id
 router.get("/:id", async (req, res) => {
@@ -29,60 +25,11 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-const TMDbIdGet = async (TMDbId) => {
-  if (isNaN(TMDbId) || TMDbId < 1) {
-    res.status(400).json({
-      error: xss(
-        "Must provide a positive, integer value for the TMDbId parameter."
-      ),
-    });
-    return;
-  }
-  try {
-    let movie = await movies.getMovieByTMDbId(parseInt(xss(TMDbId)));
-    if (Object.keys(movie).length === 0) {
-      const { data } = await axios.get(
-        `https://api.themoviedb.org/3/movie/${TMDbId}?api_key=${apiKey}&language=en-US&append_to_response=release_dates`
-      );
-      movie = {
-        title: data.title ? data.title : "N/A",
-        desc: data.overview ? data.overview : "N/A",
-        img: data.poster_path
-          ? `https://image.tmdb.org/t/p/w500${data.poster_path}`
-          : "../public/images/no_image.jpeg",
-        releaseYear: data.release_date,
-        runtime: data.runtime ? data.runtime : "N/A",
-        genre: data.genres ? data.genres.map((g) => g.name) : [],
-        TMDbId: data.id,
-      };
-      movie.mpaaRating = "NR";
-
-      for (let i = 0; i < data.release_dates.results.length; i++) {
-        if (data.release_dates.results[i].iso_3166_1 == "US") {
-          // if the rating exists and is not NR
-          if (
-            data.release_dates.results[i].release_dates[0].certification &&
-            data.release_dates.results[i].release_dates[0].certification != "NR"
-          ) {
-            movie.mpaaRating =
-              data.release_dates.results[i].release_dates[0].certification;
-          }
-          break;
-        }
-      }
-    }
-
-    return movie;
-  } catch (e) {
-    throw new Error(`Movie not found with TMDb id value of ${TMDbId}`);
-  }
-};
-
 // GET /movies/TMDbId/:id
 router.get("/TMDbId/:id", async (req, res) => {
   // try to fetch movie by TMDbId id
   try {
-    const movie = await TMDbIdGet(req.params.id);
+    const movie = await utils.TMDbIdGet(req.params.id);
     res.json(movie);
   } catch (e) {
     res.status(404).json({ error: xss(e.toString()) });
