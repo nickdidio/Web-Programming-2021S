@@ -6,14 +6,47 @@ const reviewRoutes = require("./reviews");
 const movieRoutes = require("./movies.js");
 const userRoutes = require("./users");
 const groupManagement = require("./groupManagement")
+const e = require("express");
+
+// Log user's behavior
+const logMiddleware = async function (req, res, next) {
+  let timestamp = new Date().toUTCString();
+  let userAuthenticated;
+  if (req.session.user) {
+    userAuthenticated = "Authenticated User";
+  } else {
+    userAuthenticated = "Non-Authenticated User";
+  }
+  console.log(
+    `[${timestamp}]: ${req.method} ${req.originalUrl} (${userAuthenticated})`
+  );
+  next();
+};
 
 const constructorMethod = (app) => {
   // routes
+  //log middleware
+  app.use(logMiddleware);
+  app.use("/home/signup", (req, res) => {
+    res.render("home/signup", { title: "Signup for FlikPik" });
+  });
+  app.use("/home/login", (req, res) => {
+    res.render("home/login", { title: "Login to FlikPik" });
+  });
+  app.use("/", userRoutes);
+  app.use("*", (req, res, next) => {
+    // If user is not logged in
+    if(!req.session.user){
+      res.render("home/landing", { title: "FlikPik" });
+    }else{
+      next();
+    }
+  });
+
   app.use("/reviews", reviewRoutes);
   app.use("/movies", movieRoutes);
 
   //route for building the want to watch list
-  app.use("/", userRoutes);
   app.use("/wantToWatchList", wantToWatchListRoutes);
 
   //routes for movie selection process

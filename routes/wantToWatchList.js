@@ -38,7 +38,7 @@ router.get("/", async (req, res) => {
 
 // Add a movie to the mongoDB movie database and user wantToWatchList database
 router.post("/add", async (req, res) => {
-  if (!req.body.movieId || typeof req.body.movieId !== "string") {
+  if (!xss(req.body.movieId) || typeof xss(req.body.movieId) !== "string") {
     res.status(400).json({ error: "Error: movieId not found" });
     return;
   }
@@ -81,7 +81,9 @@ router.post("/add", async (req, res) => {
       res.status(400).json({ error: xss(e.toString()) });
       return;
     }
-
+    for(let i = 0; i < genre.length;i++){
+      genre[i] = xss(genre[i]);
+    }
     try {
       movie = await movies.createMovie(
         xss(title),
@@ -90,7 +92,7 @@ router.post("/add", async (req, res) => {
         xss(releaseYear),
         parseInt(xss(runtime)),
         xss(mpaaRating),
-        genre, // TODO: XSSS THIS THANG
+        genre,
         parseInt(xss(TMDbId))
       );
     } catch (e) {
@@ -111,7 +113,7 @@ router.post("/add", async (req, res) => {
 
 // Remove a movie from the user wantToWatchList database
 router.post("/remove", async (req, res) => {
-  if (!req.body.movieId || typeof req.body.movieId !== "string") {
+  if (!xss(req.body.movieId) || typeof xss(req.body.movieId) !== "string") {
     res.status(400).json({ error: "Error: movieId not found" });
     return;
   }
