@@ -18,7 +18,7 @@ router.get('/', async (req, res) => {
     }
     sesh = req.session
     sesh.groupID = req.query[id]
-    group = await groups.getGroup(req.query[id])
+    group = await groups.getGroupById(req.query[id])
     if(!group) {
         res.status(400).send("That group doesn't exist!")
         return
@@ -60,7 +60,7 @@ router.get('/', async (req, res) => {
     } else {
         // return (movie chosen)
         movie_info = await movie.getMovieById(group.currentSession.chosen)
-        res.render('movieSelection/home', 
+        /*res.render('movieSelection/home', 
         { 
             title: `Chosen movie: ${movie_info.title}`,
             exit: "appear",
@@ -68,6 +68,12 @@ router.get('/', async (req, res) => {
             enter_button: "gone",
             img: movie_info.img,
             error: ""
+        })*/
+        movie_info.title = `Chosen movie:
+                            ${movie_info.title}`
+        res.render('movies/movieDetails',
+        {
+            movie: movie_info
         })
     }
 });
@@ -81,6 +87,7 @@ router.get('/done', async(req, res) => {
         sesh.chosen = true
         sesh.active = false
         res.redirect("/pick")
+        return
     } else {
         res.render('movieSelection/home', 
         { 
