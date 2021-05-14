@@ -1,10 +1,8 @@
 /*
  * The functions below are used across at least two different files in the data directory
  */
-
 const { ObjectId } = require("mongodb");
 const xss = require("xss");
-const { movies } = require("../data");
 const dotenv = require("dotenv");
 const axios = require("axios");
 dotenv.config();
@@ -13,7 +11,6 @@ const apiKey = process.env.API_KEY;
 // Checks if a given string is a valid MongoDB object id
 // returns the strings as a MongoDB object id
 const checkId = (id) => {
-  console.log("HEY I GOT HERE IT SHOULDNT HAVE BUT IT IDD")
   if (id === null || typeof id !== "string" || id.trim() === "") {
     throw new Error(
       "'id' parameter must contain a non-empty value of type 'string'."
@@ -97,7 +94,15 @@ const checkMovieParameters = (
   });
 
   // Check that MPAA is a valid rating within the set below
-  const validMPAAs = new Set(["G", "PG", "PG-13", "R", "NC-17", "Not Rated"]);
+  const validMPAAs = new Set([
+    "G",
+    "PG",
+    "PG-13",
+    "R",
+    "NC-17",
+    "Not Rated",
+    "NR",
+  ]);
 
   if (!validMPAAs.has(mpaaRating)) {
     throw new Error(
@@ -169,81 +174,11 @@ const checkReviewParameters = (reviewDate, reviewText, rating, username) => {
     );
   }
 };
+
 const emailValidator = (email) => {
   let emailFormat =
     /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
   return emailFormat.test(email);
-};
-
-// Get a movie based on its TMDb Id
-const TMDbIdGet = async (TMDbId) => {
-  if (isNaN(TMDbId) || TMDbId < 1) {
-    res.status(400).json({
-      error: xss(
-        "Must provide a positive, integer value for the TMDbId parameter."
-      ),
-    });
-    return;
-  }
-  try {
-    let movie = await movies.getMovieByTMDbId(parseInt(xss(TMDbId)));
-    if (Object.keys(movie).length === 0) {
-      const { data } = await axios.get(
-        `https://api.themoviedb.org/3/movie/${TMDbId}?api_key=${apiKey}&language=en-US&append_to_response=release_dates`
-      );
-      movie = {
-        title: data.title ? data.title : "N/A",
-        desc: data.overview ? data.overview : "N/A",
-        img: data.poster_path
-          ? `https://image.tmdb.org/t/p/w500${data.poster_path}`
-          : "../public/images/no_image.jpeg",
-        releaseYear: data.release_date,
-        runtime: data.runtime ? data.runtime : "N/A",
-        genre: data.genres ? data.genres.map((g) => g.name) : [],
-        TMDbId: data.id,
-      };
-      movie.mpaaRating = "NR";
-
-      for (let i = 0; i < data.release_dates.results.length; i++) {
-        if (data.release_dates.results[i].iso_3166_1 == "US") {
-          // if the rating exists and is not NR
-          if (
-            data.release_dates.results[i].release_dates[0].certification &&
-            data.release_dates.results[i].release_dates[0].certification != "NR"
-          ) {
-            movie.mpaaRating =
-              data.release_dates.results[i].release_dates[0].certification;
-          }
-          break;
-        }
-      }
-    }
-
-    return movie;
-  } catch (e) {
-    throw new Error(`Movie not found with TMDb id value of ${TMDbId}`);
-  }
-};
-
-// Check the movie parameters and take in a movie
-const checkMovie = (movie) => {
-  if(!movie.title) throw new Error("Movie must have a title.");
-  if(!movie.desc) throw new Error("Movie must have a description.");
-  if(!movie.img) throw new Error("Movie must have a image.");
-  if(!movie.releaseYear) throw new Error("Movie must have a release year.");
-  if(!movie.runtime) throw new Error("Movie must have a runtime.");
-  if(!movie.mpaaRating) throw new Error("Movie must have a MPAA Rating.");
-  if(!movie.genre) throw new Error("Movie must have a genre.");
-  if(!movie.TMDbId) throw new Error("Movie must have a TMDbId.");
-  checkMovieParameters(
-    movie.title,
-    movie.desc,
-    movie.img,
-    movie.releaseYear,
-    movie.runtime,
-    movie.mpaaRating,
-    movie.genre,
-    movie.TMDbId);
 };
 
 module.exports = {
@@ -252,6 +187,4 @@ module.exports = {
   checkMovieParameters,
   checkReviewParameters,
   emailValidator,
-  TMDbIdGet,
-  checkMovie
 };

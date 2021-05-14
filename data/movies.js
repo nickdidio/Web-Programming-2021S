@@ -17,14 +17,6 @@ const createMovie = async (
   genre,
   TMDbId
 ) => {
-  console.log("Title: "+title);
-  console.log("desc: "+desc);
-  console.log("img: "+img);
-  console.log("releaseyar: "+releaseYear);
-  console.log("runtime: "+runtime);
-  console.log("mpaa: "+mpaaRating);
-  console.log(genre);
-  console.log("Tmdbid: "+TMDbId);
   // error check parameters
   utils.checkMovieParameters(
     title,
