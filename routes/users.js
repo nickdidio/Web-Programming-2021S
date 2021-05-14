@@ -18,35 +18,15 @@ app.use(
 );
 
 // Check if a cookie is active
-const activeSession = async function (req) {
-  const activeBool = !!req.session.user;
-  return activeBool;
+const activeSession = function (req) {
+  if(typeof req.session.user !== "undefined")
+    return true;
+  return false;
 };
-
-// Log user's behavior
-const logMiddleware = async function (req, res, next) {
-  let timestamp = new Date().toUTCString();
-  let userAuthenticated;
-  if (activeSession(req)) {
-    userAuthenticated = "Authenticated User";
-  } else {
-    userAuthenticated = "Non-Authenticated User";
-  }
-  console.log(
-    `[${timestamp}]: ${req.method} ${req.originalUrl} (${userAuthenticated})`
-  );
-  next();
-};
-
-app.use(logMiddleware);
 
 // Get landing page
 app.get("/", async function (req, res) {
-  if (activeSession(req)) {
-    res.render("home/landing", { title: "FlikPik" });
-  } else {
-    res.render("landing", { title: "FlikPik" });
-  }
+  res.render("home/landing", { title: "FlikPik" });
 });
 
 // Get login page
@@ -57,9 +37,9 @@ app.get("/home/login", async function (req, res) {
 // Post login form info
 // Redirect to profile page if authorized
 app.post("/login", async function (req, res) {
-  const password = xss(req.body.password);
-  const username = xss(req.body.username);
-
+  const password = req.body.password;
+  const username = req.body.username;
+  console.log("CONTROLAASDFG")
   // Check if username or password is provided
   if (!username || !password) {
     res.status(401);
@@ -111,7 +91,7 @@ app.get("/home/signup", async function (req, res) {
 // Post form from signup info
 // Redirect to profile page if authorized
 app.post("/signup", async function (req, res) {
-  const userInfo = xss(req.body);
+  const userInfo = req.body;
   // Check for info submitted
   if (!userInfo) {
     res
@@ -168,11 +148,11 @@ app.post("/signup", async function (req, res) {
     }
     // Add user to DB
     const newUser = await userData.addUser(
-      userInfo.email,
-      userInfo.firstName,
-      userInfo.lastName,
-      userInfo.username,
-      userInfo.password
+      xss(userInfo.email),
+      xss(userInfo.firstName),
+      xss(userInfo.lastName),
+      xss(userInfo.username),
+      xss(userInfo.password)
     );
 
     req.session.user = newUser;
