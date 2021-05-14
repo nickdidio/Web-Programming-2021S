@@ -6,6 +6,15 @@ const configRoutes = require("./routes");
 
 app.use(express.json());
 
+app.use(
+  session({
+    name: 'FlikPik',
+    secret: "609dbae6e2ff9c73a4f129e8",
+    saveUninitialized: true,
+    resave: false
+  })
+);
+
 const exphbs = require("express-handlebars");
 
 app.use("/public", static);
