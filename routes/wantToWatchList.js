@@ -10,8 +10,6 @@ const apiKey = process.env.API_KEY;
 
 // Add a movie to the mongoDB movie database and user wantToWatchList database
 router.post("/add", async (req, res) => {
-  // TODO: MAKE SURE MOVIE IS POSTED TO USER WATCH LIST
-  // const userId = utils.checkId(req.session.user._id.toString());
   if (!req.body.movieId || typeof req.body.movieId !== "string")
     throw "Error: movieId not found";
   const tmdbId = xss(req.body.movieId);
@@ -67,25 +65,25 @@ router.post("/add", async (req, res) => {
       res.status(500).json({ error: xss(e.toString()) });
     }
   }
-
-  // if (users.addToWatchList(userId, movie._id)) {
-  //   res.json(true);
-  //   return;
-  // }
-  // res.json(false);
-  res.json(true);
+  const found = await users.addToWatchList(req.session.user._id, movie._id)
+  if (found) {
+     res.json(true);
+     return;
+  }
+  res.json(false);
 });
 
 // Remove a movie from the user wantToWatchList database
-router.post("/remove", (req, res) => {
-  const userId = utils.checkId(req.session.user._id);
+router.post("/remove", async (req, res) => {
   if (!req.body.movieId || typeof req.body.movieId !== "string")
     throw "Error: movieId not found";
-  const tmdbId = xss(req.body.movieId);
-  let movie = tmdbIdGet(tmdbId);
+  let movie = await movies.getMovieById(xss(req.body.movieId));
   if (!movie || !movie._id) throw "Error: Movie not found in movie database";
 
-  if (users.removeFromWatchList(userId, movie._id)) res.json(true);
+  if (users.removeFromWatchList(req.session.user._id, movie._id)){
+    res.json(true);
+    return;
+  }
   res.json(false);
 });
 
@@ -98,9 +96,12 @@ router.get("/add", (req, res) => {
 });
 
 //How to view and remove items from list
-router.get("/", (req, res) => {
-  const userId = utils.checkId(req.session.user._id);
-  const watchList = users.getWatchList(userId);
+router.get("/", async (req, res) => {
+  const watchListIds = await users.getWatchList(req.session.user._id);
+  let watchList = [];
+  for(let i = 0; i < watchListIds.length; i++){
+    watchList.push(await movies.getMovieById(watchListIds[i]));
+  }
   if (watchList) {
     res.status(200);
     res.render("wantToWatchList/removeFromWatchList", {
@@ -156,12 +157,7 @@ router.get("/random/:randPage", async (req, res) => {
 // Get a movie based on its TMDb Id
 const TMDbIdGet = async (TMDbId) => {
   if (isNaN(TMDbId) || TMDbId < 1) {
-    res.status(400).json({
-      error: xss(
-        "Must provide a positive, integer value for the TMDbId parameter."
-      ),
-    });
-    return;
+    throw "Must provide a positive, integer value for the TMDbId parameter.";
   }
   try {
     let movie = await movies.getMovieByTMDbId(parseInt(xss(TMDbId)));
