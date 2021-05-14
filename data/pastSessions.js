@@ -6,7 +6,7 @@ const groups = mongoCollections.groups;
 //Past Session will contain only important information about previous sessions, making it smaller than currentSession
 //Separating Current Session from Past Session allows us to cut down on unnesecary data which can be discarded after the session is finished.
 //Takes in groupId, {currentSession}, moviePicked 
-const createPastSession = async(groupId, {sessionDate, sessionMembers, voteCountNeeded, movieList, filters, votes}, moviePicked) => {
+const createPastSession = async(groupId, {sessionDate, sessionMembers, voteCountNeeded, movieList, filters}, moviePicked) => {
     let parsedMovieId;
     let parsedGroupId
     try {
@@ -31,7 +31,7 @@ const createPastSession = async(groupId, {sessionDate, sessionMembers, voteCount
     const group = await groupCollection.findOne({ _id: parsedGroupId});
     group.pastSessions.push(newSession);
     const updateInfo = await groupCollection.updateOne({_id: parsedId}, {$set: group});
-    if (updateInfo.modifiedCount === 0) throw new Error ('Could not add past session');
+    if (updateInfo.modifiedCount === 0) throw new Error ('Could not add past session to group history');
 };
 
 const getPastSessionById = async(sessionId) => {
