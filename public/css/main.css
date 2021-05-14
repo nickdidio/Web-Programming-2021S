@@ -104,3 +104,40 @@ body {
   font-size: 15px;
 }
 
+.genre-title {
+  font-style: italic
+}
+
+.gone {
+  display: none;
+}
+
+.appear {
+  display: block;
+}
+
+img {
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.thumb-med {
+  height: 350px;
+}
+
+.half-b {
+  width: 100%;
+}
+
+#reviews {
+  padding-top: 50px;
+}
+
+.spec {
+  border:none;
+  background-color:transparent;
+  outline:none;
+  color: white;
+  width: 100%;
+}
+

@@ -1,4 +1,10 @@
-<h1>Chosen Movie: {{title.title}}</h1>
-<form class="{{state}}" action="/movieSelection/list" method="GET">
+<h1>{{title}}</h1>
+<img src="{{img}}" alt="{{img}}">
+<h3>{{message}}</h3>
+<form class="{{enter_button}}" action="/pick/list" method="GET">
    <input type="submit" value="Pick Flicks">
+</form>
+<!-- Where should this lead? -->
+<form class="{{exit}}" action="/pick/leave" method="GET">
+   <input type="submit" value="Exit Lobby">
 </form>
