@@ -23,13 +23,19 @@ router.get('/', async (req, res) => {
         res.status(400).send("That group doesn't exist!")
         return
     }
+    // fresh join (after leaving, or new session member)
     if(!sesh.chosen && !sesh.active) {
+        if(group.currentSession.sessionMembers.includes(sesh.user._id)) {
+            sesh.active = true
+            res.redirect("/pick")
+            return
+        }
         // Load user's personal WtW list into group list
         sesh = req.session
         // User ID stored in session
-        watchList = await users.getWatchList(sesh.user_id)
-        // 'updateWatchList' should also update the user roster in 'currentSession'
-        groups.updateWatchList(sesh.groupID, watchList, sesh.user_id)
+        watchList = await users.getWatchList(sesh.user._id)
+        // 'updateWatchList' should also update sessionMembers in 'currentSession'
+        groups.updateWatchList(sesh.groupID, watchList, sesh.user._id)
         // This is the landing page for decision rooms
         // Decision rooms != watch groups, so anyone(?) can join a decision room
         res.render('movieSelection/home', 
@@ -95,6 +101,7 @@ router.get('/leave', async (req, res) => {
     sesh.active = undefined
     sesh.movie_count = undefined
     sesh.chosen = undefined
+    sesh.leader = undefined
     res.redirect("/")
 })
 
@@ -115,9 +122,12 @@ router.get('/list', async (req, res) => {
     sesh.judged = 0
     // these ids would be converted into movie objects
     sesh.movie_list = []
-    for (const [key, value] of Object.entries(group.currentSession.roster)) {
-        sesh.movie_list.push(value)
+    for(item of group.currentSession.movieList) {
+        sesh.movie_list.push(item.movie)
     }
+    /*for (const [key, value] of Object.entries(group.currentSession.roster)) {
+        sesh.movie_list.push(value)
+    }*/
     sesh.movie_count = sesh.movie_list.length
     
     movie = await movies.getMovieById(sesh.movie_list[0])
@@ -154,7 +164,7 @@ router.post('/choice/:dec', async (req, res) => {
     sesh.judged++;
     if(decision == "yes") {
         result = await groups.addVote(sesh.groupID, movie)
-        if(result.movie) {
+        if(result.winner) {
             //  groups.declareMovie(sesh.groupID, movie) ^^ Could be done by "addVote" function\
             sesh.chosen = true
             sesh.active = false
