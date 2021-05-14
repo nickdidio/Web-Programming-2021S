@@ -5,6 +5,7 @@ const data = require("../data");
 const bcrypt = require("bcrypt");
 const utils = require("../utils");
 const userData = data.users;
+const xss = require('xss');
 
 // Cookie
 app.use(
@@ -56,7 +57,9 @@ app.get("/home/login", async function (req, res) {
 // Post login form info
 // Redirect to profile page if authorized
 app.post("/login", async function (req, res) {
-  const { username, password } = req.body;
+  const password = xss(req.body.password);
+  const username = xss(req.body.username);
+
   // Check if username or password is provided
   if (!username || !password) {
     res.status(401);
@@ -108,7 +111,7 @@ app.get("/home/signup", async function (req, res) {
 // Post form from signup info
 // Redirect to profile page if authorized
 app.post("/signup", async function (req, res) {
-  const userInfo = req.body;
+  const userInfo = xss(req.body);
   // Check for info submitted
   if (!userInfo) {
     res
