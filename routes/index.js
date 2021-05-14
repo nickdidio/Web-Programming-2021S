@@ -19,11 +19,10 @@ const constructorMethod = (app) => {
   //routes for movie selection process
   app.use("/pick", movieSelectRoutes);
 
+  //route for group list and creation
   app.use("/groups", groupManagement);
 
-  app.use("/", (req, res) => {
-    res.render("temporary/fakeLanding", { title: "Temporary Landing Page" });
-  });
+
   app.use("/users", userRoutes);
 
   // show view for 404 errors for undefined routes
