@@ -4,6 +4,8 @@ const userDB = require('../data/users');
 const groupDB = require('../data/groups')
 const utils = require("../utils")
 const { ObjectId } = require("mongodb");
+const xss = require("xss");
+
 
 //gets user's groups 
 router.get('/', async (req, res) => {
