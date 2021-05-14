@@ -1,6 +1,7 @@
-const { movies, reviews } = require("../data");
+const { movies, reviews, groups, pastSessions } = require("../data");
 
 const connection = require("../config/mongoConnection.js");
+
 
 const howlObj = {
   title: "Howl's Moving Castle",
@@ -36,74 +37,81 @@ const sorryObj = {
 };
 
 const main = async () => {
-  let howl, inception, sorry;
+  // let howl, inception, sorry;
 
   try {
-    howl = await movies.createMovie(...Object.values(howlObj));
-    console.log(howl);
+    let group1 = await groups.createSession("609de873ec55f1352c28ccf2", 3, [])
+    console.log(group1);
   } catch (e) {
     console.log(e);
   }
 
-  try {
-    inception = await movies.createMovie(...Object.values(inceptionObj));
-    console.log(inception);
-  } catch (e) {
-    console.log(e);
-  }
+  // try {
+  //   howl = await movies.createMovie(...Object.values(howlObj));
+  //   console.log(howl);
+  // } catch (e) {
+  //   console.log(e);
+  // }
 
-  try {
-    sorry = await movies.createMovie(...Object.values(sorryObj));
-    console.log(sorry);
-  } catch (e) {
-    console.log(e);
-  }
+  // try {
+  //   inception = await movies.createMovie(...Object.values(inceptionObj));
+  //   console.log(inception);
+  // } catch (e) {
+  //   console.log(e);
+  // }
 
-  try {
-    console.log(await movies.getMovieById(howl._id));
-  } catch (e) {
-    console.log(e);
-  }
+  // try {
+  //   sorry = await movies.createMovie(...Object.values(sorryObj));
+  //   console.log(sorry);
+  // } catch (e) {
+  //   console.log(e);
+  // }
 
-  try {
-    console.log(await movies.getAllMovies());
-  } catch (e) {
-    console.log(e);
-  }
+  // try {
+  //   console.log(await movies.getMovieById(howl._id));
+  // } catch (e) {
+  //   console.log(e);
+  // }
 
-  try {
-    review1 = await reviews.createReview(
-      "2021-05-03",
-      "Amazingful",
-      5,
-      "username1",
-      howl._id.toString()
-    );
+  // try {
+  //   console.log(await movies.getAllMovies());
+  // } catch (e) {
+  //   console.log(e);
+  // }
 
-    review2 = await reviews.createReview(
-      "2021-05-02",
-      "Okayful",
-      3,
-      "username2",
-      howl._id.toString()
-    );
+  // try {
+  //   review1 = await reviews.createReview(
+  //     "2021-05-03",
+  //     "Amazingful",
+  //     5,
+  //     "username1",
+  //     howl._id.toString()
+  //   );
 
-    review3 = await reviews.createReview(
-      "2021-05-01",
-      "Awful",
-      1,
-      "username3",
-      howl._id.toString()
-    );
-  } catch (e) {
-    console.log(e);
-  }
+  //   review2 = await reviews.createReview(
+  //     "2021-05-02",
+  //     "Okayful",
+  //     3,
+  //     "username2",
+  //     howl._id.toString()
+  //   );
 
-  try {
-    console.log(await reviews.getMovieReviews(howl._id));
-  } catch (e) {
-    console.log(e);
-  }
+  //   review3 = await reviews.createReview(
+  //     "2021-05-01",
+  //     "Awful",
+  //     1,
+  //     "username3",
+  //     howl._id.toString()
+  //   );
+  // } catch (e) {
+  //   console.log(e);
+  // }
+
+  // try {
+  //   console.log(await reviews.getMovieReviews(howl._id));
+  // } catch (e) {
+  //   console.log(e);
+  // }
 
   //   try {
   //     console.log(await movies.deleteMovie(howl._id));

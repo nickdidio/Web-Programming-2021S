@@ -1,6 +1,7 @@
 const mongoCollections = require("../config/mongoCollections.js");
 const { ObjectId } = require("mongodb");
 const groups = mongoCollections.groups;
+const users = mongoCollections.users;
 const pastSessions = mongoCollections.pastSessions;
 
 const createGroup = async(groupLeaderId, groupName) => {
@@ -21,7 +22,7 @@ const createGroup = async(groupLeaderId, groupName) => {
         groupMembers: [parsedLeaderId], //includes group leader
         currentSession: {
             sessionDate: new Date().getTime(),
-            sessionMembers: groupMembers,
+            sessionMembers: [parsedLeaderId],
             voteCountNeeded: 1,
             movieList: [],
             filters: []
@@ -49,11 +50,14 @@ const addGroupMember = async (groupId, userId) => {
         throw new Error ("Could not create group: Invalid ID for user or group")
     }
     const groupCollection = await groups();
-    const group = await getGroupById(parsedGroupId);
-    group = group.groupMembers.push(parsedUserId);
-    const updateInfo = await groupCollection.updateOne({_id: parsedGroupId}, {$set: updatedGroup});
+    let group = await getGroupById(groupId);
+    //TODO  check if already in group
+    console.log(group.groupMembers)
+    group.groupMembers.push(userId);
+    console.log(group.groupMembers)
+    const updateInfo = await groupCollection.updateOne({_id: parsedGroupId}, {$set: group});
     if (updateInfo.modifiedCount === 0) throw new Error ('Could not add group member');
-    return getGroupById(parsedGroupId);
+    return getGroupById(groupId);
 };
 
 
@@ -65,7 +69,7 @@ const getGroupById = async (groupId) => {
         throw new Error ("Could not get group: Invalid ID for group")
     }
     const groupCollection = await groups();
-    return await groupCollection.findOne({ _id: parsedGroupId});;
+    return groupCollection.findOne({ _id: parsedGroupId});
 };
 
 const deleteGroup = async (groupId) => {
@@ -139,10 +143,11 @@ const addVote = async(groupId, movieId) => {
     for (let item of group.currentSession.movieList) {
         if (item.movie == movieId) {
             item.votes++;
-            
+
             //If vote count reached
             if (item.votes == group.currentSession.voteCountNeeded) {
                 pastSessions.createPastSession(groupId, group.currentSession, item.movie);
+                //TODO: possibly empty the currentSession value
                 return {movieId, winner: true}
             }
         }
