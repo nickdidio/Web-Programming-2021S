@@ -11,7 +11,7 @@
             url: '/wantToWatchList/remove',
             contentType: 'application/json',
             data: JSON.stringify({
-                movie: movieItem
+                movieId: movieItem.find(".removeLink").attr("id")
             })
             };
             $.ajax(requestConfig).then((response) => {
