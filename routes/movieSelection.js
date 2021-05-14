@@ -11,7 +11,7 @@ router.use(express.static('public'));
 
 router.get('/', async (req, res) => {
     if(!req.session.user) {
-        res.status(403).send("You must be logged in to access this page!")
+        res.status(400).send("You must be logged in to access this page!")
     }
     sesh = req.session
     sesh.groupID = req.query[id]
