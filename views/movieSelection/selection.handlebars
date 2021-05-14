@@ -15,16 +15,16 @@
                 {{/each}}
             </ul>
             <p>
-            {{desc}}
+            {{movie.desc}}
             </p>
             <div class="row" align="center">
              <div class="col-6">
-                <form class="btn btn-success half-b" action="/movieSelection/choice/yes/{{movie.movieId}}" method="post">
+                <form class="btn btn-success half-b" action="/pick/choice/yes" method="post">
                     <input class="spec" type="submit" name="yes" value="Yay!"/>
                 </form>
              </div>
              <div class="col-6">
-                <form class="btn btn-danger half-b" action="/movieSelection/choice/no/{{movie.movieId}}" method="post">
+                <form class="btn btn-danger half-b" action="/pick/choice/no" method="post">
                     <input class="spec" type="submit" name="yes" value="Nay."/>
                 </form>
              </div>
