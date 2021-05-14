@@ -33,9 +33,9 @@ router.get('/', async (req, res) => {
         // Load user's personal WtW list into group list
         sesh = req.session
         // User ID stored in session
-        watchList = await users.getWatchList(sesh.user._id)
+    //watchList = await users.getWatchList(sesh.user._id)
         // 'updateWatchList' should also update sessionMembers in 'currentSession'
-        groups.updateWatchList(sesh.groupID, watchList, sesh.user._id)
+    //groups.updateWatchList(sesh.groupID, watchList, sesh.user._id)
         // This is the landing page for decision rooms
         // Decision rooms != watch groups, so anyone(?) can join a decision room
         res.render('movieSelection/home', 
