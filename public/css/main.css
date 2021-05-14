@@ -1,4 +1,3 @@
-
 * {
   box-sizing: border-box;
 }
@@ -7,7 +6,6 @@ body {
   margin: 0;
   height: 100vh;
   width: 100vw;
-  overflow: hidden;
   font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande",
     "Lucida Sans", Arial, sans-serif;
   font-weight: 700;
@@ -85,6 +83,7 @@ body {
   background-color: aqua;
   transition: all 0.5s;
 }
+
 .signon-button:hover {
   background-color: chartreuse;
 }
@@ -134,10 +133,14 @@ img {
 }
 
 .spec {
-  border:none;
-  background-color:transparent;
-  outline:none;
+  border: none;
+  background-color: transparent;
+  outline: none;
   color: white;
   width: 100%;
 }
 
+.error {
+  color: red;
+  font-weight: bold;
+}
