@@ -29,16 +29,12 @@ router.get('/', async (req, res) => {
 });
 
 //Adds user to new group with id of id
-router.get('/join/:id', async (req, res) => {
-    if (!req.session.user._id) {
-        res.redirect('/'); //redirect to login screen
-        return;
-    }
-    let user = await userDB.getUserById(req.session.user._id); 
-    let group = await groupDB.getGroupById(id);
-    group = groupDB.addGroupMember(group._id, user._id);
-    user = userDB.addGroupMember(user._id, group._id);
-    res.render('groups/groupList', {groupList: user.groupList}) //renders page under groups/grouplist.handlebars
+router.post('/join', async (req, res) => {
+    //todo: check user input
+    let userId = (req.session.user._id)
+    let groupId = req.body.groupId.toString()
+    group = groupDB.addGroupMember(groupId, userId);
+    res.redirect('.') 
 
 });
 
@@ -47,7 +43,6 @@ router.post('/create', async (req, res) => {
     let groupName = req.body.groupName;
     await groupDB.createGroup(req.session.user._id, groupName);
     res.redirect('.');
-    return;
 });
 
 

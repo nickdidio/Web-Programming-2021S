@@ -5,13 +5,19 @@
                 <label for="groupname">Create New Group!: </label>
                 <input id="groupName" type="text" name="groupName" placeholder="Group Name" />
             </div>
-        </form>
+    </form>
+    <form id="join-form" method="POST" action="/groups/join">
+            <div class="groupId">
+                <label for="groupid">Join New Group!: </label>
+                <input id="groupId" type="text" name="groupId" placeholder="Friend's Group ID" />
+            </div>
+    </form>
 </div>
 <div>
     {{#if groupList}}
         <ul>
             {{#each groupList}}
-            <li>{{this.name}} Invite others wit this link: localhost:3000/join/{{this.id}}</li>
+            <li>{{this.name}} | Invite others with this link: localhost:3000/groups/join/{{this.id}}</li>
             {{/each}}
         </ul>
     {{/if}}
