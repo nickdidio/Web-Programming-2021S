@@ -1,4 +1,4 @@
-<h1>Your Groups</h1>
+<h1>{{user}}'s Groups</h1>
 <div>
     <form id="group-form" method="POST" action="/groups/create">
             <div class="groupName">
@@ -23,10 +23,11 @@
                 <p>{{this.name}} | Invite others with this link: Group Code: {{this.id}}</p>
                 {{#if leader}}
                 <button>Make Session</button>
+                {{/if}}
                 {{#if active}}
                 <button>Join Live Session</button>
                 {{/if}}
-                {{/if}}
+                
             </li>
 
             {{/each}}

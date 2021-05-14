@@ -105,27 +105,42 @@ const deleteGroup = async (groupId) => {
       return { groupId: parsedGroupId, deleted: true };
 };
 
-//Past Session will contain only important information about previous sessions, making it smaller than currentSession
-//Separating Current Session from Past Session allows us to cut down on unnesecary data which can be discarded after the session is finished.
+//Takes in a groupid, and the leader's votecount and filters
+//sets appropriate variables in group.currentsession
 const createSession = async(groupId, voteCountNeeded, filters) => {
     let parsedGroupId;
     try {
-        parsedGroupId = ObjectId(groupId);
+        parsedGroupId = utils.checkId(groupId);
     } catch(e) {
         throw new Error ("Could not create session: Invalid group ID")
     }
+    if (typeof(voteCountNeeded) != 'number' || voteCountNeeded < 1) {
+        throw new Error(`voteCount must be positive integer greater than 0`);
+    }
+
+    // TODO: test filter
+    // else if (typeof(filter) != typeof([])) {
+    //     throw new Error(`Filter must be of type list`);
+    // }
+
     const groupCollection = await groups();   
-    const userCollection = await users();
-    let decisionGroup = getGroupById(parsedGroupId);
+    const userCollection = await usersCollection();
+
+    let decisionGroup = await getGroupById(parsedGroupId);
+    if (!decisionGroup) {
+        throw new Error(`No group had id of ${id}`);
+    }
+
     let sessionMembers = decisionGroup.groupMembers;
     let movieList = [];
 
     //Get combination of all users lists
+    console.log(decisionGroup)
     for (let userId of sessionMembers) {
         let parsedId = ObjectId(userId);
-        let user =  await userCollection.findOne({ _id: parsedId}); //replace with getUserById probbly for easier error handling
+        let user =  users.getUserById(parsedId); 
         let userMovies = user.userMovieList; 
-        for (movie of userMovies) {
+        for (let movie of userMovies) {
             movieList += {movie, votes: 0};
         }
         
@@ -171,6 +186,7 @@ const addVote = async(groupId, movieId) => {
             }
         }
     }
+    const groupCollection = await groups();   
     const updateInfo = await groupCollection.updateOne({_id: parsedGroupId}, {$set: group});
     if (updateInfo.modifiedCount === 0) throw new Error ('Could not add vote');
     return {movieId, winner: false}
@@ -184,6 +200,8 @@ const updateSession = async(groupId, {sessionDate, sessionMembers, voteCountNeed
         return false;
         //throw new Error ("Could not update session: Invalid ID");
     }
+    console.log("About to updat the session")
+    const groupCollection = await groups();   
     let updatedSession = {
         sessionDate,
         sessionMembers,
@@ -193,6 +211,7 @@ const updateSession = async(groupId, {sessionDate, sessionMembers, voteCountNeed
         chosen,
         active
     }
+    console.log(updatedSession);
     const updateInfo = await groupCollection.updateOne({_id: parsedGroupId}, {$set: {currentSession: updatedSession}});
     if (updateInfo.modifiedCount === 0) throw new Error ('Could not update session');
     return true;

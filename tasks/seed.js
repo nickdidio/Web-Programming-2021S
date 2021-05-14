@@ -125,23 +125,27 @@ const main = async () => {
   }
 
     try {
-      console.log(await movies.deleteMovie(howl._id));
-    } catch (e) {
-      console.log(e);
-    }
-
-    try {
       console.log(await movies.getAllMovies());
     } catch (e) {
       console.log(e);
     }
 
     //Test adding movies to users then creating a session
+    let sessionDate = group1.sessionDate;
+    let sessionMembers = group1.sessionMembers;
+    let voteCountNeeded = group1.voteCountNeeded
+    let movieList = group1.movieList
+    let filter = group1.filters
+    let chosen = group1.chosen
+    let active = true
+    let updatedSession = {sessionDate, sessionMembers, voteCountNeeded, movieList, filter, chosen, active}
     try {
-      await users.addToWatchList(fawkes._id.toString(), howl._id.toString());
-      await users.addToWatchList(fawkes._id.toString(), inception._id.toString());
-      await users.addToWatchList(reilly._id.toString(), sorry._id.toString());
-      await groups.createSession(group1_id.toString(), 3, []);
+      // await users.addToWatchList(fawkes._id.toString(), howl._id.toString());
+      // await users.addToWatchList(fawkes._id.toString(), inception._id.toString());
+      // await users.addToWatchList(reilly._id.toString(), sorry._id.toString());
+      // await groups.createSession(group1._id.toString(), 3, []);
+      let group1new = await groups.updateSession(group1._id.toString(), updatedSession)
+      console.log(group1new)
     }catch (e) {
       console.log(e)
     }
