@@ -5,6 +5,7 @@ const movieSelectRoutes = require("./movieSelection");
 const reviewRoutes = require("./reviews");
 const movieRoutes = require("./movies.js");
 const userRoutes = require("./users");
+const groupManagement = require("./groupManagement")
 
 const constructorMethod = (app) => {
   // routes
@@ -17,6 +18,10 @@ const constructorMethod = (app) => {
 
   //routes for movie selection process
   app.use("/pick", movieSelectRoutes);
+
+  //route for group list and creation
+  app.use("/groups", groupManagement);
+
 
   app.use("/users", userRoutes);
 

@@ -18,7 +18,7 @@ router.get('/', async (req, res) => {
     }
     sesh = req.session
     sesh.groupID = req.query[id]
-    group = await groups.getGroup(req.query[id])
+    group = await groups.getGroupById(req.query[id])
     if(!group) {
         res.status(400).send("That group doesn't exist!")
         return
@@ -33,9 +33,9 @@ router.get('/', async (req, res) => {
         // Load user's personal WtW list into group list
         sesh = req.session
         // User ID stored in session
-        watchList = await users.getWatchList(sesh.user._id)
+    //watchList = await users.getWatchList(sesh.user._id)
         // 'updateWatchList' should also update sessionMembers in 'currentSession'
-        groups.updateWatchList(sesh.groupID, watchList, sesh.user._id)
+    //groups.updateWatchList(sesh.groupID, watchList, sesh.user._id)
         // This is the landing page for decision rooms
         // Decision rooms != watch groups, so anyone(?) can join a decision room
         res.render('movieSelection/home', 
@@ -60,7 +60,7 @@ router.get('/', async (req, res) => {
     } else {
         // return (movie chosen)
         movie_info = await movie.getMovieById(group.currentSession.chosen)
-        res.render('movieSelection/home', 
+        /*res.render('movieSelection/home', 
         { 
             title: `Chosen movie: ${movie_info.title}`,
             exit: "appear",
@@ -68,6 +68,12 @@ router.get('/', async (req, res) => {
             enter_button: "gone",
             img: movie_info.img,
             error: ""
+        })*/
+        movie_info.title = `Chosen movie:
+                            ${movie_info.title}`
+        res.render('movies/movieDetails',
+        {
+            movie: movie_info
         })
     }
 });
@@ -81,6 +87,7 @@ router.get('/done', async(req, res) => {
         sesh.chosen = true
         sesh.active = false
         res.redirect("/pick")
+        return
     } else {
         res.render('movieSelection/home', 
         { 
