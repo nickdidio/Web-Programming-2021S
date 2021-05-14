@@ -1,4 +1,4 @@
-const { movies, users } = require("../data");
+const { movies, users, reviews } = require("../data");
 const express = require("express");
 const axios = require("axios");
 const router = express.Router();
@@ -261,7 +261,48 @@ router.get("/movieDetails/:id", async (req, res) => {
     ? "Poster Unvailable for"
     : "Poster for" + movie.title;
 
+  movie.reviewsRoute = `../reviews/${movie._id}`;
+
   res.render("movies/movieDetails", { title: movie.title, movie: movie });
+});
+
+router.post("/movieDetails/:id", async (req, res) => {
+  // check if movie id is a valid MongoDB id
+  const movieId = req.params.id;
+  try {
+    utils.checkId(movieId);
+  } catch (e) {
+    res.status(400).json({ error: xss(e.toString()) });
+    return;
+  }
+
+  const { reviewText } = req.body;
+  const rating = 5;
+  const d = new Date();
+  const reviewDate = `${d.getFullYear()}-${d.getMonth()}-${d.getDay()}`;
+  const username = req.session.user.username;
+
+  try {
+    utils.checkReviewParameters(reviewDate, reviewText, rating, username);
+  } catch (e) {
+    res.status(400).json({
+      error: xss(e.toString()),
+    });
+    return;
+  }
+
+  try {
+    const newReview = await reviews.createReview(
+      xss(reviewDate),
+      xss(reviewText),
+      parseInt(xss(rating)),
+      xss(username),
+      xss(movieId)
+    );
+    res.json(newReview);
+  } catch (e) {
+    res.status(500).json({ error: xss(e.toString()) });
+  }
 });
 
 module.exports = router;

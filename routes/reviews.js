@@ -36,7 +36,11 @@ router.post("/:id", async (req, res) => {
     return;
   }
 
-  const { reviewDate, reviewText, rating, username } = req.body;
+  const { reviewText } = req.body;
+  const rating = 5;
+  const d = new Date();
+  const reviewDate = `${d.getFullYear()}/${d.getMonth()}/${d.getDay()}`;
+  const username = req.session.username;
 
   try {
     utils.checkReviewParameters(reviewDate, reviewText, rating, username);

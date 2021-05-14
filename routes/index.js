@@ -7,7 +7,9 @@ const movieRoutes = require("./movies.js");
 const userRoutes = require("./users");
 
 const constructorMethod = (app) => {
+  app.use("/users", userRoutes);
   // routes
+
   app.use("/reviews", reviewRoutes);
   app.use("/movies", movieRoutes);
 
@@ -17,8 +19,6 @@ const constructorMethod = (app) => {
 
   //routes for movie selection process
   app.use("/pick", movieSelectRoutes);
-
-  app.use("/users", userRoutes);
 
   // show view for 404 errors for undefined routes
   app.use("*", (req, res) => {

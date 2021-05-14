@@ -162,7 +162,6 @@ const checkReviewParameters = (reviewDate, reviewText, rating, username) => {
   }
 
   if (typeof rating !== "number" || isNaN(rating) || rating > 5 || rating < 1) {
-    console.log(rating);
     throw new Error(
       "Must provide a real number value for rating parameter that is between 1 and 5 (inclusive)."
     );
