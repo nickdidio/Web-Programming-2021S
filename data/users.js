@@ -47,7 +47,6 @@ let exportedMethods = {
   //Update a User
   async updateUser(id, updatedUser) {
     const user = await this.getUserById(id);
-    console.log(user);
 
     let userUpdateInfo = {
       firstName: updatedUser.firstName,
@@ -73,7 +72,6 @@ let exportedMethods = {
   // Add Review to User
   async addReviewToUser(userId, reviewId, reviewTitle) {
     let currentUser = await this.getUserById(userId);
-    console.log(currentUser);
 
     const userCollection = await users();
     const updateInfo = await userCollection.updateOne(
@@ -90,7 +88,6 @@ let exportedMethods = {
   // Remoview Review from User
   async removereviewFromUser(userId, reviewId) {
     let currentUser = await this.getUserById(userId);
-    console.log(currentUser);
 
     const userCollection = await users();
     const updateInfo = await userCollection.updateOne(
@@ -106,28 +103,26 @@ let exportedMethods = {
   // See if the movie is already in the user's watchList
   async checkIfInWatchList(userId, movieId) {
     const parsedUserId = utils.checkId(userId);
-    const parsedMovieId = utils.checkId(movieId);
-    const userCollection = await users;
-    if (
-      userCollection.find(
-        { watchList: { $all: [parsedMovieId] } },
-        { _id: parsedUserId }
-      )
-    )
+    utils.checkId(movieId);
+    const userCollection = await users();
+    const found = await userCollection.findOne({ watchList: movieId, _id: parsedUserId });
+    if (found){
       return true;
+    }
     return false;
   },
 
   // Add a user's watchList movie to the database
   async addToWatchList(userId, movieId) {
-    console.log("UserID: "+userId);
     const parsedUserId = utils.checkId(userId);
-    const parsedMovieId = utils.checkId(movieId);
-    const userCollection = await users;
-    if (checkIfInWatchList(userId, movieId)) return false;
+    utils.checkId(movieId);
+    const userCollection = await users();
+    if (await this.checkIfInWatchList(userId, movieId)){
+      return false;
+    }
     const updateInfo = await userCollection.updateOne(
       { _id: parsedUserId },
-      { $push: { watchList: parsedMovieId } }
+      { $push: { watchList: movieId } }
     );
     if (!updateInfo.matchedCount && !updateInfo.modifiedCount)
       throw "Update failed";
@@ -137,12 +132,12 @@ let exportedMethods = {
   // Remove a user's watchList movie from their database
   async removeFromWatchList(userId, movieId) {
     const parsedUserId = utils.checkId(userId);
-    const parsedMovieId = utils.checkId(movieId);
-    const userCollection = await users;
-    if (!checkIfInWatchList(userId, movieId)) return false;
+    utils.checkId(movieId);
+    const userCollection = await users();
+    if (!await this.checkIfInWatchList(userId, movieId)) return false;
     const updateInfo = await userCollection.updateOne(
       { _id: parsedUserId },
-      { $pull: { watchList: parsedMovieId } }
+      { $pull: { watchList: movieId } }
     );
     if (!updateInfo.matchedCount && !updateInfo.modifiedCount)
       throw "Update failed";
@@ -152,7 +147,7 @@ let exportedMethods = {
   // Get a user's watchList
   async getWatchList(userId) {
     const parsedUserId = utils.checkId(userId);
-    const user = this.getUserById(paresdUserId);
+    const user = await this.getUserById(parsedUserId);
     return user.watchList;
   },
 };

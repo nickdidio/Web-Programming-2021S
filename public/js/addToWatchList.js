@@ -257,6 +257,7 @@
         showMovieDetails(movieId);
         addButton.children().html("Add this movie to my list");
         addButton.attr("hidden", false);
+        errorMsg.attr("hidden", true);
       } else {
         errorMsg.empty();
         errorMsg.append(`Error: No movies were found for some reason.`);
