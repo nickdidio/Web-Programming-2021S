@@ -1,7 +1,7 @@
 // import routes
 const wantToWatchListRoutes = require('./wantToWatchList');
-const movieSelectRoutes = require('./movieSelection')
-const groups = require()
+const movieSelectRoutes = require('./movieSelection');
+const groupManagement = require('./groupManagement');
 
 const constructorMethod = (app) => {
   // routes
@@ -12,7 +12,7 @@ const constructorMethod = (app) => {
   //routes for movie selection process
   app.use("/movieSelection", movieSelectRoutes)
 
-  app.use("/groups", groups);
+  app.use("/groups", groupManagement);
 
   app.use("/", (req, res) => {
     res.render("temporary/fakeLanding", { title: "Temporary Landing Page" });

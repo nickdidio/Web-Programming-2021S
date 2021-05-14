@@ -13,7 +13,7 @@ const createGroup = async(groupLeaderId, groupName) => {
     if (typeof(groupName) != 'string') {
         throw new Error ("Could not create group: Name must be a string")
     }
-    
+
     groupName = groupName.trim();
     const groupCollection = await groups();   
     let newGroup = {
@@ -24,8 +24,7 @@ const createGroup = async(groupLeaderId, groupName) => {
             sessionMembers: groupMembers,
             voteCountNeeded: 1,
             movieList: [],
-            filters: [],
-            votes: []
+            filters: []
         }, //TODO: check if i need to initialize this to something else, gonna just initalize it to a mostly empty object which can be modified later
         pastSessions: [],
         groupLeaderId: parsedLeaderId,
@@ -50,14 +49,8 @@ const addGroupMember = async (groupId, userId) => {
         throw new Error ("Could not create group: Invalid ID for user or group")
     }
     const groupCollection = await groups();
-    const oldGroup = await getGroupById(parsedGroupId);
-    let updatedGroup = {
-        groupMembers: oldGroup.groupMembers.push(parsedUserId), 
-        currentSession: oldGroup.currentSession,
-        pastSessions: oldGroup.pastSessions,
-        groupLeaderId: oldGroup.parsedLeaderId,
-    }
-
+    const group = await getGroupById(parsedGroupId);
+    group = group.groupMembers.push(parsedUserId);
     const updateInfo = await groupCollection.updateOne({_id: parsedGroupId}, {$set: updatedGroup});
     if (updateInfo.modifiedCount === 0) throw new Error ('Could not add group member');
 
@@ -112,7 +105,7 @@ const createSession = async(groupId, voteCountNeeded, filters) => {
         let parsedId = ObjectId(userId);
         let user =  await userCollection.findOne({ _id: parsedId}); //replace with getUserById probbly for easier error handling
         let userMovies = user.userMovieList; 
-        movieList += userMovies;
+        movieList += {userMovies, 0};
     }
 
     //TODO: Apply filters
@@ -130,8 +123,7 @@ const createSession = async(groupId, voteCountNeeded, filters) => {
         sessionMembers: groupMembers,
         voteCountNeeded,
         movieList: [],
-        filters,
-        votes: new Array(groupMembers.length).fill(0) //Array where nth item on array corresponds to vote for nth item in moveList
+        filters
     };
 
     const updateInfo = await groupCollection.updateOne({_id: parsedGroupId}, {$set: {currentSession: newSession}});
@@ -140,6 +132,11 @@ const createSession = async(groupId, voteCountNeeded, filters) => {
     return await groupCollection.getGroupById(parsedGroupId);
 };
 
+const addVote = async(groupId, movieId) => {
+}
+
+const checkWinner = async(groupId, voteCountNeeded, filters) => {
+}
 
 
-module.exports = {createGroup, addGroupMember, getGroupById, deleteGroup, createSession/*, addVote, checkWinner*/};
+module.exports = {createGroup, addGroupMember, getGroupById, deleteGroup, createSession, addVote, checkWinner};
