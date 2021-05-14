@@ -12,19 +12,17 @@ router.get('/', async (req, res) => {
     try{
         let userId = utils.checkId(req.session.user._id)
         let user = await userDB.getUserById(userId); //get userid from request
-        console.log(user)
         if (user.userGroups) {
             let groupList = [];
             for (let groupId of user.userGroups) {
                 let group = await groupDB.getGroupById(groupId);
-                let leader = (group.groupLeaderId == userId)
-                groupList.push({name: group.groupName, id: groupId, leader: leader, active: group.currentSession.active});
+                let leader = (group.groupLeaderId.toString() === userId.toString())
+                groupList.push({name: group.groupName, id: groupId, leader: leader, active: group.currentSession.active, user: user.firstName});
             }
-            console.log(groupList);
             res.render('groups/groupList', {groupList: groupList}) //renders page under groups/grouplist.handlebars
             return;
         }
-        res.render('groups/groupList', {groupList: false}) //renders page under groups/grouplist.handlebars
+        res.render('groups/groupList', {groupList: false}) 
         return;
     } catch (e) {
         res.status(400).json({ error: xss("Could not get group list") });

@@ -22,10 +22,10 @@ const createGroup = async(groupLeaderId, groupName) => {
     const groupCollection = await groups();   
     let newGroup = {
         groupName,
-        groupMembers: [groupLeaderId], //includes group leader
+        groupMembers: [parsedLeaderId], //includes group leader
         currentSession: {
             sessionDate: new Date().getTime(),
-            sessionMembers: [groupLeaderId],
+            sessionMembers: [parsedLeaderId],
             voteCountNeeded: 1,
             movieList: [],
             filters: [],
@@ -33,7 +33,7 @@ const createGroup = async(groupLeaderId, groupName) => {
             active: false
         }, 
         pastSessions: [],
-        groupLeaderId: groupLeaderId,
+        groupLeaderId: parsedLeaderId,
     };
 
     const insertInfo = await groupCollection.insertOne(newGroup);   
