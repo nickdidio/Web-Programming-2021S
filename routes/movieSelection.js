@@ -29,6 +29,13 @@ router.get('/', async (req, res) => {
             sesh.active = true
             res.redirect("/pick")
             return
+        } else {
+            group.currentSession.sessionMembers.push(sesh.user._id)
+            res = groups.updateSession(sesh.groupID, group)
+            if(!res) {
+                res.status(400).send("Could not update currentSession")
+                return
+            }
         }
         // Load user's personal WtW list into group list
         sesh = req.session
