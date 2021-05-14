@@ -50,18 +50,12 @@ const createGroup = async(groupLeaderId, groupName) => {
 const addGroupMember = async (groupId, userId) => {
     let parsedGroupId;
     let parsedUserId;
-    console.log("IDS:")
-    console.log(groupId)
-    console.log(userId)
-    
-    parsedUserId = await utils.checkId(userId);
-    // try {
-    //     parsedGroupId = await utils.checkId(groupId);
-    //     parsedUserId = await utils.checkId(userId);
-    // } catch(e) {
-    //     throw new Error ("Could not add to group: Invalid ID for user or group")
-    // }
-    console.log("passed id check")
+    try {
+        parsedGroupId = await utils.checkId(groupId);
+        parsedUserId = await utils.checkId(userId);
+    } catch(e) {
+        throw new Error ("Could not add to group: Invalid ID for user or group")
+    }
     const groupCollection = await groups();
     let group = await getGroupById(groupId);
     //Check if user already in group
@@ -76,6 +70,7 @@ const addGroupMember = async (groupId, userId) => {
     //Update user's groups
     console.log(typeof(parsedUserId));
     let user = await users.getUserById(parsedUserId);
+    console.log(user)
     user.userGroups.push(groupId);
     users.updateUser(parsedUserId, user);
 
