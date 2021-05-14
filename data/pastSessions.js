@@ -1,6 +1,5 @@
 const mongoCollections = require("../config/mongoCollections.js");
 const { ObjectId } = require("mongodb");
-const { pastSessions } = require("../config/mongoCollections.js");
 const pastSessions = mongoCollections.pastSessions;
 const groups = mongoCollections.groups;
 

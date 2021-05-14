@@ -21,15 +21,15 @@ router.get('/', async (req, res) => {
 });
 
 //Adds user to new group with id of id
-router.get('/join/:id', async (req, res) => {
-    let user = await userDB.getUserById(req.params.id); 
-    let group = await groupDB.getGroupById(id);
-    group = groupDB.addGroupMember(group._id, user._id);
-    user = userDB.addGroupMember(user._id, group._id);
+// router.get('/join/:id', async (req, res) => {
+//     let user = await userDB.getUserById(req.params.id); 
+//     let group = await groupDB.getGroupById(id);
+//     group = groupDB.addGroupMember(group._id, user._id);
+//     user = userDB.addGroupMember(user._id, group._id);
 
-    res.render('groups/groupList', {groupList: user.groupList}) //renders page under groups/grouplist.handlebars
+//     res.render('groups/groupList', {groupList: user.groupList}) //renders page under groups/grouplist.handlebars
 
-});
+// });
 
 
 

@@ -105,7 +105,10 @@ const createSession = async(groupId, voteCountNeeded, filters) => {
         let parsedId = ObjectId(userId);
         let user =  await userCollection.findOne({ _id: parsedId}); //replace with getUserById probbly for easier error handling
         let userMovies = user.userMovieList; 
-        movieList += {userMovies, 0};
+        for (movie of userMovies) {
+            movieList += {movie, votes: 0};
+        }
+        
     }
 
     //TODO: Apply filters
@@ -132,10 +135,14 @@ const createSession = async(groupId, voteCountNeeded, filters) => {
     return await groupCollection.getGroupById(parsedGroupId);
 };
 
+//adds a vote to movieId
 const addVote = async(groupId, movieId) => {
+
 }
 
-const checkWinner = async(groupId, voteCountNeeded, filters) => {
+//checks if any movie has achieved voteCount
+const checkWinner = async(groupId) => {
+
 }
 
 
