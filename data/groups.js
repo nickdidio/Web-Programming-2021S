@@ -131,13 +131,26 @@ const createSession = async(groupId, voteCountNeeded, filters) => {
 
     const updateInfo = await groupCollection.updateOne({_id: parsedGroupId}, {$set: {currentSession: newSession}});
     if (updateInfo.modifiedCount === 0) throw new Error ('Could not create new session');
-
     return await groupCollection.getGroupById(parsedGroupId);
 };
 
 //adds a vote to movieId
 const addVote = async(groupId, movieId) => {
-
+    let group = getGroupById(groupId);
+    for (let item of group.currentSession.movieList) {
+        if (item.movie == movieId) {
+            item.votes++;
+            //If vote count reached
+            if (item.votes == group.currentSession.voteCountNeeded) {
+                const updateInfo = await groupCollection.updateOne({_id: parsedGroupId}, {$set: group});
+                if (updateInfo.modifiedCount === 0) throw new Error ('Could not add vote');
+                return {movieId, winner: true}
+            }
+        }
+    }
+    const updateInfo = await groupCollection.updateOne({_id: parsedGroupId}, {$set: group});
+    if (updateInfo.modifiedCount === 0) throw new Error ('Could not add vote');
+    return {movieId, winner: false}
 }
 
 //checks if any movie has achieved voteCount
@@ -146,4 +159,4 @@ const checkWinner = async(groupId) => {
 }
 
 
-module.exports = {createGroup, addGroupMember, getGroupById, deleteGroup, createSession, addVote, checkWinner};
+module.exports = {createGroup, addGroupMember, getGroupById, deleteGroup, createSession, addVote};
