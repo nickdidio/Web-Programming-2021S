@@ -16,9 +16,9 @@ router.get('/', async (req, res) => {
             for (let groupId of user.userGroups) {
                 let group = await groupDB.getGroupById(groupId);
                 groupList.push({name: group.groupName, id: groupId});
-                res.render('groups/groupList', {groupList: groupList}) //renders page under groups/grouplist.handlebars
-                return;
             }
+            res.render('groups/groupList', {groupList: groupList}) //renders page under groups/grouplist.handlebars
+            return;
         }
         res.render('groups/groupList', {groupList: false}) //renders page under groups/grouplist.handlebars
         return;
@@ -43,9 +43,10 @@ router.get('/join/:id', async (req, res) => {
 });
 
 router.post('/create', async (req, res) => {
-    let groupName = req.params.groupName;
+    console.log(req.body.groupName)
+    let groupName = req.body.groupName;
     await groupDB.createGroup(req.session.user._id, groupName);
-    res.redirect('groups');
+    res.redirect('.');
     return;
 });
 

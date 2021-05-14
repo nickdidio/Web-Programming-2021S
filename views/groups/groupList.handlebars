@@ -1,6 +1,6 @@
 <h1>Your Groups</h1>
 <div>
-    <form id="group-form" method="POST" action="/create_group">
+    <form id="group-form" method="POST" action="/groups/create">
             <div class="groupName">
                 <label for="groupname">Create New Group!: </label>
                 <input id="groupName" type="text" name="groupName" placeholder="Group Name" />
@@ -11,7 +11,7 @@
     {{#if groupList}}
         <ul>
             {{#each groupList}}
-            <li>{{this.name}} with Id of: {{this.id}}</li>
+            <li>{{this.name}} Invite others wit this link: localhost:3000/join/{{this.id}}</li>
             {{/each}}
         </ul>
     {{/if}}
