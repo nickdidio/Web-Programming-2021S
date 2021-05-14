@@ -7,6 +7,8 @@ const { movies } = require('../config/mongoCollections');
 const session = require('express-session');
 router.use(express.static('public'));
 
+// sesh.active -> once a user enters starts judging, they're 'active' until a movie is selected as a winner by the group
+
 router.get('/', async (req, res) => {
     if(!req.session.user) {
         res.status(403).send("You must be logged in to access this page!")
@@ -33,6 +35,9 @@ router.get('/', async (req, res) => {
             pick: "gone",
             exit: "appear" 
         })
+
+        // place button to check group "chosen" status and refresh (with potentially updated sesh.chosen value)
+    
     } else if(sesh.active) {
         // return (early)
         res.render('movieSelection/home', 
@@ -63,7 +68,8 @@ router.get('/leave', async (req, res) => {
     sesh.movie_list = undefined
     sesh.active = undefined
     sesh.movie_count = undefined
-    res.status(404).end()
+    sesh.chosen = undefined
+    res.status(200).end()
 })
 
 router.get('/list', async (req, res) => {
@@ -74,7 +80,7 @@ router.get('/list', async (req, res) => {
     group = await groups.getGroup(sesh.groupID)
     // if user clicked "Pick Flicks" button too early, send them back
     if(!group.currentSession.active) {
-        // returns error message
+        // should also present error message
         res.status(400)
         return
     }
@@ -107,6 +113,8 @@ router.post('/choice/:dec', async (req, res) => {
     // First check if grpSession.selection != null. If it doesn't then, a movie has been selected,
     // and the user should return to group home page where the chosen movie will be displayed
     if(grpSession.chosen != "N/A") {
+        sesh.chosen = true
+        sesh.active = false
         res.redirect('/pick')
         return
     }
@@ -121,6 +129,7 @@ router.post('/choice/:dec', async (req, res) => {
             // 'declareMovie()' is a db call that sets currentSession.selection equal to 'movieID'
             //  groups.declareMovie(sesh.groupID, movie) ^^ Could be done by "addVote" function\
             sesh.chosen = true
+            sesh.active = false
             res.redirect('/pick')
             return
         }
@@ -128,6 +137,7 @@ router.post('/choice/:dec', async (req, res) => {
     } else if(sesh.judged == sesh.movie_count) {
         // if user no longer has movies to judge, send them back to group home to
         // wait for the rest of group members to finish
+        sesh.active = false
         res.redirect('/pick')
         return
     }
