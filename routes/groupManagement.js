@@ -37,7 +37,8 @@ router.post('/join', async (req, res) => {
     //todo: check user input
     try {
         let userId = (req.session.user._id)
-        let groupId = req.body.groupId.toString()
+        let request = xss(req.body.groupId)
+        let groupId = request.toString()
         group = groupDB.addGroupMember(groupId, userId);
         res.redirect('.') 
     } catch (e) {
@@ -49,7 +50,8 @@ router.post('/join', async (req, res) => {
 
 router.post('/create', async (req, res) => {
     try {
-        let groupName = req.body.groupName;
+        let request = xss(req.body.groupName)
+        let groupName = request;
         await groupDB.createGroup(req.session.user._id, groupName);
         res.redirect('.');
     } catch(e) {
