@@ -2,14 +2,18 @@
 <p class="error"></p>
 <ul id="movieList">
     {{#each movieList}}
-        <li>
-            {{this}}
-            <button type="submit" class="removeLink">Remove this movie from my list</button>
-        </li>
+    <li>
+        <img src={{this.img}} alt={{this.title}} width="108" height="160">
+        {{this.title}}
+        <br>
+        <button type="submit" class="removeLink" id={{this._id}}>Remove this movie from my list</button>
+        <br>
+        <br>
+    </li>
     {{else}}
-        <p class="error">You watch list is empty</p>
+    <p class="error">You watch list is empty</p>
     {{/each}}
 </ul>
-<script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
-        crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-2.2.4.min.js"
+    integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
 <script src="/public/js/removeFromWatchList.js"></script>

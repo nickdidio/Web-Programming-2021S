@@ -16,11 +16,8 @@ const constructorMethod = (app) => {
   app.use("/wantToWatchList", wantToWatchListRoutes);
 
   //routes for movie selection process
-  app.use("/movieSelection", movieSelectRoutes);
+  app.use("/pick", movieSelectRoutes);
 
-  app.use("/", (req, res) => {
-    res.render("temporary/fakeLanding", { title: "Temporary Landing Page" });
-  });
   app.use("/users", userRoutes);
 
   // show view for 404 errors for undefined routes
