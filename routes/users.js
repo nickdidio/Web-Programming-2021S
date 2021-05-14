@@ -66,19 +66,14 @@ app.post("/login", async function (req, res) {
     });
   }
   // Check username and password against all users
-  console.log("past username and pw");
   let users = await userData.getAllUsers();
-  console.log(users);
   for (const user of users) {
-    console.log("inside for loop");
     if (user.username === username) {
       let match = false;
       try {
-        console.log("checking password");
         match = await bcrypt.compare(password, user.password);
         if (match) {
           // Authenticated user
-          console.log("Authenticated");
           req.session.user = user;
           res.redirect("/home/profile");
           return;

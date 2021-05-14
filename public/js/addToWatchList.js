@@ -90,14 +90,14 @@
     //Get the general info of the movie
     $.ajax({
       method: "GET",
-      url: `/movies/TMDbId/${movieId}`,
+      url: `/wantToWatchList/movies/TMDbId/${movieId}`,
       contentType: "application/json",
     }).then((movie) => {
       // Make a list of the movie genres
       showMovieDetailsHelper(movie);
     });
     // Set the movieDiv Id to the movieId
-    movieDiv.attr('id', movieId);
+    movieDiv.attr("id", movieId);
   };
 
   // Bind the "add this movie" links to the movie
@@ -122,7 +122,7 @@
         url: "/wantToWatchList/add",
         contentType: "application/json",
         data: JSON.stringify({
-          movieId: movieItem.find(".addLink").attr('id').slice(7)
+          movieId: movieItem.find(".addLink").attr("id").slice(7),
         }),
       };
       $.ajax(requestConfig).then((response) => {
@@ -275,7 +275,7 @@
       url: "/wantToWatchList/add",
       contentType: "application/json",
       data: JSON.stringify({
-        movieId: movieDiv.attr('id')
+        movieId: movieDiv.attr("id"),
       }),
     };
 
