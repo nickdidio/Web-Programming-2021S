@@ -23,7 +23,7 @@ router.get('/', async (req, res) => {
         res.render('groups/groupList', {groupList: false}) //renders page under groups/grouplist.handlebars
         return;
     } catch (e) {
-        throw new Error ("Could not get user groups");
+        res.status(400).json({ error: xss("Could not get group list") });
     }
     
 });
@@ -31,18 +31,27 @@ router.get('/', async (req, res) => {
 //Adds user to new group with id of id
 router.post('/join', async (req, res) => {
     //todo: check user input
-    let userId = (req.session.user._id)
-    let groupId = req.body.groupId.toString()
-    group = groupDB.addGroupMember(groupId, userId);
-    res.redirect('.') 
+    try {
+        let userId = (req.session.user._id)
+        let groupId = req.body.groupId.toString()
+        group = groupDB.addGroupMember(groupId, userId);
+        res.redirect('.') 
+    } catch (e) {
+        res.status(400).json({ error: xss("Could not join group") });
+    }
+    
 
 });
 
 router.post('/create', async (req, res) => {
-    console.log(req.body.groupName)
-    let groupName = req.body.groupName;
-    await groupDB.createGroup(req.session.user._id, groupName);
-    res.redirect('.');
+    try {
+        let groupName = req.body.groupName;
+        await groupDB.createGroup(req.session.user._id, groupName);
+        res.redirect('.');
+    } catch(e) {
+        res.status(400).json({ error: xss("Could not create group") });
+    }
+    
 });
 
 
