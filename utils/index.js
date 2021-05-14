@@ -13,6 +13,7 @@ const apiKey = process.env.API_KEY;
 // Checks if a given string is a valid MongoDB object id
 // returns the strings as a MongoDB object id
 const checkId = (id) => {
+  console.log("HEY I GOT HERE IT SHOULDNT HAVE BUT IT IDD")
   if (id === null || typeof id !== "string" || id.trim() === "") {
     throw new Error(
       "'id' parameter must contain a non-empty value of type 'string'."
@@ -224,6 +225,27 @@ const TMDbIdGet = async (TMDbId) => {
   }
 };
 
+// Check the movie parameters and take in a movie
+const checkMovie = (movie) => {
+  if(!movie.title) throw new Error("Movie must have a title.");
+  if(!movie.desc) throw new Error("Movie must have a description.");
+  if(!movie.img) throw new Error("Movie must have a image.");
+  if(!movie.releaseYear) throw new Error("Movie must have a release year.");
+  if(!movie.runtime) throw new Error("Movie must have a runtime.");
+  if(!movie.mpaaRating) throw new Error("Movie must have a MPAA Rating.");
+  if(!movie.genre) throw new Error("Movie must have a genre.");
+  if(!movie.TMDbId) throw new Error("Movie must have a TMDbId.");
+  checkMovieParameters(
+    movie.title,
+    movie.desc,
+    movie.img,
+    movie.releaseYear,
+    movie.runtime,
+    movie.mpaaRating,
+    movie.genre,
+    movie.TMDbId);
+};
+
 module.exports = {
   checkId,
   isValidDateString,
@@ -231,4 +253,5 @@ module.exports = {
   checkReviewParameters,
   emailValidator,
   TMDbIdGet,
+  checkMovie
 };

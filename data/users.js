@@ -115,6 +115,7 @@ let exportedMethods = {
 
   // Add a user's watchList movie to the database
   async addToWatchList(userId, movieId) {
+    console.log("UserID: "+userId);
     const parsedUserId = utils.checkId(userId);
     const parsedMovieId = utils.checkId(movieId);
     const userCollection = await users;

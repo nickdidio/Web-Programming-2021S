@@ -9,16 +9,16 @@ const apiKey = process.env.API_KEY;
 const { movies, users } = require("../data");
 
 // Add a movie to the mongoDB movie database and user wantToWatchList database
-router.post("/add", (req, res) => {
-  const userId = utils.checkId(req.session.user.id);
+router.post("/add", async (req, res) => {
+  const userId = utils.checkId(req.session.user._id);
   if (!req.body.movieId || typeof req.body.movieId !== "string")
     throw "Error: movieId not found";
   const tmdbId = xss(req.body.movieId);
-  let movie = utils.tmdbIdGet(tmdbId);
+  let movie = await utils.TMDbIdGet(tmdbId);
 
   // if the movie is not already in the movie database
   if (!movie || !movie._id) {
-    utils.checkMovieParameters(movie);
+    utils.checkMovie(movie);
     movie = movies.createMovie(
       movie.title,
       movie.desc,
@@ -31,13 +31,16 @@ router.post("/add", (req, res) => {
     );
   }
 
-  if (users.addToWatchList(userId, movie._id)) res.json(false);
-  res.json(true);
+  if (users.addToWatchList(userId, movie._id)){
+     res.json(true);
+     return;
+  }
+  res.json(false);
 });
 
 // Remove a movie from the user wantToWatchList database
 router.post("/remove", (req, res) => {
-  const userId = utils.checkId(req.session.user.id);
+  const userId = utils.checkId(req.session.user._id);
   if (!req.body.movieId || typeof req.body.movieId !== "string")
     throw "Error: movieId not found";
   const tmdbId = xss(req.body.movieId);
@@ -57,8 +60,8 @@ router.get("/add", (req, res) => {
 });
 
 //How to view and remove items from list
-router.get("/remove", (req, res) => {
-  const userId = utils.checkId(req.session.user.id);
+router.get("/", (req, res) => {
+  const userId = utils.checkId(req.session.user._id);
   const watchList = users.getWatchList(userId);
   if (watchList) {
     res.status(200);
