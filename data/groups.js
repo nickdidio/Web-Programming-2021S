@@ -28,7 +28,9 @@ const createGroup = async(groupLeaderId, groupName) => {
             sessionMembers: [groupLeaderId],
             voteCountNeeded: 1,
             movieList: [],
-            filters: []
+            filters: [],
+            chosen: 'na',
+            active: false
         }, 
         pastSessions: [],
         groupLeaderId: groupLeaderId,
@@ -68,9 +70,7 @@ const addGroupMember = async (groupId, userId) => {
     const updateInfo = await groupCollection.updateOne({_id: parsedGroupId}, {$set: group});
     if (updateInfo.modifiedCount === 0) throw new Error ('Could not add group member');
     //Update user's groups
-    console.log(typeof(parsedUserId));
     let user = await users.getUserById(parsedUserId);
-    console.log(user)
     user.userGroups.push(groupId);
     users.updateUser(parsedUserId, user);
 
@@ -143,10 +143,12 @@ const createSession = async(groupId, voteCountNeeded, filters) => {
     
     let newSession = {
         sessionDate: new Date().getTime(), //Time since epoch
-        sessionMembers: groupMembers,
+        sessionMembers: [decisionGroup.groupLeaderId],
         voteCountNeeded,
         movieList: [],
-        filters
+        filters,
+        chosen: "na",
+        active: true
     };
 
     const updateInfo = await groupCollection.updateOne({_id: parsedGroupId}, {$set: {currentSession: newSession}});
@@ -174,5 +176,28 @@ const addVote = async(groupId, movieId) => {
     return {movieId, winner: false}
 }
 
+const updateSession = async(groupId, {sessionDate, sessionMembers, voteCountNeeded, movieList, filters, chosen, active}) => {
+    let parsedGroupId;
+    try {
+        parsedGroupId = utils.checkId(groupId)
+    } catch(e) {
+        return false;
+        //throw new Error ("Could not update session: Invalid ID");
+    }
+    let updatedSession = {
+        sessionDate,
+        sessionMembers,
+        voteCountNeeded,
+        movieList,
+        filters,
+        chosen,
+        active
+    }
+    const updateInfo = await groupCollection.updateOne({_id: parsedGroupId}, {$set: {currentSession: updatedSession}});
+    if (updateInfo.modifiedCount === 0) throw new Error ('Could not update session');
+    return true;
 
-module.exports = {createGroup, addGroupMember, getGroupById, deleteGroup, createSession, addVote};
+    
+}
+
+module.exports = {createGroup, addGroupMember, getGroupById, deleteGroup, createSession, addVote, updateSession};
