@@ -179,16 +179,15 @@
                 } else {
                   img = `<img src="../public/images/no_image.jpeg" alt="No Image" width="108" height="160">`;
                 }
-                const seeDetailsButton = `<button type="button" class="movieLink" id="${movieData.id}">Show more details</button>`;
+                const seeDetailsButton = `<button type="button" class="movieLink btn btn-link" id="${movieData.id}">Show more details</button>`;
 
-                const addMovieButton = `<button type="button" class="addLink" id="addLink${movieData.id}">Add this movie to my list</button>`;
+                const addMovieButton = `<button type="button" class="addLink btn btn-success" id="addLink${movieData.id}">Add this movie to my list</button>`;
 
                 moviesList.append(
                   `<li class="movie-li">${
                     movieData.title ? movieData.title : "N/A"
                   }
-                        <br>
-                        ${seeDetailsButton}
+                        
                         <br>
                         ${addMovieButton}
                         <br>                     
@@ -198,6 +197,7 @@
                         <p>${
                           movieData.overview ? movieData.overview : "N/A"
                         }</p>
+                        ${seeDetailsButton}
                         </li>
                         <br>`
                 );

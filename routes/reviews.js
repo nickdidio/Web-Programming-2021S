@@ -7,7 +7,7 @@ const xss = require("xss");
 // GET /reviews/{movieId}
 router.get("/:id", async (req, res) => {
   // validate movie id parameter
-  const movieId = req.params.id;
+  const movieId = xss(req.params.id);
   try {
     utils.checkId(movieId);
   } catch (e) {
@@ -28,7 +28,7 @@ router.get("/:id", async (req, res) => {
 // POST /reviews/{movieId}
 router.post("/:id", async (req, res) => {
   // check if movie id is a valid MongoDB id
-  const movieId = req.params.id;
+  const movieId = xss(req.params.id);
   try {
     utils.checkId(movieId);
   } catch (e) {
