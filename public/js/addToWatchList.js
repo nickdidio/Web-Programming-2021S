@@ -72,7 +72,7 @@
         </dd>
         <dt> Average User Rating </dt>
         <dd>
-          ${userAvgRating ? userAvgRating : "No ratings added yet"}
+          ${userAvgRating ? userAvgRating.toFixed(1) : "No ratings added yet"}
         </dd>
         <dt>Reviews</dt>
           <dd>

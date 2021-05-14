@@ -263,7 +263,10 @@ router.get("/movieDetails/:id", async (req, res) => {
 
   movie.reviewsRoute = `../reviews/${movie._id}`;
 
+  movie.userAvgRating = movie.userAvgRating.toFixed(1);
+
   res.render("movies/movieDetails", { title: movie.title, movie: movie });
+  res.status(200);
 });
 
 router.post("/movieDetails/:id", async (req, res) => {
@@ -299,7 +302,7 @@ router.post("/movieDetails/:id", async (req, res) => {
       xss(username),
       xss(movieId)
     );
-    res.json(newReview);
+    res.redirect(`/wantToWatchList/movieDetails/${movieId}`);
   } catch (e) {
     res.status(500).json({ error: xss(e.toString()) });
   }
