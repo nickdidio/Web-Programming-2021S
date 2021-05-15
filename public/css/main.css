@@ -16,7 +16,7 @@ body {
   /* background: -webkit-linear-gradient(left, #3931af, #00c6ff); */
   background-image: url(https://images.unsplash.com/photo-1598899134739-24c46f58b8c0?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1938&q=80);
   background-size: cover;
-  background-position: center;
+  background-position: auto;
   background-repeat: no-repeat;
 }
 
@@ -57,7 +57,9 @@ body {
 .signup-div {
   width: 500px;
   height: 900px;
-  padding: 60px 35px 35px 35px;
+  padding: 5%;
+  margin-top: 3%;
+  margin-bottom: 3%;
   border-radius: 40px;
   background-color: #ecf0f3;
   box-shadow: 13px 13px 20px #cbced1 -13px -13px 20px #fff;
@@ -218,7 +220,7 @@ img {
   color: #0062cc;
 }
 
-.profile-edit-btn {
+.logout-btn {
   border: #495057;
   border-radius: 1.5rem;
   width: 70%;
@@ -228,13 +230,23 @@ img {
   cursor: pointer;
 }
 
-.proile-rating {
+.back-btn {
+  border: #495057;
+  border-radius: 1.5rem;
+  width: 70%;
+  padding: 2%;
+  font-weight: 600;
+  color: #6c757d;
+  cursor: pointer;
+}
+
+.proile-welcome {
   font-size: 12px;
   color: #818182;
   margin-top: 5%;
 }
 
-.proile-rating span {
+.proile-welcome span {
   color: #495057;
   font-size: 15px;
   font-weight: 600;
@@ -338,7 +350,7 @@ img {
 
 .logo {
   display: inline-block;
-  font-size: 22px;
+  font-size: 40px;
   margin-top: 10px;
   margin-left: 20px;
 }
