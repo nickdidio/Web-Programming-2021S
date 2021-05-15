@@ -17,7 +17,6 @@ router.get('/', async (req, res) => {
             for (let groupId of user.userGroups) {
                 let group = await groupDB.getGroupById(groupId);
                 let leader = (group.groupLeaderId.toString() === userId.toString())
-                console.log(group.currentSession.active)
                 groupList.push({name: group.groupName, id: groupId, leader: leader, active: group.currentSession.active, user: user.firstName});
             }
             res.render('groups/groupList', {groupList: groupList}) //renders page under groups/grouplist.handlebars
@@ -36,8 +35,8 @@ router.post('/join', async (req, res) => {
     //todo: check user input
     try {
         let userId = (req.session.user._id)
-        let request = xss(req.body.groupId)
-        let groupId = request.toString()
+        let groupId = xss(req.body.groupId)
+        //let groupId = request.toString()
         group = groupDB.addGroupMember(groupId, userId);
         res.redirect('.') 
     } catch (e) {

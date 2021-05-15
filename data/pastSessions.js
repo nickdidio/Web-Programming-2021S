@@ -2,10 +2,9 @@ const mongoCollections = require("../config/mongoCollections.js");
 const { ObjectId } = require("mongodb");
 const pastSessions = mongoCollections.pastSessions;
 const groups = mongoCollections.groups;
+const utils = require('../utils')
 
-//Past Session will contain only important information about previous sessions, making it smaller than currentSession
-//Separating Current Session from Past Session allows us to cut down on unnesecary data which can be discarded after the session is finished.
-//Takes in groupId, {currentSession}, moviePicked 
+//Past Session storees select information from the current session and sets active to false
 const createPastSession = async(groupId, {sessionDate, sessionMembers, voteCountNeeded, movieList, filters}, moviePicked) => {
     let parsedMovieId;
     let parsedGroupId
@@ -30,14 +29,15 @@ const createPastSession = async(groupId, {sessionDate, sessionMembers, voteCount
     const groupCollection = await groups();
     const group = await groupCollection.findOne({ _id: parsedGroupId});
     group.pastSessions.push(newSession);
-    const updateInfo = await groupCollection.updateOne({_id: parsedId}, {$set: group});
+    group.currentSession.active = false;
+    const updateInfo = await groupCollection.updateOne({_id: parsedGroupId}, {$set: group});
     if (updateInfo.modifiedCount === 0) throw new Error ('Could not add past session to group history');
 };
 
 const getPastSessionById = async(sessionId) => {
     let parsedSessionId;
     try {
-        parsedSessionId = ObjectId(sessionId);
+        parsedSessionId = utils.checkId(sessionId);
     } catch(e) {
         throw new Error ("Could not get group: Invalid ID for group")
     }

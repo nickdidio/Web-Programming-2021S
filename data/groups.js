@@ -60,6 +60,9 @@ const addGroupMember = async (groupId, userId) => {
     }
     const groupCollection = await groups();
     let group = await getGroupById(groupId);
+    if (!group) {
+        throw new Error ("Could not add member, group does not exist")
+    }
     //Check if user already in group
     for (let member of group.groupMembers) {
         if (member == userId) {
@@ -154,7 +157,9 @@ const createSession = async(groupId, voteCountNeeded, filters) => {
     }
 
     //TODO: FILTER past sessions films
-    
+    if (voteCountNeeded > decisionGroup.groupMembers.length) {
+        throw new Error('vote count must be less than current total of group members')
+    }
     let newSession = {
         sessionDate: new Date().getTime(), //Time since epoch
         sessionMembers: [decisionGroup.groupLeaderId],
@@ -173,15 +178,13 @@ const createSession = async(groupId, voteCountNeeded, filters) => {
 //adds a vote to movieId, returns if vote decides outcome
 const addVote = async(groupId, movieId) => {
     let group = await getGroupById(groupId);
-    console.log(group)
     for (let item of group.currentSession.movieList) {
-        console.log(item)
         if (item.movie.toString() == movieId.toString()) {
             item.votes++;
 
             //If vote count reached
             if (item.votes == group.currentSession.voteCountNeeded) {
-                pastSessions.createPastSession(groupId, group.currentSession, item.movie);
+                await pastSessions.createPastSession(groupId, group.currentSession, item.movie);
                 //TODO: set active to false
                 return {movieId, winner: true}
             }

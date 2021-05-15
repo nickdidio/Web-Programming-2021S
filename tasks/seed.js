@@ -151,7 +151,11 @@ const main = async () => {
       // await groups.createSession(group1._id.toString(), 3, []);
       let group1new = await groups.updateSession(group1._id.toString(), updatedSession)
       let vote1 = await groups.addVote(group1._id.toString(), howl._id)
+      let vote2 = await groups.addVote(group1._id.toString(), inception._id)
+      let vote3 = await groups.addVote(group1._id.toString(), howl._id)
       console.log(vote1)
+      console.log(vote2);
+      console.log(vote3)
       console.log(group1new)
     }catch (e) {
       console.log(e)
