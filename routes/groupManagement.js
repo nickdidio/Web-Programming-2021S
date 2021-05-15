@@ -97,6 +97,7 @@ router.post("/create", async (req, res) => {
 });
 
 // Sets currentSession.active = true (only visible to group leader)
+
 router.post("/activate", async (req, res) => {
   //todo: check user input
   try {
