@@ -43,7 +43,7 @@ const createGroup = async(groupLeaderId, groupName) => {
 
     let leader = await users.getUserById(groupLeaderId);
     leader.userGroups.push(stringId);
-    users.updateUser(parsedLeaderId, leader);
+    users.updateUser(groupLeaderId, leader);
     return group;
 };
 

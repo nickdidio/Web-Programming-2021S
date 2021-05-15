@@ -57,6 +57,7 @@ router.get("/", async (req, res) => {
     res
       .status(500)
       .render("errors/error", { error: "Could not get group list" });
+      return;
   }
 });
 //Adds user to new group with id of id
@@ -72,8 +73,10 @@ router.post("/join", async (req, res) => {
     let groupId = request.toString();
     group = groupDB.addGroupMember(groupId, userId);
     res.redirect(`/pick?id=${groupId}`);
+    return;
   } catch (e) {
     res.status(400).json({ error: xss("Could not join group") });
+    return;
   }
 });
 
@@ -83,8 +86,10 @@ router.post("/create", async (req, res) => {
     let groupName = request;
     await groupDB.createGroup(req.session.user._id, groupName);
     res.redirect(".");
+    return;
   } catch (e) {
     res.status(400).json({ error: xss("Could not create group") });
+    return;
   }
 });
 
