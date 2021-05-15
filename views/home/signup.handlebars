@@ -1,3 +1,4 @@
+<div class="container emp-profile">
 <div class="signup-div">
     <h1 class="cardTitle">Create an account</h1>
     <div class="fields">
@@ -21,7 +22,7 @@
             </div>
             <div class="pw">
                 <label for="password">Enter a password: </label>
-                <input id="password" type="text" name="password" placeholder="password" />
+                <input id="password" type="password" name="password" placeholder="password" />
             </div>
             <div class="subButton">
                 <button class="signon-button" id="logon-button" type="submit">submit</button>
@@ -32,7 +33,8 @@
 
         <a href="/home/login">Sign In</a>
     </div>
+    {{#if error}}
+        <h5>{{error}}</h5>
+    {{/if}}
 </div>
-{{#if error}}
-<h5>{{error}}</h5>
-{{/if}}
+</div>
