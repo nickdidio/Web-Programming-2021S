@@ -215,7 +215,7 @@ router.post('/choice/:dec', async (req, res) => {
                 movieList: grpSession.movie_list,
                 filters: grpSession.filters,
                 chosen: result.movie,
-                active: true
+                active: false
             }
             sesh.chosen = true
             sesh.active = false

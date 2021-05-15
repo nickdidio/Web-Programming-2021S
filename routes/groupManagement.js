@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const userDB = require('../data/users');
-const groupDB = require('../data/groups')
+const groupDB = require('../data/groups');
 const utils = require("../utils")
 const { ObjectId } = require("mongodb");
 const xss = require("xss");
@@ -61,6 +61,37 @@ router.post('/create', async (req, res) => {
     
 });
 
+// Sets currentSession.active = true (only visible to group leader)
+router.post('/activate', async (req, res) => {
+    //todo: check user input
+    try {
+        group = await groupDB.getGroupById(req.body.groupId)
+        console.log("Group: " + group)
+        let new_session = {
+            sessionDate: group.currentSession.sessionDate,
+            sessionMembers: group.currentSession.sessionMembers,
+            voteCountNeeded: group.currentSession.voteCountNeeded,
+            movieList: [],
+            filters: group.currentSession.filters,
+            chosen: 'na',
+            active: true
+        };
+        members = group.currentSession.sessionMembers
+        console.log("Members: " + members)
+        for(member of members) {
+            movies = await userDB.getWatchList(member)
+            new_session.movieList.push(movies)
+        }
+        groupDB.updateSession(req.body.groupId, new_session)
+        res.redirect('/pick/list')
+        return
+    } catch (e) {
+        console.log(e)
+        res.status(400).json({ error: xss("Could not join group") });
+        return
+    }
+    
 
+});
 
 module.exports = router;
