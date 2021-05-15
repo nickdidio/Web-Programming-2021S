@@ -35,7 +35,12 @@ router.get("/", async (req, res) => {
       title: "My Watch List",
     });
   } else {
-    res.status(500).render("errors/error", { error: xss("Watch List Failed") });
+    res
+      .status(500)
+      .render("errors/error", {
+        title: "Error",
+        error: xss("Watch List Failed"),
+      });
     return;
   }
 });
@@ -43,7 +48,12 @@ router.get("/", async (req, res) => {
 // Add a movie to the mongoDB movie database and user wantToWatchList database
 router.post("/add", async (req, res) => {
   if (!xss(req.body.movieId) || typeof xss(req.body.movieId) !== "string") {
-    res.status(400).json({ error: "Error: movieId not found" });
+    res.status(400);
+    res.render("errors/error", {
+      title: "Error",
+      code: 400,
+      error: "Error: movieId not found",
+    });
     return;
   }
 
@@ -53,7 +63,12 @@ router.post("/add", async (req, res) => {
   try {
     movie = await TMDbIdGet(tmdbId);
   } catch (e) {
-    res.status(500).json({ error: xss(e.toString()) });
+    res.status(500);
+    res.render("errors/error", {
+      title: "Error",
+      code: 500,
+      error: xss(e.toString()),
+    });
     return;
   }
 
@@ -82,7 +97,12 @@ router.post("/add", async (req, res) => {
         TMDbId
       );
     } catch (e) {
-      res.status(400).json({ error: xss(e.toString()) });
+      res.status(400);
+      res.render("errors/error", {
+        title: "Error",
+        code: 400,
+        error: xss(e.toString()),
+      });
       return;
     }
     for (let i = 0; i < genre.length; i++) {
@@ -100,7 +120,12 @@ router.post("/add", async (req, res) => {
         parseInt(xss(TMDbId))
       );
     } catch (e) {
-      res.status(500).json({ error: xss(e.toString()) });
+      res.status(500);
+      res.render("errors/error", {
+        title: "Error",
+        code: 500,
+        error: xss(e.toString()),
+      });
     }
   }
   try {
@@ -118,7 +143,12 @@ router.post("/add", async (req, res) => {
 // Remove a movie from the user wantToWatchList database
 router.patch("/remove", async (req, res) => {
   if (!xss(req.body.movieId) || typeof xss(req.body.movieId) !== "string") {
-    res.status(400).json({ error: "Error: movieId not found" });
+    res.status(400);
+    res.render("errors/error", {
+      title: "Error",
+      code: 400,
+      error: "Error: movieId not found",
+    });
     return;
   }
 
@@ -126,7 +156,12 @@ router.patch("/remove", async (req, res) => {
   try {
     movie = await movies.getMovieById(xss(req.body.movieId));
   } catch (e) {
-    res.status(500).json({ error: xss(e.toString()) });
+    res.status(500);
+    res.render("errors/error", {
+      title: "Error",
+      code: 500,
+      error: xss(e.toString()),
+    });
     return;
   }
   try {
@@ -138,7 +173,12 @@ router.patch("/remove", async (req, res) => {
       return;
     }
   } catch (e) {
-    res.status(500).json({ error: xss(e.toString()) });
+    res.status(500);
+    res.render("errors/error", {
+      title: "Error",
+      code: 500,
+      error: xss(e.toString()),
+    });
     return;
   }
   res.json(false);
@@ -166,7 +206,12 @@ router.get("/", async (req, res) => {
       title: "My Watch List",
     });
   } else {
-    res.status(500).json({ error: xss("Watch List Failed") });
+    res.status(500);
+    res.render("errors/error", {
+      title: "Error",
+      code: 500,
+      error: xss("Watch list failed"),
+    });
     return;
   }
 });
@@ -186,7 +231,7 @@ router.get("/userQuery/:q", async (req, res) => {
     );
     res.json(data);
   } catch (e) {
-    res.status(400).json({ error: xss("No results for this query") });
+    res.status(400)({ error: xss("No results for this query") });
     return;
   }
 });
@@ -196,7 +241,12 @@ router.get("/random/:randPage", async (req, res) => {
   const randPage = Number(req.params.randPage);
 
   if (!randPage || randPage < 0) {
-    res.status(400).json({ error: xss("Invalid random page number") });
+    res.status(500);
+    res.render("errors/error", {
+      title: "Error",
+      code: 500,
+      error: xss("Invalid random page number."),
+    });
     return;
   }
 
@@ -206,7 +256,12 @@ router.get("/random/:randPage", async (req, res) => {
     );
     res.json(data);
   } catch (e) {
-    res.status(404).json({ error: xss("No results for this random page") });
+    res.status(500);
+    res.render("errors/error", {
+      title: "Error",
+      code: 500,
+      error: xss("No results for this random page."),
+    });
     return;
   }
 });
