@@ -8,3 +8,4 @@
 8. Seeding the Database \*\*
 9. Want to Watch List Styling (D)
 10. HTML Validator
+11. Error Checking/Type Checking
