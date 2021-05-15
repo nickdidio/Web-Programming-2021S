@@ -1,19 +1,28 @@
-<h1>My Watch List:</h1>
-<p class="error"></p>
-<ul id="movieList">
-    {{#each movieList}}
-    <li>
-        <img src={{this.img}} alt={{this.title}} width="108" height="160">
-        {{this.title}}
-        <br>
-        <button type="submit" class="removeLink" id={{this._id}}>Remove this movie from my list</button>
-        <br>
-        <br>
-    </li>
-    {{else}}
-    <p class="error">You watch list is empty</p>
-    {{/each}}
-</ul>
-<script src="https://code.jquery.com/jquery-2.2.4.min.js"
-    integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
-<script src="/public/js/removeFromWatchList.js"></script>
+<div class="watchList">
+    <h1>My Watch List:</h1>
+    <p class="error"></p>
+    <div class="list-group list-group-horizontal">
+        <ul id="movieList">
+            {{#each movieList}}
+            <div class="list-group-item">
+                <li class="list-group-item">
+                    <img src={{this.img}} alt={{this.title}} width="108" height="160">
+                    <h1 display-3>{{this.title}}</h1>
+                    <br>
+                    <button type="submit" class="removeLink btn btn-primary" id={{this._id}}>Remove this movie from my
+                        list</button>
+                    <br>
+                    <a href={{this.moreDetailsRoute}}> Show more details</a>
+                    <br>
+                    <br>
+                </li>
+            </div>
+            {{else}}
+            <p class="error">You watch list is empty</p>
+            {{/each}}
+        </ul>
+    </div>
+    <script src="https://code.jquery.com/jquery-2.2.4.min.js"
+        integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+    <script src="/public/js/removeFromWatchList.js"></script>
+</div>

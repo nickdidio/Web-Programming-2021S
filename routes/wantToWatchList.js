@@ -8,17 +8,49 @@ const utils = require("../utils");
 dotenv.config();
 const apiKey = process.env.API_KEY;
 
+//How to view and remove items from list
+router.get("/", async (req, res) => {
+  const watchListIds = await users.getWatchList(xss(req.session.user._id));
+  let watchList = [];
+  let m;
+  try {
+    for (let i = 0; i < watchListIds.length; i++) {
+      m = await movies.getMovieById(watchListIds[i]);
+      watchList.push(m);
+      watchList[i].moreDetailsRoute = "/wantToWatchList/movieDetails/" + m._id;
+    }
+  } catch (e) {
+    res.status(500).json({ error: e.toString() });
+    return;
+  }
+
+  if (watchList) {
+    res.status(200);
+    res.render("wantToWatchList/removeFromWatchList", {
+      movieList: watchList,
+      title: "My Watch List",
+    });
+  } else {
+    res.status(500).json({ error: xss("Watch List Failed") });
+    return;
+  }
+});
+
 // Add a movie to the mongoDB movie database and user wantToWatchList database
 router.post("/add", async (req, res) => {
-  const userId = utils.checkId(req.session.user.id);
-  if (!req.body.movieId || typeof req.body.movieId !== "string")
-    throw "Error: movieId not found";
+  if (!xss(req.body.movieId) || typeof xss(req.body.movieId) !== "string") {
+    res.status(400).json({ error: "Error: movieId not found" });
+    return;
+  }
+
   const tmdbId = xss(req.body.movieId);
+
   let movie;
   try {
     movie = await TMDbIdGet(tmdbId);
   } catch (e) {
     res.status(500).json({ error: xss(e.toString()) });
+    return;
   }
 
   // if the movie is not already in the movie database
@@ -49,7 +81,9 @@ router.post("/add", async (req, res) => {
       res.status(400).json({ error: xss(e.toString()) });
       return;
     }
-
+    for (let i = 0; i < genre.length; i++) {
+      genre[i] = xss(genre[i]);
+    }
     try {
       movie = await movies.createMovie(
         xss(title),
@@ -58,30 +92,42 @@ router.post("/add", async (req, res) => {
         xss(releaseYear),
         parseInt(xss(runtime)),
         xss(mpaaRating),
-        genre, // TODO: XSSS THIS THANG
+        genre,
         parseInt(xss(TMDbId))
       );
     } catch (e) {
-      console.log(e.toString());
       res.status(500).json({ error: xss(e.toString()) });
     }
   }
-  const found = await users.addToWatchList(req.session.user._id, movie._id);
-  if (found) {
-    res.json(true);
+  try {
+    const found = await users.addToWatchList(req.session.user._id, movie._id);
+    if (found) {
+      res.json(true);
+    }
     return;
+  } catch (e) {
+    res.status(500).json({ error: xss(e.toString()) });
+    res.json(false);
   }
-  res.json(false);
 });
 
 // Remove a movie from the user wantToWatchList database
 router.post("/remove", async (req, res) => {
-  if (!req.body.movieId || typeof req.body.movieId !== "string")
-    throw "Error: movieId not found";
-  let movie = await movies.getMovieById(xss(req.body.movieId));
+  if (!xss(req.body.movieId) || typeof xss(req.body.movieId) !== "string") {
+    res.status(400).json({ error: "Error: movieId not found" });
+    return;
+  }
+
+  let movie;
+  try {
+    movie = await movies.getMovieById(xss(req.body.movieId));
+  } catch (e) {
+    res.status(500).json({ error: xss(e.toString()) });
+    return;
+  }
   if (!movie || !movie._id) throw "Error: Movie not found in movie database";
 
-  if (users.removeFromWatchList(req.session.user._id, movie._id)) {
+  if (await users.removeFromWatchList(req.session.user._id, movie._id)) {
     res.json(true);
     return;
   }
@@ -200,7 +246,7 @@ const TMDbIdGet = async (TMDbId) => {
   }
 };
 
-// GET /movies/TMDbId/:id
+// GET /wantToWatchList/movies/TMDbId/:id
 router.get("/movies/TMDbId/:id", async (req, res) => {
   // try to fetch movie by TMDbId id
   try {
@@ -210,6 +256,33 @@ router.get("/movies/TMDbId/:id", async (req, res) => {
     res.status(404).json({ error: xss(e.toString()) });
     return;
   }
+});
+
+// GET /wantToWatchList/
+router.get("/movieDetails/:id", async (req, res) => {
+  const movieId = req.params.id;
+  try {
+    utils.checkId(movieId);
+  } catch (e) {
+    res.status(400).json({ error: xss("Invalid id") });
+    return;
+  }
+
+  let movie;
+
+  // try to fetch movie
+  try {
+    movie = await movies.getMovieById(xss(movieId));
+  } catch (e) {
+    res.status(404).json({ error: xss("Movie not found") });
+    return;
+  }
+
+  movie.alt = movie.img.includes("../public")
+    ? "Poster Unvailable for"
+    : "Poster for" + movie.title;
+
+  res.render("movies/movieDetails", { title: movie.title, movie: movie });
 });
 
 module.exports = router;

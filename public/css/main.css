@@ -4,9 +4,7 @@
 
 body {
   margin: 0;
-  height: 100vh;
   width: 100vw;
-  overflow: hidden;
   font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande",
     "Lucida Sans", Arial, sans-serif;
   font-weight: 700;
@@ -91,6 +89,7 @@ body {
   background-color: aqua;
   transition: all 0.5s;
 }
+
 .signon-button:hover {
   background-color: chartreuse;
 }
@@ -236,4 +235,7 @@ img {
 .profile-tab p {
   font-weight: 600;
   color: #0062cc;
+}
+.watchList {
+  align-items: flex-start;
 }
