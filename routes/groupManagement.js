@@ -53,7 +53,6 @@ router.post('/create', async (req, res) => {
         let request = xss(req.body.groupName)
         let groupName = request;
         await groupDB.createGroup(req.session.user._id, groupName);
-        // Should go to page where group.currentSession.active is set to true, and currentSession.watchList is compiled, and group code is presented
         res.redirect('.');
     } catch(e) {
         res.status(400).json({ error: xss("Could not create group") });

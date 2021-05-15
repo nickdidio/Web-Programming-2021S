@@ -147,3 +147,7 @@ img {
 .watchList {
   align-items: flex-start;
 }
+
+.group-name {
+  font-weight: bold;
+}
