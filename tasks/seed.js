@@ -156,6 +156,9 @@ const main = async () => {
       howl._id.toString()
     );
     let review4 = await reviews.createReview("2021-05-04", "Literally my favorite movie please watch this", 5, "ReillyFitz", wind._id.toString())
+    let review5 = await reviews.createReview("2021-05-04", "meh", 4, "NickTheBrick", wind._id.toString())
+    let review6 = await reviews.createReview("2020-05-04", "Literal Garbage", 2, "notanassassin", mk._id.toString())
+
   } catch (e) {
     console.log(e);
   }
