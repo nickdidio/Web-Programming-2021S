@@ -20,4 +20,5 @@ module.exports = {
   users: getCollectionFn("users"),
   groups: getCollectionFn("groups"),
   movies: getCollectionFn("movies"),
+  pastSessions: getCollectionFn("pastSessions"),
 };
