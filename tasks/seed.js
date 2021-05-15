@@ -1,6 +1,8 @@
-const { movies, reviews } = require("../data");
+const { movies, reviews, groups, pastSessions, users } = require("../data");
 
 const connection = require("../config/mongoConnection.js");
+
+
 
 const howlObj = {
   title: "Howl's Moving Castle",
@@ -36,7 +38,24 @@ const sorryObj = {
 };
 
 const main = async () => {
-  let howl, inception, sorry;
+  let howl, inception, sorry, fawkes, generic, reilly, booth, group1;
+  //Reset database 
+  const db = await connection();
+  await db.dropDatabase();
+
+  try {
+    fawkes = await users.addUser("job@place.com", "john", "johnson", "notanassassin", "remember5november");
+    generic = await users.addUser("generic@mail.com", "user", "name", "username", "password");
+    reilly = await users.addUser("rtfitz99@gmail.com", "Reilly", "Fitzgerald", "ReillyFitz", "coffee");
+    booth = await users.addUser("lincoln@theatre.gov", "John Wilkes", "Booth", "BoomHeadShot", "sicsempertyrannus");
+    group1 = await groups.createGroup(reilly._id, "The Boyz")
+    await groups.addGroupMember(group1._id.toString(), fawkes._id.toString());
+    await groups.addGroupMember(group1._id.toString(), generic._id.toString());
+    group1 = await groups.getGroupById(group1._id.toString())
+    console.log(group1);
+  } catch (e) {
+    console.log(e);
+  }
 
   try {
     howl = await movies.createMovie(...Object.values(howlObj));
@@ -105,19 +124,28 @@ const main = async () => {
     console.log(e);
   }
 
-  //   try {
-  //     console.log(await movies.deleteMovie(howl._id));
-  //   } catch (e) {
-  //     console.log(e);
-  //   }
+    try {
+      console.log(await movies.deleteMovie(howl._id));
+    } catch (e) {
+      console.log(e);
+    }
 
-  //   try {
-  //     console.log(await movies.getAllMovies());
-  //   } catch (e) {
-  //     console.log(e);
-  //   }
+    try {
+      console.log(await movies.getAllMovies());
+    } catch (e) {
+      console.log(e);
+    }
 
-  const db = await connection();
+    //Test adding movies to users then creating a session
+    try {
+      await users.addToWatchList(fawkes._id.toString(), howl._id.toString());
+      await users.addToWatchList(fawkes._id.toString(), inception._id.toString());
+      await users.addToWatchList(reilly._id.toString(), sorry._id.toString());
+      await groups.createSession(group1_id.toString(), 3, []);
+    }catch (e) {
+      console.log(e)
+    }
+
   await db.serverConfig.close();
 
   console.log("Done!");
