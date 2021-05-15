@@ -304,7 +304,15 @@ img {
 }
 
 .watchList {
-  align-items: flex-start;
+  align-items: center;
+}
+
+#movieList {
+  list-style: none;
+}
+
+#movieList li {
+  display: inline;
 }
 
 .btn-primary {
