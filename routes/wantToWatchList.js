@@ -108,6 +108,7 @@ router.post("/add", async (req, res) => {
       genre[i] = xss(genre[i]);
     }
     try {
+
       movie = await movies.createMovie(
         xss(title),
         xss(desc),
@@ -131,7 +132,9 @@ router.post("/add", async (req, res) => {
     const found = await users.addToWatchList(req.session.user._id, movie._id);
     if (found) {
       res.json(true);
+      return;
     }
+    res.json(false)
     return;
   } catch (e) {
     res.status(500).json({ error: xss(e.toString()) });
