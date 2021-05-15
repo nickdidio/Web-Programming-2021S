@@ -6,6 +6,20 @@ const movies = mongoCollections.movies;
 const bcrypt = require("bcrypt");
 const utils = require("../utils");
 
+
+function checkUserParams(email, firstName, lastName, username, password){
+  const strArgs = [email, firstName, lastName, username, password];
+  const strArgNames = ["email", "first name", "last name", "username", "password"];
+
+  strArgs.forEach((arg, idx) => {
+    if (!arg || typeof arg !== "string" || arg.trim() === "") {
+      throw new Error(
+        `Must provide a non-null, non-empty value of type 'string' for ${strArgNames[idx]}.`
+      );
+    }
+  });
+}
+
 let exportedMethods = {
   // Get all users
   async getAllUsers() {
@@ -17,8 +31,9 @@ let exportedMethods = {
 
   // Get User By ID
   async getUserById(id) {
+    const parsedUserId = utils.checkId(id);
     const userCollection = await users();
-    const user = await userCollection.findOne({ _id: id });
+    const user = await userCollection.findOne({ _id: parsedUserId });
     if (!user) throw "User not found";
     return user;
   },
@@ -28,7 +43,7 @@ let exportedMethods = {
     utils.checkUserParameters(email, firstName, lastName, username, password);
 
     const userCollection = await users();
-
+    checkUserParams(email, firstName, lastName, username, password);
     let newUser = {
       _id: ObjectId(),
       firstName: firstName.trim(),
@@ -43,11 +58,14 @@ let exportedMethods = {
 
     const newInsertInformation = await userCollection.insertOne(newUser);
     if (newInsertInformation.insertedCount === 0) throw "Insert failed!";
-    return await this.getUserById(newInsertInformation.insertedId);
+    return await this.getUserById(newInsertInformation.insertedId.toString());
   },
 
   //Update a User
   async updateUser(id, updatedUser) {
+    utils.checkId(id);
+    const {email, firstName, lastName, username, password} = updatedUser;
+    checkUserParams(email,firstName,lastName,username,password);
     const user = await this.getUserById(id);
 
     let userUpdateInfo = {
@@ -151,14 +169,14 @@ let exportedMethods = {
 
   // Get a user's watchList
   async getWatchList(userId) {
-    const parsedUserId = utils.checkId(userId);
-    const user = await this.getUserById(parsedUserId);
+    utils.checkId(userId);
+    const user = await this.getUserById(userId);
     return user.watchList;
   },
 
   async getWatchedList(userId) {
-    const parsedUserId = utils.checkId(userId);
-    const user = await this.getUserById(parsedUserId);
+    utils.checkId(userId);
+    const user = await this.getUserById(userId);
     return user.watchedMovieList;
   },
 };

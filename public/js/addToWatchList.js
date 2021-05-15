@@ -194,7 +194,7 @@
         }),
       };
       $.ajax(requestConfig).then((response) => {
-        if (response) {
+        if (response && typeof response === "boolean") {
           movieItem.find(".addLink").html("This movie has been added");
         } else {
           errorMsg.empty();
@@ -352,14 +352,12 @@
 
     // Update the button with new text "This movie has been added"
     $.ajax(requestConfig).then((response) => {
-      if (typeof response === "boolean") {
-        if (response) {
-          addButton.children().html("This movie has been added");
-        } else {
-          errorMsg.empty();
-          errorMsg.append(`Error: This movie is already on your list.`);
-          errorMsgContainer.attr("hidden", false);
-        }
+      if (response && typeof response === "boolean") {
+        addButton.children().html("This movie has been added");
+      } else {
+        errorMsg.empty();
+        errorMsg.append(`Error: This movie is already on your list.`);
+        errorMsgContainer.attr("hidden", false);
       }
     });
   });
