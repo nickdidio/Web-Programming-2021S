@@ -84,13 +84,13 @@ const main = async () => {
     d = await users.addUser("idontknowdsemail@gmail.com", "D", "Newsome", "DNews", "coffee");
     nickerdoodles = await users.addUser("nickerdoodles@rocketmail.com", "Nick", "The Brick", "NickTheBrick", "password")
     booth = await users.addUser("lincoln@theatre.gov", "John Wilkes", "Booth", "BoomHeadShot", "sicsempertyrannus");
-    group1 = await groups.createGroup(reilly._id, "Best Buds")
-    group2 = await groups.createGroup(booth._id, "The Assassins")
+    group1 = await groups.createGroup(reilly._id.toString(), "Best Buds")
+    group2 = await groups.createGroup(booth._id.toString(), "The Assassins")
     await groups.addGroupMember(group2._id.toString(), fawkes._id.toString());
     await groups.addGroupMember(group1._id.toString(), generic._id.toString());
     await groups.addGroupMember(group2._id.toString(), generic._id.toString());
     group1 = await groups.getGroupById(group1._id.toString())
-    //console.log(group1);
+    console.log(group1)
   } catch (e) {
     console.log(e);
   }
@@ -100,7 +100,7 @@ const main = async () => {
     wind = await movies.createMovie(...Object.values(windObj));
     mk = await movies.createMovie(...Object.values(MKObj));
     soul = await movies.createMovie(...Object.values(soulObj));
-    console.log(howl);
+    //console.log(howl);
   } catch (e) {
     console.log(e);
   }
@@ -109,24 +109,24 @@ const main = async () => {
     inception = await movies.createMovie(...Object.values(inceptionObj));
     console.log(inception);
   } catch (e) {
-    console.log(e);
+    //console.log(e);
   }
 
   try {
     sorry = await movies.createMovie(...Object.values(sorryObj));
-    console.log(sorry);
+    //console.log(sorry);
   } catch (e) {
     console.log(e);
   }
 
   try {
-    console.log(await movies.getMovieById(howl._id));
+    //console.log(await movies.getMovieById(howl._id));
   } catch (e) {
     console.log(e);
   }
 
   try {
-    console.log(await movies.getAllMovies());
+    //console.log(await movies.getAllMovies());
   } catch (e) {
     console.log(e);
   }
@@ -164,19 +164,19 @@ const main = async () => {
   }
 
   try {
-    console.log(await reviews.getMovieReviews(howl._id));
+    //console.log(await reviews.getMovieReviews(howl._id));
   } catch (e) {
     console.log(e);
   }
 
     try {
-      console.log(await movies.getAllMovies());
+      //console.log(await movies.getAllMovies());
     } catch (e) {
       console.log(e);
     }
     try {
-      await users.addToWatchList(fawkes._id.toString(), howl._id);
-      await users.addToWatchList(fawkes._id.toString(), inception._id);
+      //await users.addToWatchList(fawkes._id.toString(), howl._id);
+      //await users.addToWatchList(fawkes._id.toString(), inception._id);
       await users.addToWatchList(fawkes._id.toString(), sorry._id);
       await users.addToWatchList(d._id.toString(), sorry._id);
       await users.addToWatchList(nickerdoodles._id.toString(), sorry._id);
