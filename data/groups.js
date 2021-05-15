@@ -8,8 +8,6 @@ const utils = require("../utils");
 const movies = require('./movies');
 const { getUserById, addToWatchList } = require("./users");
 
-
-
 const createGroup = async(groupLeaderId, groupName) => {
     let parsedLeaderId;
     try {
