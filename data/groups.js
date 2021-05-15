@@ -141,7 +141,7 @@ const createSession = async(groupId, voteCountNeeded, filters) => {
     let movieList = [];
 
     //Adds leader's movies to movieList
-    movieList = updateWatchList(groupId, movieList, decisionGroup.groupLeaderId)
+    movieList = updateWatchList(groupId, movieList, decisionGroup.groupLeaderId.toString())
 
 
     if (voteCountNeeded > decisionGroup.groupMembers.length) {
