@@ -100,8 +100,10 @@ router.post('/activate', async (req, res) => {
         console.log("Members: " + members)
         for(member of members) {
             movies = await userDB.getWatchList(member)
-            console.log(movies)
-            new_session.movieList.push(movies)
+            //console.log(movies)
+            for(m of movies) {
+                new_session.movieList.push({movie: m, votes: 0})
+            }
         }
         console.log(await groupDB.updateSession(req.body.groupId, new_session))
         req.session.groupID = req.body.groupId

@@ -30,14 +30,15 @@ const createPastSession = async(groupId, {sessionDate, sessionMembers, voteCount
     const groupCollection = await groups();
     const group = await groupCollection.findOne({ _id: parsedGroupId});
     group.pastSessions.push(newSession);
-    const updateInfo = await groupCollection.updateOne({_id: parsedId}, {$set: group});
+    group.currentSession.active = false;
+    const updateInfo = await groupCollection.updateOne({_id: parsedGroupId}, {$set: group});
     if (updateInfo.modifiedCount === 0) throw new Error ('Could not add past session to group history');
 };
 
 const getPastSessionById = async(sessionId) => {
     let parsedSessionId;
     try {
-        parsedSessionId = ObjectId(sessionId);
+        parsedSessionId = utils.checkId(sessionId);
     } catch(e) {
         throw new Error ("Could not get group: Invalid ID for group")
     }
