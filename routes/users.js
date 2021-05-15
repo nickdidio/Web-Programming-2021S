@@ -179,7 +179,7 @@ app.post("/signup", async function (req, res) {
     res.status(400);
     res.render("home/signup", {
       title: "Signup for FlikPik",
-      error: "Sign in error",
+      error: error,
       unauthenticated: true,
     });
   }
