@@ -27,21 +27,23 @@ const constructorMethod = (app) => {
   // routes
   //log middleware
   app.use(logMiddleware);
-  app.use("/home/signup", (req, res) => {
-    res.render("home/signup", { title: "Signup for FlikPik" });
-  });
-  app.use("/home/login", (req, res) => {
-    res.render("home/login", { title: "Login to FlikPik" });
-  });
   app.use("/", userRoutes);
+
+  // Prevent unauthenticated user from accessing routes that need authentification
   app.use("*", (req, res, next) => {
-    // If user is not logged in
     if (!req.session.user) {
       res.render("home/landing", { title: "FlikPik" });
     } else {
       next();
     }
   });
+
+  // app.use("/home/signup", (req, res) => {
+  //   res.render("home/signup", { title: "Signup for FlikPik" });
+  // });
+  // app.use("/home/login", (req, res) => {
+  //   res.render("home/login", { title: "Login to FlikPik" });
+  // });
 
   app.use("/reviews", reviewRoutes);
   app.use("/movies", movieRoutes);

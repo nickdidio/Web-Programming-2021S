@@ -6,6 +6,7 @@ const bcrypt = require("bcrypt");
 const utils = require("../utils");
 const userData = data.users;
 const xss = require("xss");
+const { response } = require("express");
 
 // Cookie
 app.use(
@@ -25,6 +26,10 @@ const activeSession = function (req) {
 
 // Get landing page
 app.get("/", async function (req, res) {
+  if (activeSession(req)) {
+    res.redirect("/home/profile");
+    return;
+  }
   res.render("home/landing", { title: "FlikPik" });
 });
 
@@ -41,6 +46,11 @@ app.get("/home/login", async function (req, res) {
 // Post login form info
 // Redirect to profile page if authorized
 app.post("/login", async function (req, res) {
+  if (activeSession(req)) {
+    res.redirect("/home/profile");
+    return;
+  }
+
   const password = req.body.password;
   const username = req.body.username;
   // Check if username or password is provided
@@ -73,7 +83,14 @@ app.post("/login", async function (req, res) {
           });
           return;
         }
-      } catch (error) {}
+      } catch (error) {
+        res.status(401);
+        res.render("home/login", {
+          title: "Login Error",
+          error: "Invalid username and/or password. Try again.",
+        });
+        return;
+      }
     }
   }
   // If no active cookie is found
@@ -89,12 +106,21 @@ app.post("/login", async function (req, res) {
 
 // Get signup page
 app.get("/home/signup", async function (req, res) {
+  if (activeSession(req)) {
+    res.redirect("/home/profile");
+    return;
+  }
   res.render("home/signup", { title: "Signup for FlikPik" });
 });
 
 // Post form from signup info
 // Redirect to profile page if authorized
 app.post("/signup", async function (req, res) {
+  if (activeSession(req)) {
+    res.redirect("/home/profile");
+    return;
+  }
+
   const userInfo = req.body;
   // Check for info submitted
   if (!userInfo) {
