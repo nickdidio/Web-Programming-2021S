@@ -23,7 +23,7 @@ router.get("/", async (req, res) => {
           active: group.currentSession.active,
         });
       }
-      res.render("groups/groupList", { groupList: groupList }); //renders page under groups/grouplist.handlebars
+      res.render("groups/groupList", { groupList: groupList, title: "Group List" }); //renders page under groups/grouplist.handlebars
       return;
     }
     res.render("groups/groupList", { groupList: false }); //renders page under groups/grouplist.handlebars
