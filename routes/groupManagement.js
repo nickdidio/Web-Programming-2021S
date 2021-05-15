@@ -1,9 +1,10 @@
 const express = require("express");
 const router = express.Router();
-const userDB = require("../data/users");
-const groupDB = require("../data/groups");
-const utils = require("../utils");
+const userDB = require('../data/users');
+const groupDB = require('../data/groups');
+const utils = require("../utils")
 const xss = require("xss");
+
 
 //gets user's groups
 router.get("/", async (req, res) => {
@@ -87,8 +88,6 @@ router.post('/activate', async (req, res) => {
         res.status(400).json({ error: xss("Could not join group") });
         return
     }
-    
-
 });
 
 module.exports = router;

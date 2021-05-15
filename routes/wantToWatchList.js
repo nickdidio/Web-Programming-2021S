@@ -35,7 +35,7 @@ router.get("/", async (req, res) => {
       title: "My Watch List",
     });
   } else {
-    res.status(500).json({ error: xss("Watch List Failed") });
+    res.status(500).render("errors/error", { error: xss("Watch List Failed") });
     return;
   }
 });
@@ -150,6 +150,25 @@ router.get("/add", (req, res) => {
   res.render("wantToWatchList/addToWatchList", {
     title: "Add to My Watch List",
   });
+});
+
+//How to view and remove items from list
+router.get("/", async (req, res) => {
+  const watchListIds = await users.getWatchList(req.session.user._id);
+  let watchList = [];
+  for (let i = 0; i < watchListIds.length; i++) {
+    watchList.push(await movies.getMovieById(watchListIds[i]));
+  }
+  if (watchList) {
+    res.status(200);
+    res.render("wantToWatchList/removeFromWatchList", {
+      movieList: watchList,
+      title: "My Watch List",
+    });
+  } else {
+    res.status(500).json({ error: xss("Watch List Failed") });
+    return;
+  }
 });
 
 // Use TMDb API to get query results

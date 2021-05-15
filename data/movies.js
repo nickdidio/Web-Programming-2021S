@@ -113,26 +113,9 @@ const getMovieByTMDbId = async (id) => {
   return movie;
 };
 
-const deleteMovie = async (id) => {
-  const parsedId = ObjectId(id);
-
-  const movieCollection = await movies();
-
-  const deleted = await movieCollection.findOneAndDelete({
-    _id: parsedId,
-  });
-
-  if (deleted.value === null) {
-    throw new Error(`Could not delete movie with id of ${id}`);
-  }
-
-  return { movieId: id, deleted: true };
-};
-
 module.exports = {
   createMovie,
   getAllMovies,
   getMovieById,
-  deleteMovie,
   getMovieByTMDbId,
 };
