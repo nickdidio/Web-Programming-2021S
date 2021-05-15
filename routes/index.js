@@ -5,7 +5,7 @@ const movieSelectRoutes = require("./movieSelection");
 const reviewRoutes = require("./reviews");
 const movieRoutes = require("./movies.js");
 const userRoutes = require("./users");
-const groupManagement = require("./groupManagement")
+const groupManagement = require("./groupManagement");
 const e = require("express");
 
 // Log user's behavior
@@ -36,9 +36,9 @@ const constructorMethod = (app) => {
   app.use("/", userRoutes);
   app.use("*", (req, res, next) => {
     // If user is not logged in
-    if(!req.session.user){
+    if (!req.session.user) {
       res.render("home/landing", { title: "FlikPik" });
-    }else{
+    } else {
       next();
     }
   });
@@ -55,13 +55,16 @@ const constructorMethod = (app) => {
   //route for group list and creation
   app.use("/groups", groupManagement);
 
-
   app.use("/users", userRoutes);
 
   // show view for 404 errors for undefined routes
   app.use("*", (req, res) => {
     res.status(404);
-    res.render("errors/notFound", { title: "Page Not Found" });
+    res.render("errors/error", {
+      title: "error",
+      code: 404,
+      error: "Page Not Found",
+    });
   });
 };
 
