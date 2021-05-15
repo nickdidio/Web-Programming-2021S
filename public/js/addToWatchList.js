@@ -54,15 +54,15 @@
             <div class="profile-img">
               <img src="${img}" alt="${
         img.includes("../public") ? "Poster Unvailable for" : "Poster for"
-      } ${movie.title}" width="270" height="400">
+      } ${movie.title}" width="270" height="200">
             </div>
           </div>
           <div class="col-md-6">
             <div class="profile-head">
               <h1>${title ? title : "N/A"}</h1>
-              <h6>${
+              <h2>${
                 !mpaaRating || mpaaRating === "NR" ? "Not Rated" : mpaaRating
-              }</h6>
+              }</h2>
               <p class="proile-rating">If this movie looks interesting, <span>add it to your watch list!</span></p>
               <ul class="nav nav-tabs" id="myTab" role="tablist">
                   <li class="nav-item">
@@ -212,7 +212,6 @@
     // Basic error handling
     const unrefinedInput = searchInput.val();
     if (typeof unrefinedInput !== "string") {
-      
       errorMsg.empty();
       errorMsg.append(`Error: Input must be a string.`);
       errorMsgContainer.attr("hidden", false);
