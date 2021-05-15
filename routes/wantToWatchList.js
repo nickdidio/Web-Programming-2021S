@@ -25,6 +25,9 @@ router.get("/", async (req, res) => {
     return;
   }
 
+  if (req.body && req.body.error) {
+    console.log(req.body.error);
+  }
   if (watchList) {
     res.status(200);
     res.render("wantToWatchList/removeFromWatchList", {

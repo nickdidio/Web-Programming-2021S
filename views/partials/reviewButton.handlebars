@@ -16,20 +16,25 @@ Write a New Review
             <form id="reviewText" method="POST" action={{this.reviewsRoute}}>
                <div class="form-group">
                   <label for="reviewTextArea">Write a new review</label>
-                  <textarea class="form-control" id="reviewTextArea" name="reviewText" rows="3"></textarea>
+                  <textarea class="form-control" id="reviewTextArea" name="reviewText" rows="3" required="required"></textarea>
+                  <br>
+                  <div class="alert alert-danger" id="reviewTextAlert" hidden="true">
+                     New review text must be non-empty
+                  </div>
                   <label for="newReviewRating">Rate the movie from 1 to 5</label>
                   <br>
-                  <input type="number" name="rating" id="newReviewRating" max="5" min="1" default="" />
+                  <input type="number" name="rating" id="newReviewRating" max="5" min="1" default="" required="required"/>
                   <br>
                   <label for="redirectLink" hidden></label>
                   <input type="text" name="redirect" value="{{this.redirect}}" hidden/>
                </div>
                <div class="modal-footer">
                   <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                  <button type="submit" class="btn btn-primary">Post this review</button>
+                  <button type="submit" class="btn btn-primary" id="postNewReviewButton">Post this review</button>
                </div>
          </div>
          </form>
       </div>
    </div>
 </div>
+<script src="/public/js/reviewButton.js"></script>
