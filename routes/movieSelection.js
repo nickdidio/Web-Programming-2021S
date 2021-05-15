@@ -18,11 +18,12 @@ router.get('/', async (req, res) => {
         // group leader shouldn't use this route
         return
     }
-
     sesh.groupID = req.query.id
     group = {}
+
     try {
-        group = await groups.getGroupById(req.query.id)
+        group = await groups.getGroupById(sesh.groupID)
+        //console.log("Group: " + group)
     } catch(e) {
         res.status(400).send("<h3>That group doesn't exist!</h3>")
     }
@@ -97,7 +98,7 @@ router.get('/done', async(req, res) => {
     if(group.currentSession.chosen != "na") {
         sesh.chosen = true
         sesh.active = false
-        res.redirect("/pick")
+        res.redirect(`/pick?id=${sesh.groupID}`)
         return
     } else {
         res.render('movieSelection/home', 
@@ -211,7 +212,7 @@ router.post('/choice/:dec', async (req, res) => {
 
     sesh.judged++;
     if(decision == "yes") {
-        console.log("groupIDDD: " + sesh.groupID)
+        //console.log("groupIDDD: " + sesh.groupID)
         result = await groups.addVote(sesh.groupID, movie)
         if(result.winner) {
             // update current session with new chosen ID
