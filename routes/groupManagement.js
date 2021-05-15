@@ -23,7 +23,7 @@ router.get("/", async (req, res) => {
           active: group.currentSession.active,
         });
       }
-      res.render("groups/groupList", { groupList: groupList }); //renders page under groups/grouplist.handlebars
+      res.render("groups/groupList", { groupList: groupList, title: "Group List" }); //renders page under groups/grouplist.handlebars
       return;
     }
     res.render("groups/groupList", { groupList: false }); //renders page under groups/grouplist.handlebars
@@ -33,6 +33,28 @@ router.get("/", async (req, res) => {
   }
 });
 
+//gets user's groups 
+router.get('/', async (req, res) => {
+    try{
+        let userId = utils.checkId(req.session.user._id)
+        let user = await userDB.getUserById(userId); //get userid from request
+        if (user.userGroups) {
+            let groupList = [];
+            for (let groupId of user.userGroups) {
+                let group = await groupDB.getGroupById(groupId);
+                let leader = (group.groupLeaderId == userId)
+                groupList.push({name: group.groupName, id: groupId, leader: leader, active: group.currentSession.active});
+            }
+            console.log(groupList);
+            res.render('groups/groupList', {groupList: groupList}) //renders page under groups/grouplist.handlebars
+            return;
+        }
+        res.render('groups/groupList', {groupList: false}) //renders page under groups/grouplist.handlebars
+        return;
+    } catch (e) {
+        res.status(500).render("errors/error",{ error: "Could not get group list" });
+    }
+});
 //Adds user to new group with id of id
 router.post("/join", async (req, res) => {
   //todo: check user input
@@ -78,9 +100,10 @@ router.post('/activate', async (req, res) => {
         console.log("Members: " + members)
         for(member of members) {
             movies = await userDB.getWatchList(member)
+            console.log(movies)
             new_session.movieList.push(movies)
         }
-        groupDB.updateSession(req.body.groupId, new_session)
+        console.log(await groupDB.updateSession(req.body.groupId, new_session))
         req.session.groupID = req.body.groupId
         res.redirect('/pick/list')
         return
@@ -89,6 +112,7 @@ router.post('/activate', async (req, res) => {
         res.status(400).json({ error: xss("Could not join group") });
         return
     }
+    
 });
 
 module.exports = router;
