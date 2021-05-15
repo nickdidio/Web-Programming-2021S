@@ -12,7 +12,6 @@ body {
   align-items: center;
   justify-content: center;
   color: Black;
-  background-color: #555;
 }
 
 .login-div {
@@ -31,6 +30,10 @@ body {
   border-radius: 40px;
   background-color: #ecf0f3;
   box-shadow: 13px 13px 20px #cbced1 -13px -13px 20px #fff;
+}
+
+a {
+  color: #0072ee;
 }
 
 .cardTitle {
@@ -81,6 +84,10 @@ body {
   text-align: center;
   background-color: aqua;
   transition: all 0.5s;
+}
+
+.signon-button {
+  background-color: #008484;
 }
 
 .signon-button:hover {
@@ -146,4 +153,20 @@ img {
 
 .watchList {
   align-items: flex-start;
+}
+
+.btn-primary {
+  background-color: #0072ee;
+}
+
+.btn-outline-primary {
+  color: #0072ee;
+}
+
+.btn-success {
+  background-color: #008a00;
+}
+
+.btn-link {
+  color: #0072ee;
 }

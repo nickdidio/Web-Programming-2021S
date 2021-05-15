@@ -11,7 +11,7 @@ router.get("/:id", async (req, res) => {
   try {
     utils.checkId(movieId);
   } catch (e) {
-    res.status(400).json({ error: xss("Invalid id") });
+    res.status(404).render("errors/error",{ error: "Invalid ID" });
     return;
   }
 
@@ -20,7 +20,7 @@ router.get("/:id", async (req, res) => {
     const movieReviews = await reviews.getMovieReviews(xss(movieId));
     res.json(movieReviews);
   } catch (e) {
-    res.status(404).json({ error: xss("Review not found") });
+    res.status(404).render("errors/error",{ error: "Review Not found" });
     return;
   }
 });
@@ -32,7 +32,7 @@ router.post("/:id", async (req, res) => {
   try {
     utils.checkId(movieId);
   } catch (e) {
-    res.status(400).json({ error: xss(e.toString()) });
+    res.status(500).render("errors/error",{ error: xss(e.toString()) });
     return;
   }
 
@@ -41,9 +41,7 @@ router.post("/:id", async (req, res) => {
   try {
     utils.checkReviewParameters(reviewDate, reviewText, rating, username);
   } catch (e) {
-    res.status(400).json({
-      error: xss(e.toString()),
-    });
+    res.status(500).render("errors/error",{ error: xss(e.toString()) });
     return;
   }
 
@@ -57,7 +55,8 @@ router.post("/:id", async (req, res) => {
     );
     res.json(newReview);
   } catch (e) {
-    res.status(500).json({ error: xss(e.toString()) });
+    res.status(500).render("errors/error",{ error: xss(e.toString()) });
+    return;
   }
 });
 

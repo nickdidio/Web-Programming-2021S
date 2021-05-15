@@ -39,7 +39,6 @@ app.get("/home/login", async function (req, res) {
 app.post("/login", async function (req, res) {
   const password = req.body.password;
   const username = req.body.username;
-  console.log("CONTROLAASDFG")
   // Check if username or password is provided
   if (!username || !password) {
     res.status(401);

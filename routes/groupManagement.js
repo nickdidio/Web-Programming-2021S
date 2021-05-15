@@ -12,7 +12,6 @@ router.get('/', async (req, res) => {
     try{
         let userId = utils.checkId(req.session.user._id)
         let user = await userDB.getUserById(userId); //get userid from request
-        console.log(user)
         if (user.userGroups) {
             let groupList = [];
             for (let groupId of user.userGroups) {
@@ -27,7 +26,7 @@ router.get('/', async (req, res) => {
         res.render('groups/groupList', {groupList: false}) //renders page under groups/grouplist.handlebars
         return;
     } catch (e) {
-        res.status(400).json({ error: xss("Could not get group list") });
+        res.status(500).render("errors/error",{ error: "Could not get group list" });
     }
     
 });
@@ -42,7 +41,7 @@ router.post('/join', async (req, res) => {
         group = groupDB.addGroupMember(groupId, userId);
         res.redirect('.') 
     } catch (e) {
-        res.status(400).json({ error: xss("Could not join group") });
+        res.status(400).render("errors/error",{ error: "Could not join group" });
     }
     
 
@@ -55,7 +54,7 @@ router.post('/create', async (req, res) => {
         await groupDB.createGroup(req.session.user._id, groupName);
         res.redirect('.');
     } catch(e) {
-        res.status(400).json({ error: xss("Could not create group") });
+        res.status(400).render("errors/error",{ error: "Could not create group" });
     }
     
 });
