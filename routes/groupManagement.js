@@ -24,7 +24,7 @@ router.get("/", async (req, res) => {
       }
       res.render("groups/groupList", {
         groupList: groupList,
-        title: "Group List",
+        title: "Group List"
       }); //renders page under groups/grouplist.handlebars
       return;
     }
@@ -120,7 +120,10 @@ router.post("/activate", async (req, res) => {
       movies = await userDB.getWatchList("" + member);
       //console.log(movies)
       for (m of movies) {
-        new_session.movieList.push({ movie: m, votes: 0 });
+        allowed = groups.applyFilters(new_session.filters, m)
+        if(m) {
+          new_session.movieList.push({ movie: m, votes: 0 });
+        }
       }
     }
     console.log(await groupDB.updateSession(req.body.groupId, new_session));
