@@ -129,6 +129,7 @@ router.get('/list', async (req, res) => {
 
     sesh = req.session
     group = {}
+
     try {
         group = await groups.getGroupById(sesh.groupID)
     } catch(e) {
@@ -150,10 +151,11 @@ router.get('/list', async (req, res) => {
     for(item of group.currentSession.movieList) {
         sesh.movie_list.push(item.movie)
     }
-    if(sesh.movie_list.length == 0) {
+    if(sesh.movie_list[0] == undefined) {
         res.status(400).send("<h3>No movies to choose from!</h3>")
         return
     }
+    //console.log(sesh.movie_list)
     /*for (const [key, value] of Object.entries(group.currentSession.roster)) {
         sesh.movie_list.push(value)
     }*/
