@@ -9,7 +9,7 @@ const xss = require("xss");
 router.get("/", async (req, res) => {
   try {
     let userId = utils.checkId(req.session.user._id);
-    let user = await userDB.getUserById(userId); //get userid from request
+    let user = await userDB.getUserById(""+userId); //get userid from request
     if (user.userGroups) {
       let groupList = [];
       for (let groupId of user.userGroups) {
@@ -31,6 +31,7 @@ router.get("/", async (req, res) => {
     res.render("groups/groupList", { groupList: false }); //renders page under groups/grouplist.handlebars
     return;
   } catch (e) {
+    console.log(e)
     res.status(400).json({ error: xss("Could not get group list") });
   }
 });
