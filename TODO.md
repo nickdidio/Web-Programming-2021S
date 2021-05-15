@@ -7,3 +7,4 @@
 7. Movie Details and Review Styling (D)
 8. Seeding the Database \*\*
 9. Want to Watch List Styling (D)
+10. HTML Validator
