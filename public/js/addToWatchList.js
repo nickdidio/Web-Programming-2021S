@@ -4,7 +4,8 @@
   const searchInput = $("#search_term");
   const moviesList = $("#movieList");
   const movieDiv = $(".movie");
-  const errorMsg = $(".error");
+  const errorMsgContainer = $("#searchMoviesErrorContainer");
+  const errorMsg = $("#searchMoviesError");
   const randButton = $("#randomButton");
   const addButton = $("#addMovieButton");
   const date = new Date();
@@ -106,7 +107,7 @@
     movieItem.on("click", ".movieLink", (event) => {
       event.preventDefault();
       moviesList.attr("hidden", true);
-      errorMsg.attr("hidden", true);
+      errorMsgContainer.attr("hidden", true);
       movieDiv.empty();
       const movieId = movieItem.find(".movieLink").attr("id");
       showMovieDetails(movieId);
@@ -131,7 +132,7 @@
         } else {
           errorMsg.empty();
           errorMsg.append(`Error: This movie is already on your list.`);
-          errorMsg.attr("hidden", false);
+          errorMsgContainer.attr("hidden", false);
         }
       });
     });
@@ -146,7 +147,7 @@
     if (typeof unrefinedInput !== "string") {
       errorMsg.empty();
       errorMsg.append(`Error: Input must be a string.`);
-      errorMsg.attr("hidden", false);
+      errorMsgContainer.attr("hidden", false);
       movieDiv.attr("hidden", true);
       addButton.attr("hidden", true);
       moviesList.attr("hidden", true);
@@ -157,7 +158,7 @@
         errorMsg.append(
           `Error: Input is too long, input cannot be greater than 200 characters.`
         );
-        errorMsg.attr("hidden", false);
+        errorMsgContainer.attr("hidden", false);
         movieDiv.attr("hidden", true);
         addButton.attr("hidden", true);
         moviesList.attr("hidden", true);
@@ -205,7 +206,7 @@
               moviesList
                 .children()
                 .each((index, element) => bindEventsToMovieItem($(element)));
-              errorMsg.attr("hidden", true);
+              errorMsgContainer.attr("hidden", true);
               movieDiv.attr("hidden", true);
               addButton.attr("hidden", true);
               moviesList.attr("hidden", false);
@@ -216,7 +217,7 @@
               errorMsg.append(
                 `Error: No movies were found that matched the given search term, "${userInput}".`
               );
-              errorMsg.attr("hidden", false);
+              errorMsgContainer.attr("hidden", false);
               movieDiv.attr("hidden", true);
               addButton.attr("hidden", true);
               moviesList.attr("hidden", true);
@@ -229,7 +230,7 @@
           errorMsg.append(
             `Error: You must input something into the search bar. "${userInput}".`
           );
-          errorMsg.attr("hidden", false);
+          errorMsgContainer.attr("hidden", false);
         }
       }
     }
@@ -257,11 +258,11 @@
         showMovieDetails(movieId);
         addButton.children().html("Add this movie to my list");
         addButton.attr("hidden", false);
-        errorMsg.attr("hidden", true);
+        errorMsgContainer.attr("hidden", true);
       } else {
         errorMsg.empty();
         errorMsg.append(`Error: No movies were found for some reason.`);
-        errorMsg.attr("hidden", false);
+        errorMsgContainer.attr("hidden", false);
       }
     });
   });
@@ -288,7 +289,7 @@
         } else {
           errorMsg.empty();
           errorMsg.append(`Error: This movie is already on your list.`);
-          errorMsg.attr("hidden", false);
+          errorMsgContainer.attr("hidden", false);
         }
       }
     });

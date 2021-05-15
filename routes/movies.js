@@ -15,7 +15,12 @@ router.get("/:id", async (req, res) => {
   try {
     utils.checkId(movieId);
   } catch (e) {
-    res.status(400).render("errors/error",{ error: xss("Invalid id") });
+    res.status(400);
+    res.render("errors/error", {
+      title: "error",
+      code: 400,
+      error: xss("Invalid id"),
+    });
     return;
   }
 
@@ -24,7 +29,12 @@ router.get("/:id", async (req, res) => {
     const movie = await movies.getMovieById(xss(movieId));
     res.json(movie);
   } catch (e) {
-    res.status(400).render("errors/error",{ error: xss("Movie not found") });
+    res.status(400);
+    res.render("errors/error", {
+      title: "error",
+      code: 400,
+      error: xss("Movie not found"),
+    });
     return;
   }
 });
