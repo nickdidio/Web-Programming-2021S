@@ -1,5 +1,14 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
+<<<<<<< HEAD
+const userDB = require('../data/users');
+const groupDB = require('../data/groups');
+const utils = require("../utils")
+const xss = require("xss");
+
+
+
+=======
 const groups = require('../data/groups');
 const users = require('../data/users')
 const pastSessions = require('../data/pastSessions');
@@ -9,7 +18,9 @@ const session = require('express-session');
 router.use(express.static('public'));
 
 // sesh.active -> once a user enters starts judging, they're 'active' until a movie is selected as a winner by the group
+>>>>>>> origin/main
 
+//gets user's groups 
 router.get('/', async (req, res) => {
     sesh = req.session
     if(!req.session.user) {
@@ -40,6 +51,15 @@ router.get('/', async (req, res) => {
             //sesh.active = true
             res.redirect("/pick/list")
             return
+        } else {
+            group.currentSession.sessionMembers.push(sesh.user._id)
+            res = groups.updateSession(sesh.groupID, group)
+            if(!res) {
+                res.status(400).send("Could not update currentSession")
+                return
+            }
+            res.render('groups/groupList', {groupList: groupList}) //renders page under groups/grouplist.handlebars
+            return;
         }
         // Load user's personal WtW list into group list
         sesh = req.session
