@@ -12,11 +12,7 @@ const { getUserById } = require("./users");
 
 const createGroup = async(groupLeaderId, groupName) => {
     let parsedLeaderId;
-    try {
-        parsedLeaderId = ObjectId(groupLeaderId);
-    } catch(e) {
-        throw new Error ("Could not create group: Invalid ID")
-    }
+    parsedLeaderId = utils.checkId(groupLeaderId);
     if (typeof(groupName) != 'string') {
         throw new Error ("Could not create group: Name must be a string")
     }
@@ -53,14 +49,8 @@ const createGroup = async(groupLeaderId, groupName) => {
 
 
 const addGroupMember = async (groupId, userId) => {
-    let parsedGroupId;
-    let parsedUserId;
-    try {
-        parsedGroupId = await utils.checkId(groupId);
-        parsedUserId = await utils.checkId(userId);
-    } catch(e) {
-        throw new Error ("Could not add to group: Invalid ID for user or group")
-    }
+    let parsedGroupId = await utils.checkId(groupId);
+    let parsedUserId = await utils.checkId(userId);
     const groupCollection = await groups();
     let group = await getGroupById(groupId);
     if (!group) {
@@ -85,23 +75,13 @@ const addGroupMember = async (groupId, userId) => {
 
 
 const getGroupById = async (groupId) => {
-    let parsedGroupId;
-    try {
-        parsedGroupId = ObjectId(groupId);
-    } catch(e) {
-        throw new Error ("Could not get group: Invalid ID for group")
-    }
+    let parsedGroupId = utils.checkId(groupId);
     const groupCollection = await groups();
     return groupCollection.findOne({ _id: parsedGroupId});
 };
 
 const deleteGroup = async (groupId) => {
-    let parsedGroupId;
-    try {
-        parsedGroupId = ObjectId(groupId);
-    } catch(e) {
-        throw new Error ("Could not delete group: Invalid ID for group")
-    }
+    let parsedGroupId= utils.checkId(groupId);
     const groupCollection = await groups();
 
     const deleted = await groupCollection.findOneAndDelete({_id: parsedGroupId,});
@@ -114,12 +94,7 @@ const deleteGroup = async (groupId) => {
 //Takes in a groupid, and the leader's votecount and filters
 //sets appropriate variables in group.currentsession
 const createSession = async(groupId, voteCountNeeded, filters) => {
-    let parsedGroupId;
-    try {
-        parsedGroupId = utils.checkId(groupId);
-    } catch(e) {
-        throw new Error ("Could not create session: Invalid group ID")
-    }
+    let parsedGroupId = utils.checkId(groupId);
     if (typeof(voteCountNeeded) != 'number' || voteCountNeeded < 1) {
         throw new Error(`voteCount must be positive integer greater than 0`);
     }
@@ -128,7 +103,7 @@ const createSession = async(groupId, voteCountNeeded, filters) => {
     const groupCollection = await groups();   
     const userCollection = await usersCollection();
 
-    let decisionGroup = await getGroupById(parsedGroupId);
+    let decisionGroup = await getGroupById(groupId);
     if (!decisionGroup) {
         throw new Error(`No group had id of ${id}`);
     }
@@ -155,7 +130,7 @@ const createSession = async(groupId, voteCountNeeded, filters) => {
 
     const updateInfo = await groupCollection.updateOne({_id: parsedGroupId}, {$set: {currentSession: newSession}});
     if (updateInfo.modifiedCount === 0) throw new Error ('Could not create new session');
-    return await groupCollection.getGroupById(parsedGroupId);
+    return await getGroupById(groupId);
 };
 
 //adds a vote to movieId, returns if vote decides outcome
@@ -173,7 +148,7 @@ const addVote = async(groupId, movieId) => {
             }
         }
     }
-    let parsedGroupId = ObjectId(groupId)
+    let parsedGroupId = utils.checkId(groupId)
     const groupCollection = await groups();   
     const updateInfo = await groupCollection.updateOne({_id: parsedGroupId}, {$set: group});
     if (updateInfo.modifiedCount === 0) throw new Error ('Could not add vote');
@@ -181,12 +156,9 @@ const addVote = async(groupId, movieId) => {
 }
 
 const updateSession = async(groupId, {sessionDate, sessionMembers, voteCountNeeded, movieList, filters, chosen, active}) => {
-    let parsedGroupId;
-    try {
-        parsedGroupId = utils.checkId(groupId)
-    } catch(e) {
-        throw new Error ("Could not update session: Invalid ID");
-    }
+    let parsedGroupId = utils.checkId(groupId);
+
+
     const groupCollection = await groups();   
     let updatedSession = {
         sessionDate,
@@ -235,22 +207,18 @@ const validSession = ({sessionDate, sessionMembers, voteCountNeeded, movieList, 
 
 //gets users watchlist, runs it through current session filter, both returns and modifies watchList
 const updateWatchList = async(groupId, watchList, userId) => {
-    let parsedUserId;
-    let parsedGroupId
-    try {
-        parsedUserId = utils.checkId(userId);
-        parsedGroupId = utils.checkId(groupId);
-    } catch(e) {
-        throw new Error ("Invalid user or group ID")
-    }
+    let parsedUserId = utils.checkId(userId);
+    let parsedGroupId = utils.checkId(groupId);
+    
     if (!Array.isArray(watchList)){
         throw new Error ("Watchlist must be of type list")
     }
     let user;
     let group;
+    
     try {
         group = await getGroupById(groupId);
-        user = await getUserById(parsedUserId);
+        user = await users.getUserById(parsedUserId);
     } catch (e) {
         throw new Error ("UserId or GroupId not found!")
     }
@@ -268,7 +236,8 @@ const updateWatchList = async(groupId, watchList, userId) => {
     //Doesnt add movie if already watched by group or if its already in the watch list
     for (let movieId of userList) {
         if(!previousMovies.includes(movieId) && !watchList.includes(movieId)){
-            if (applyFilters(filter, movieId)) {
+            let allowed = await applyFilters(filter, movieId.toString())
+            if (allowed) {
                 watchList.push(movieId);
             } 
         }
@@ -278,18 +247,13 @@ const updateWatchList = async(groupId, watchList, userId) => {
 
 //returns true or false if movie pases filters
 const applyFilters = async(filters, movieId) => {
-    let parsedMovieId;
-    let movie
-    try {
-        parsedMovieId = utils.checkId(movieId);
-        movie = await movies.getMovieById(movieId)
-    } catch (e) {
-        throw new Error ("Invalid movie id")
-    }
+    let parsedMovieId = utils.checkId(movieId);
+    
+    let movie = await movies.getMovieById(movieId)
+
     if (!movie) {
         throw new Error ("No movie exists with that ID")
     }
-
     if (filters.genres.length > 0) {
         //if theres no overlap between provided genres and genres return false
         let intersection = (filters.genres.filter(x => movie.genre.includes(x)))
@@ -305,27 +269,21 @@ const applyFilters = async(filters, movieId) => {
     if (filters.mpaa){
         //Compare rating to max rating 
         if (movie.mpaaRating == 'NR' || movie.mpaaRating == 'Not Rated'){
-            console.log("1")
             return false;
         }
         if (filters.mpaa == 'G' && movie.mpaaRating != 'G') {
-            console.log("2")
             return false
         }
         if (filters.mpaa == 'PG' && (movie.mpaaRating != 'G' && movie.mpaaRating != 'PG')) {
-            console.log("3")
             return false
         }
         if (filters.mpaa == 'PG-13' && (movie.mpaaRating != 'G' && movie.mpaaRating != 'PG' && movie.mpaaRating != 'PG-13')) {
-            console.log("4")
             return false
         }
         if (filters.mpaa == 'R' && (movie.mpaaRating != 'G' && movie.mpaaRating != 'PG' && movie.mpaaRating != 'PG-13' && movie.mpaaRating != 'R')) {
-            console.log("5")
             return false
         }
         if (filters.mpaa == 'NC-17' && (movie.mpaaRating != 'G' && movie.mpaaRating != 'PG' && movie.mpaaRating != 'PG-13' && movie.mpaaRating != 'R' && movie.mpaaRating != 'NC-17')) {
-            console.log("6")
             return false
         }
 

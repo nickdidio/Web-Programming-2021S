@@ -10,7 +10,7 @@ const howlObj = {
   img: "https://image.tmdb.org/t/p/w500/TkTPELv4kC3u1lkloush8skOjE.jpg",
   releaseYear: "2004-11-19",
   runtime: 119,
-  mpaaRating: "NR",
+  mpaaRating: "PG",
   genre: ["Fantasy", "Animation", "Adventure"],
   TMDbId: 4935,
 };
@@ -48,11 +48,11 @@ const main = async () => {
     generic = await users.addUser("generic@mail.com", "user", "name", "username", "password");
     reilly = await users.addUser("rtfitz99@gmail.com", "Reilly", "Fitzgerald", "ReillyFitz", "coffee");
     booth = await users.addUser("lincoln@theatre.gov", "John Wilkes", "Booth", "BoomHeadShot", "sicsempertyrannus");
-    group1 = await groups.createGroup(reilly._id, "The Boyz")
+    group1 = await groups.createGroup(reilly._id.toString(), "The Boyz")
     await groups.addGroupMember(group1._id.toString(), fawkes._id.toString());
     await groups.addGroupMember(group1._id.toString(), generic._id.toString());
     group1 = await groups.getGroupById(group1._id.toString())
-    //console.log(group1);
+    console.log(group1);
   } catch (e) {
     console.log(e);
   }
@@ -119,29 +119,29 @@ const main = async () => {
   }
 
   try {
-    console.log(await reviews.getMovieReviews(howl._id));
+    //console.log(await reviews.getMovieReviews(howl._id));
   } catch (e) {
     console.log(e);
   }
 
     try {
-      console.log(await movies.getAllMovies());
+      //console.log(await movies.getAllMovies());
     } catch (e) {
       console.log(e);
     }
 
     //Test adding movies to users then creating a session
-    let sessionDate = group1.currentSession.sessionDate;
-    let sessionMembers = group1.currentSession.sessionMembers;
-    let voteCountNeeded = 2;
-    let howlId = howl._id
-    let sorryId = sorry._id
-    let inceptionId = inception._id
-    let movieList = [{movie: howlId, votes: 0}, {movie: sorryId, votes: 0}, {movie: inceptionId, votes:0}];
-    let filter = group1.currentSession.filters
-    let chosen = group1.currentSession.chosen
-    let active = false
-    let updatedSession = {sessionDate, sessionMembers, voteCountNeeded, movieList, filter, chosen, active}
+    // let sessionDate = group1.currentSession.sessionDate;
+    // let sessionMembers = group1.currentSession.sessionMembers;
+    // let voteCountNeeded = 2;
+    // let howlId = howl._id
+    // let sorryId = sorry._id
+    // let inceptionId = inception._id
+    // let movieList = [{movie: howlId, votes: 0}, {movie: sorryId, votes: 0}, {movie: inceptionId, votes:0}];
+    // let filter = group1.currentSession.filters
+    // let chosen = group1.currentSession.chosen
+    // let active = false
+    // let updatedSession = {sessionDate, sessionMembers, voteCountNeeded, movieList, filter, chosen, active}
     console.log("Hey listen!")
     console.log(group1)
     try {
@@ -149,11 +149,13 @@ const main = async () => {
       await users.addToWatchList(fawkes._id.toString(), inception._id.toString());
       await users.addToWatchList(fawkes._id.toString(), sorry._id.toString());
       await users.addToWatchList(reilly._id.toString(), sorry._id.toString());
-      // let list2 = await groups.updateWatchList(group1._id.toString(), [], reilly._id.toString())
-      // let list1 = await groups.updateWatchList(group1._id.toString(), list2, fawkes._id.toString())
-      // console.log(list2)
-      // await groups.createSession(group1._id.toString(), 3, []);
-      // let group1new = await groups.updateSession(group1._id.toString(), updatedSession)
+      //let list2 = await groups.updateWatchList(group1._id.toString(), [], reilly._id.toString())
+      let session = await groups.createSession(group1._id.toString(), 3, {genres: ["Fantasy", "Adventure", "meebop"], runtime: 0, mpaa: 0});
+      console.log(session)
+      let list1 = await groups.updateWatchList(group1._id.toString(), [], fawkes._id.toString())
+      console.log(list1)
+      
+      //let group1new = await groups.updateSession(group1._id.toString(), updatedSession)
       // let vote1 = await groups.addVote(group1._id.toString(), howl._id)
       // let vote2 = await groups.addVote(group1._id.toString(), inception._id)
       // let vote3 = await groups.addVote(group1._id.toString(), howl._id)
@@ -161,8 +163,8 @@ const main = async () => {
       // console.log(vote2);
       // console.log(vote3)
       // console.log(group1new)
-      let filteredList = await groups.applyFilters({genres: [], runtime: 0, mpaa: 'PG'}, howl._id)
-      console.log(filteredList);
+      // let filteredList = await groups.applyFilters({genres: [], runtime: 0, mpaa: 'PG'}, howl._id)
+      // console.log(filteredList);
     }catch (e) {
       console.log(e)
     }
