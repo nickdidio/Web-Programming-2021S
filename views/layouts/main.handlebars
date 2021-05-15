@@ -11,7 +11,8 @@
 
 
     <link rel="stylesheet" href="/public/css/main.css" />
-
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=PT+Sans+Caption:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
         integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
@@ -26,7 +27,24 @@
 </head>
 
 <body>
-
+    <nav class="navbar">
+    <span class="navbar-toggle" id="js-navbar-toggle">
+            <i class="fas fa-bars"></i>
+        </span>
+    <a href="/" class="logo">FlikPik</a>
+    <ul class="main-nav" id="js-menu">
+      <li>
+        <a href="/" class="nav-links">Home</a>
+      </li>
+      <li>
+        <a href="/home/signup" class="nav-links">Sign Up</a>
+      </li>
+      <li>
+        <a href="/home/login" class="nav-links">Log In</a>
+      </li>
+      
+    </ul>
+  </nav>
     {{{body}}}
 </body>
 

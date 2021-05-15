@@ -5,7 +5,7 @@ const data = require("../data");
 const bcrypt = require("bcrypt");
 const utils = require("../utils");
 const userData = data.users;
-const xss = require('xss');
+const xss = require("xss");
 
 // Cookie
 app.use(
@@ -19,8 +19,7 @@ app.use(
 
 // Check if a cookie is active
 const activeSession = function (req) {
-  if(typeof req.session.user !== "undefined")
-    return true;
+  if (typeof req.session.user !== "undefined") return true;
   return false;
 };
 
@@ -31,7 +30,12 @@ app.get("/", async function (req, res) {
 
 // Get login page
 app.get("/home/login", async function (req, res) {
-  res.render("home/login", { title: "Login to FlikPik" });
+  if (activeSession(req)) {
+    res.redirect("/home/profile");
+    return;
+  } else {
+    res.render("home/login", { title: "Login to FlikPik" });
+  }
 });
 
 // Post login form info
@@ -39,7 +43,7 @@ app.get("/home/login", async function (req, res) {
 app.post("/login", async function (req, res) {
   const password = req.body.password;
   const username = req.body.username;
-  console.log("CONTROLAASDFG")
+  //console.log("CONTROLAASDFG");
   // Check if username or password is provided
   if (!username || !password) {
     res.status(401);
