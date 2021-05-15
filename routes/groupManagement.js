@@ -81,6 +81,7 @@ router.post('/activate', async (req, res) => {
             new_session.movieList.push(movies)
         }
         groupDB.updateSession(req.body.groupId, new_session)
+        req.session.groupID = req.body.groupId
         res.redirect('/pick/list')
         return
     } catch (e) {

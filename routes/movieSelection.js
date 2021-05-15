@@ -129,6 +129,7 @@ router.get('/list', async (req, res) => {
 
     sesh = req.session
     group = {}
+    
     try {
         group = await groups.getGroupById(sesh.groupID)
     } catch(e) {
