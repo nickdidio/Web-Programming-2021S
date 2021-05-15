@@ -1,14 +1,87 @@
-<h1>Welcome {{user.firstName}}!</h1>
-<h2>User Profile:</h2>
+<div class="container emp-profile">
 <div>
-    <h3>Username: </h3>
-    <p> {{user.username}}</p>
-    <h3>First Name: </h3>
-    <p> {{user.firstName}}</p>
-    <h3>Last Name: </h3>
-    <p> {{user.lastName}}</p>
+</div>
+<form method="post">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="profile-img">
+                            <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBkPSJNOS42MDIgMy43Yy0xLjE1NCAxLjkzNy0uNjM1IDUuMjI3IDEuNDI0IDkuMDI1LjkzIDEuNzEyLjY5NyAzLjAyLjMzOCAzLjgxNS0uOTgyIDIuMTc4LTMuNjc1IDIuNzk5LTYuNTI1IDMuNDU2LTEuOTY0LjQ1NC0xLjgzOS44Ny0xLjgzOSA0LjAwNGgtMS45OTVsLS4wMDUtMS4yNDFjMC0yLjUyLjE5OS0zLjk3NSAzLjE3OC00LjY2MyAzLjM2NS0uNzc3IDYuNjg4LTEuNDczIDUuMDktNC40MTgtNC43MzMtOC43MjktMS4zNS0xMy42NzggMy43MzItMTMuNjc4IDMuMzIxIDAgNS45NyAyLjExNyA1Ljk3IDYuMTY3IDAgMy41NTUtMS45NDkgNi44MzMtMi4zODMgNy44MzNoLTIuMTE1Yy4zOTItMS41MzYgMi40OTktNC4zNjYgMi40OTktNy44NDIgMC01LjE1My01Ljg2Ny00Ljk4NS03LjM2OS0yLjQ1OHptMTMuMzk4IDE1LjNoLTh2Mmg4di0yeiIvPjwvc3ZnPg==" alt="profile image"/>
+                            <div class="file btn btn-lg btn-primary">
+                                Change Photo
+                                <input type="file" name="file"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="profile-head">
+                                    <h5>
+                                        {{user.firstName}} {{user.lastName}}
+                                    </h5>
+                                    <h6>
+                                        FlikPik User
+                                    </h6>
+                                    <p class="proile-rating">FAVORITE MOVIE: <span>High School Musical</span></p>
+                            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">About</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="profile-tab" data-toggle="tab" href="   " role="tab" aria-controls="profile" aria-selected="false">Reviews</a>
+                                </li>
+
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                       
+                        <a class="profile-edit-btn" name="btnAddMore"  value="LOGOUT" href="/logout">LOGOUT</a>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="profile-actions">
+                            <p>FIND A MOVIE</p>
+                            <a href="/views/movieSelection/home.handlebars">Movie Selection</a><br/>
+                            <p>WANT TO WATCH LIST</p>
+                            <a href="/wantToWatchList/addToWatchList">Add a Movie</a><br/>
+                            <p>DECISION GROUPS</p>
+                            <a href="/wantToWatchList/addToWatchList">Find a Group</a><br/>
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="tab-content profile-tab" id="myTabContent">
+                            <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label>Username</label>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <p>{{user.username}}</p>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label>Name</label>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <p>{{user.firstName}} {{user.lastName}}</p>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label>Email</label>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <p>{{user.email}}</p>
+                                            </div>
+                                        </div>
+                                        
+                                        </div>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
+            </form>           
 </div>
 
-<footer>
-    <p><a href="/logout">LOGOUT</a></p>
-</footer>

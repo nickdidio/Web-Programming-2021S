@@ -4,16 +4,12 @@ const axios = require("axios");
 const router = express.Router();
 const xss = require("xss");
 const dotenv = require("dotenv");
-const axios = require("axios");
 const utils = require("../utils");
 dotenv.config();
 const apiKey = process.env.API_KEY;
-const { data } = require("../data");
-const movies = data.movies;
-const users = data.users;
 
 // Add a movie to the mongoDB movie database and user wantToWatchList database
-router.post("/add", (req, res) => {
+router.post("/add", async (req, res) => {
   const userId = utils.checkId(req.session.user.id);
   if (!req.body.movieId || typeof req.body.movieId !== "string")
     throw "Error: movieId not found";
