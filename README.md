@@ -10,3 +10,15 @@ Landing Page (D): Allow users to login or create a profile for themselves.
 Home Page (D): Main page where users can create decision groups, join decision groups, leave decision groups, edit their profile, edit their want to watch list, and edit their have watched list.
 
 User Profile (D): Each user will have a username, password, display name, a list of movies they would like to watch, a list of movies they have watched before, and a list of decision groups they have joined before.
+
+# TODO
+
+1. Get rid of Find A movie > Movie Selection link
+2. Get rid of "REVIEWS" button on profile
+3. Totally Test
+4. Change Image
+5. My Watch List Styling
+6. Show More Details Page Styling
+7. Movie Details and Review Styling
+8. Seeding the Database \*\*
+9. Want to Watch List Styling
