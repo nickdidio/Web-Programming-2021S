@@ -18,12 +18,13 @@ router.get('/', async (req, res) => {
         // group leader shouldn't use this route
         return
     }
+
     sesh.groupID = req.query.id
     group = {}
-
+    //console.log()
     try {
-        group = await groups.getGroupById(sesh.groupID)
-        //console.log("Group: " + group)
+        group = await groups.getGroupById(req.query.id)
+        console.log("Group: " + group)
     } catch(e) {
         res.status(400).send("<h3>That group doesn't exist!</h3>")
     }
@@ -225,6 +226,7 @@ router.post('/choice/:dec', async (req, res) => {
                 chosen: result.movie,
                 active: false
             }
+            console.log("MOVIE RESULT: ", result.movieId)
             sesh.chosen = true
             sesh.active = false
             
