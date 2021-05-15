@@ -9,3 +9,4 @@
 9. Want to Watch List Styling (D)
 10. HTML Validator
 11. Error Checking/Type Checking
+12. MY WATCHED MOVIES HISTORY (link in profile)

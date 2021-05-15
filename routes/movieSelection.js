@@ -3,7 +3,8 @@ const router = express.Router();
 const groups = require('../data/groups');
 const users = require('../data/users')
 const pastSessions = require('../data/pastSessions');
-const { movies } = require('../config/mongoCollections');
+//const { movies } = require('../config/mongoCollections');
+const movies = require('../data/movies')
 const session = require('express-session');
 router.use(express.static('public'));
 
@@ -32,6 +33,7 @@ router.get('/', async (req, res) => {
     }
     // fresh join (after leaving, or new session member)
     if(!sesh.chosen && !sesh.active) {
+        console.log("shouldnt get here")
         if(group.currentSession.sessionMembers.includes(sesh.user._id) && group.currentSession.active) {
             //sesh.active = true
             res.redirect("/pick/list")
@@ -68,7 +70,7 @@ router.get('/', async (req, res) => {
         })
     } else {
         // return (movie chosen)
-        movie_info = await movie.getMovieById(group.currentSession.chosen)
+        movie_info = await movies.getMovieById(group.currentSession.chosen)
         /*res.render('movieSelection/home', 
         { 
             title: `Chosen movie: ${movie_info.title}`,
@@ -100,7 +102,7 @@ router.get('/done', async(req, res) => {
     } else {
         res.render('movieSelection/home', 
         {
-            groupName: `${group.name}`,
+            groupName: `${group.groupName}`,
             title: "Waiting on group members to pick movies.",
             exit: "appear",
             pick: "gone",
@@ -148,20 +150,22 @@ router.get('/list', async (req, res) => {
     sesh.judged = 0
     // these ids would be converted into movie objects
     sesh.movie_list = []
+    console.log(group.currentSession.movieList)
     for(item of group.currentSession.movieList) {
         sesh.movie_list.push(item.movie)
     }
+    //console.log(sesh.movie_list)
     if(sesh.movie_list[0] == undefined) {
         res.status(400).send("<h3>No movies to choose from!</h3>")
         return
     }
-    //console.log(sesh.movie_list)
     /*for (const [key, value] of Object.entries(group.currentSession.roster)) {
         sesh.movie_list.push(value)
     }*/
     sesh.movie_count = sesh.movie_list.length
     movie = {}
     try {
+        //console.log(sesh.movie_list[0])
         movie = await movies.getMovieById(sesh.movie_list[0])
     } catch(e) {
         console.log(e)
@@ -180,7 +184,7 @@ router.post('/choice/:dec', async (req, res) => {
     if(!req.session.user) {
         res.status(403).send("You must be logged in to access this page!")
         return
-    } else if(!req.query[dec]) {
+    } else if(!req.params.dec) {
         res.status(400).send("Must provide a judgement! (yes/no).")
         return
     }
@@ -201,12 +205,13 @@ router.post('/choice/:dec', async (req, res) => {
     if(grpSession.chosen != "na") {
         sesh.chosen = true
         sesh.active = false
-        res.redirect('/pick')
+        res.redirect(`/pick?id=${sesh.groupID}`)
         return
     }
 
     sesh.judged++;
     if(decision == "yes") {
+        console.log("groupIDDD: " + sesh.groupID)
         result = await groups.addVote(sesh.groupID, movie)
         if(result.winner) {
             // update current session with new chosen ID
@@ -224,7 +229,12 @@ router.post('/choice/:dec', async (req, res) => {
             
             groups.updateSession(sesh.groupID, new_session)
             
-            res.redirect('/pick')
+            res.redirect(`/pick?id=${sesh.groupID}`)
+            return
+        } else if(sesh.judged == sesh.movie_count) {
+            sesh.active = true
+            //console.log("session group: " + sesh.groupID)
+            res.redirect(`/pick?id=${sesh.groupID}`)
             return
         }
         //groups.updateMovie(sesh.groupID, movie)
@@ -232,10 +242,12 @@ router.post('/choice/:dec', async (req, res) => {
         // if user no longer has movies to judge, send them back to group home to
         // wait for the rest of group members to finish
         sesh.active = true
-        res.redirect('/pick')
+        //console.log("session group: " + sesh.groupID)
+        res.redirect(`/pick?id=${sesh.groupID}`)
         return
     }
     // get next movie based on user session progress
+    console.log(sesh.movie_list[sesh.judged])
     next_movie = await movies.getMovieById(sesh.movie_list[sesh.judged])
     //console.log(grpSession)
     res.render('movieSelection/selection', 

@@ -12,7 +12,8 @@ body {
   /* display: flex; */
   /*justify-content: center;*/
   /*   color: #fff;
- */ /* background: -webkit-linear-gradient(left, #3931af, #00c6ff); */
+ */
+  /* background: -webkit-linear-gradient(left, #3931af, #00c6ff); */
   background-image: url(https://images.unsplash.com/photo-1598899134739-24c46f58b8c0?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1938&q=80);
   background-size: cover;
   background-position: center;
@@ -185,10 +186,12 @@ img {
 .profile-img {
   text-align: center;
 }
+
 .profile-img img {
   width: 70%;
   height: 100%;
 }
+
 .profile-img .file {
   position: relative;
   overflow: hidden;
@@ -199,18 +202,22 @@ img {
   font-size: 15px;
   background: #212529b8;
 }
+
 .profile-img .file input {
   position: absolute;
   opacity: 0;
   right: 0;
   top: 0;
 }
+
 .profile-head h5 {
   color: #333;
 }
+
 .profile-head h6 {
   color: #0062cc;
 }
+
 .profile-edit-btn {
   border: #495057;
   border-radius: 1.5rem;
@@ -220,53 +227,65 @@ img {
   color: #6c757d;
   cursor: pointer;
 }
+
 .proile-rating {
   font-size: 12px;
   color: #818182;
   margin-top: 5%;
 }
+
 .proile-rating span {
   color: #495057;
   font-size: 15px;
   font-weight: 600;
 }
+
 .profile-head .nav-tabs {
   margin-bottom: 5%;
 }
+
 .profile-head .nav-tabs .nav-link {
   font-weight: 600;
   border: none;
 }
+
 .profile-head .nav-tabs .nav-link.active {
   border: none;
   border-bottom: 2px solid #0062cc;
 }
+
 .profile-actions {
   padding: 14%;
   margin-top: -15%;
 }
+
 .profile-actions p {
   font-size: 12px;
   color: #818182;
   font-weight: 600;
   margin-top: 10%;
 }
+
 .profile-actions a {
   text-decoration: none;
   color: #495057;
   font-weight: 600;
   font-size: 14px;
 }
+
 .profile-actions ul {
   list-style: none;
 }
+
 .profile-tab label {
   font-weight: 600;
 }
+
 .profile-tab p {
   font-weight: 600;
   color: #0062cc;
 }
+
 .watchList {
   align-items: flex-start;
 }
@@ -286,6 +305,11 @@ img {
 .btn-link {
   color: #0072ee;
 }
+
+.group-name {
+  font-weight: bold;
+}
+
 .navbar {
   font-size: 18px;
   width: 100;
