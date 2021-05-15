@@ -36,10 +36,22 @@ router.post("/:id", async (req, res) => {
     return;
   }
 
-  const { reviewDate, reviewText, rating, username } = req.body;
+  const { reviewText, rating, redirect } = req.body;
+  const d = new Date();
+  const reviewDate = `${d.getFullYear()}-${d.getMonth()}-${d.getDay()}`;
+  const username = req.session.user.username;
 
   try {
-    utils.checkReviewParameters(reviewDate, reviewText, rating, username);
+    utils.checkReviewParameters(
+      reviewDate,
+      reviewText,
+      parseInt(rating),
+      username
+    );
+
+    if (!redirect) {
+      throw new Error("Must provide a path to redirect to");
+    }
   } catch (e) {
     res.status(400).json({
       error: xss(e.toString()),
@@ -55,7 +67,7 @@ router.post("/:id", async (req, res) => {
       xss(username),
       xss(movieId)
     );
-    res.json(newReview);
+    res.redirect(redirect);
   } catch (e) {
     res.status(500).json({ error: xss(e.toString()) });
   }

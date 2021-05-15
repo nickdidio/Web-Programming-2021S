@@ -1,48 +1,52 @@
-<h1>{{movie.title}}</h1>,
-<br><img src={{movie.img}} alt="">,
+<div class="movie">
+<h1>{{movie.title}}</h1>
+<br><img src={{movie.img}} alt="">
 <dl>
-<dt>Summary</dt>
-<dd>{{movie.desc}}</dd>
-<dt>MPAA Rating</dt>
-<dd>{{movie.mpaaRating}}</dd>
-<dt>Genres</dt>
-<dd>
-    <ul>
-        {{#each movie.genre}}                
-        <li>{{this}}</li>
-        {{/each}}        
-    </ul>
-</dd>
-<dt>Runtime</dt>
-<dd>
-    {{movie.runtime}} minutes
-</dd>
-<dt>Release Date</dt>
-<dd>
-    {{movie.releaseYear}}
-</dd>
-<dt> Average User Rating </dt>
-<dd>
-    {{movie.userAvgRating}}
-</dd>
-<dt>Reviews</dt>
-    <dd>
-        <ul>
-            {{#each movie.reviews}}                
-                <li class="review-li">
-                    {{this.username}}
-                    <br>
-                    {{this.reviewText}}
-                    <br>
-                    {{this.rating}}
-                    <br>
-                    {{this.reviewDate}}
-                </li>
-            {{else}}
-                <li>No reviews have been made for this movie yet</li>
-            {{/each}}
-        </ul>
-    </dd>
+   <dt>Summary</dt>
+   <dd>{{movie.desc}}</dd>
+   <dt>MPAA Rating</dt>
+   <dd>{{movie.mpaaRating}}</dd>
+   <dt>Genres</dt>
+   <dd>
+      <ul>
+         {{#each movie.genre}}                
+         <li>{{this}}</li>
+         {{/each}}        
+      </ul>
+   </dd>
+   <dt>Runtime</dt>
+   <dd>
+      {{movie.runtime}} minutes
+   </dd>
+   <dt>Release Date</dt>
+   <dd>
+      {{movie.releaseYear}}
+   </dd>
+   <dt> Average User Rating </dt>
+   <dd>
+      {{movie.userAvgRating}}
+   </dd>
+   <dt>Reviews</dt>
+   <dd>
+      <ul>
+         {{#each movie.reviews}}                
+         <li class="review-li">
+            {{this.username}}
+            <br>
+            {{this.reviewText}}
+            <br>
+            {{this.rating}}
+            <br>
+            {{this.reviewDate}}
+         </li>
+         {{else}}
+         <li>No reviews have been made for this movie yet</li>
+         {{/each}}
+      </ul>
+   </dd>
 </dl>
-
 <a href="/wantToWatchList/">Return to my want to watch list</a>
+<!-- Button trigger modal -->
+{{> reviewButton movie}}
+</div>
+</div>

@@ -1,4 +1,4 @@
-const { movies, users } = require("../data");
+const { movies, users, reviews } = require("../data");
 const express = require("express");
 const axios = require("axios");
 const router = express.Router();
@@ -18,12 +18,16 @@ router.get("/", async (req, res) => {
       m = await movies.getMovieById(watchListIds[i]);
       watchList.push(m);
       watchList[i].moreDetailsRoute = "/wantToWatchList/movieDetails/" + m._id;
+      utils.editMovieForViews(m, `/wantToWatchList/`);
     }
   } catch (e) {
     res.status(500).json({ error: e.toString() });
     return;
   }
 
+  if (req.body && req.body.error) {
+    console.log(req.body.error);
+  }
   if (watchList) {
     res.status(200);
     res.render("wantToWatchList/removeFromWatchList", {
@@ -81,7 +85,7 @@ router.post("/add", async (req, res) => {
       res.status(400).json({ error: xss(e.toString()) });
       return;
     }
-    for(let i = 0; i < genre.length;i++){
+    for (let i = 0; i < genre.length; i++) {
       genre[i] = xss(genre[i]);
     }
     try {
@@ -112,7 +116,7 @@ router.post("/add", async (req, res) => {
 });
 
 // Remove a movie from the user wantToWatchList database
-router.post("/remove", async (req, res) => {
+router.patch("/remove", async (req, res) => {
   if (!xss(req.body.movieId) || typeof xss(req.body.movieId) !== "string") {
     res.status(400).json({ error: "Error: movieId not found" });
     return;
@@ -125,10 +129,16 @@ router.post("/remove", async (req, res) => {
     res.status(500).json({ error: xss(e.toString()) });
     return;
   }
-  if (!movie || !movie._id) throw "Error: Movie not found in movie database";
+  try {
+    if (!movie || !movie._id)
+      throw new Error("Error: Movie not found in movie database");
 
-  if (await users.removeFromWatchList(req.session.user._id, movie._id)) {
-    res.json(true);
+    if (await users.removeFromWatchList(req.session.user._id, movie._id)) {
+      res.json(true);
+      return;
+    }
+  } catch (e) {
+    res.status(500).json({ error: xss(e.toString()) });
     return;
   }
   res.json(false);
@@ -259,11 +269,10 @@ router.get("/movieDetails/:id", async (req, res) => {
     return;
   }
 
-  movie.alt = movie.img.includes("../public")
-    ? "Poster Unvailable for"
-    : "Poster for" + movie.title;
+  utils.editMovieForViews(movie, `/wantToWatchList/movieDetails/${movie._id}`);
 
   res.render("movies/movieDetails", { title: movie.title, movie: movie });
+  res.status(200);
 });
 
 module.exports = router;
