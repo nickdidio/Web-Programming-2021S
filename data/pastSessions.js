@@ -2,10 +2,9 @@ const mongoCollections = require("../config/mongoCollections.js");
 const { ObjectId } = require("mongodb");
 const pastSessions = mongoCollections.pastSessions;
 const groups = mongoCollections.groups;
+const utils = require('../utils')
 
-//Past Session will contain only important information about previous sessions, making it smaller than currentSession
-//Separating Current Session from Past Session allows us to cut down on unnesecary data which can be discarded after the session is finished.
-//Takes in groupId, {currentSession}, moviePicked 
+//Past Session storees select information from the current session and sets active to false
 const createPastSession = async(groupId, {sessionDate, sessionMembers, voteCountNeeded, movieList, filters}, moviePicked) => {
     let parsedMovieId;
     let parsedGroupId
