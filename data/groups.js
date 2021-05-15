@@ -169,8 +169,10 @@ const addVote = async(groupId, movieId) => {
             if (item.votes == group.currentSession.voteCountNeeded) {
                 await pastSessions.createPastSession(groupId, group.currentSession, item.movie);
                 //TODO: set active to false
-                //await setMovieToWatched(group.currentSession.sessionMembers, movieId);
+                await setMovieToWatched(group.currentSession.sessionMembers, movieId);
                 return {movieId, winner: true}
+            } else {
+                console.log(item.votes + " " + group.currentSession.voteCountNeeded)
             }
         }
     }
@@ -312,7 +314,7 @@ const applyFilters = async(filters, movieId) => {
 }
 const setMovieToWatched = async(sessionMembers, movieId) => {   
     for (member of sessionMembers) {
-        let user = await users.getUserById(""+member);
+        let user = await users.getUserById(member);
         //adds to watched
         user.watchedMovieList.push(movieId)
         //removes from want to watch
