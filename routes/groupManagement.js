@@ -33,6 +33,7 @@ router.get("/", async (req, res) => {
 });
 
 //Adds user to new group with id of id
+<<<<<<< HEAD
 router.post("/join", async (req, res) => {
   //todo: check user input
   try {
@@ -44,8 +45,38 @@ router.post("/join", async (req, res) => {
   } catch (e) {
     res.status(400).json({ error: xss("Could not join group") });
   }
+||||||| b4a4ce3
+router.post('/join', async (req, res) => {
+    //todo: check user input
+    try {
+        let userId = (req.session.user._id)
+        let request = xss(req.body.groupId)
+        let groupId = request.toString()
+        group = groupDB.addGroupMember(groupId, userId);
+        res.redirect('.') 
+    } catch (e) {
+        res.status(400).json({ error: xss("Could not join group") });
+    }
+    
+
+=======
+router.post('/join', async (req, res) => {
+    //todo: check user input
+    try {
+        let userId = (req.session.user._id)
+        let request = xss(req.body.groupId)
+        let groupId = request.toString()
+        group = groupDB.addGroupMember(groupId, userId);
+        res.redirect('/pick/') 
+    } catch (e) {
+        res.status(400).json({ error: xss("Could not join group") });
+    }
+    
+
+>>>>>>> 960583d824d27a0d8fd6e3a884140f7514a61398
 });
 
+<<<<<<< HEAD
 router.post("/create", async (req, res) => {
   try {
     let request = xss(req.body.groupName);
@@ -55,6 +86,30 @@ router.post("/create", async (req, res) => {
   } catch (e) {
     res.status(400).json({ error: xss("Could not create group") });
   }
+||||||| b4a4ce3
+router.post('/create', async (req, res) => {
+    try {
+        let request = xss(req.body.groupName)
+        let groupName = request;
+        await groupDB.createGroup(req.session.user._id, groupName);
+        res.redirect('.');
+    } catch(e) {
+        res.status(400).json({ error: xss("Could not create group") });
+    }
+    
+=======
+router.post('/create', async (req, res) => {
+    try {
+        let request = xss(req.body.groupName)
+        let groupName = request;
+        await groupDB.createGroup(req.session.user._id, groupName);
+        // group.currentSession.active should be set to true, and groupWatchList compiled ^^^
+        res.redirect('/pick/list');
+    } catch(e) {
+        res.status(400).json({ error: xss("Could not create group") });
+    }
+    
+>>>>>>> 960583d824d27a0d8fd6e3a884140f7514a61398
 });
 
 module.exports = router;
