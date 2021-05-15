@@ -11,7 +11,12 @@ router.get("/:id", async (req, res) => {
   try {
     utils.checkId(movieId);
   } catch (e) {
-    res.status(404).render("errors/error",{ error: "Invalid ID" });
+    res.status(404);
+    res.render("errors/error", {
+      title: "error",
+      code: 404,
+      error: "Invalid ID",
+    });
     return;
   }
 
@@ -20,7 +25,12 @@ router.get("/:id", async (req, res) => {
     const movieReviews = await reviews.getMovieReviews(xss(movieId));
     res.json(movieReviews);
   } catch (e) {
-    res.status(404).render("errors/error",{ error: "Review Not found" });
+    res.status(404);
+    res.render("errors/error", {
+      title: "Error",
+      code: 404,
+      error: "Review Not found",
+    });
     return;
   }
 });
@@ -32,7 +42,12 @@ router.post("/:id", async (req, res) => {
   try {
     utils.checkId(movieId);
   } catch (e) {
-    res.status(500).render("errors/error",{ error: xss(e.toString()) });
+    res.status(500);
+    res.render("errors/error", {
+      title: "Error",
+      code: 500,
+      error: xss(e.toString()),
+    });
     return;
   }
 
@@ -53,7 +68,12 @@ router.post("/:id", async (req, res) => {
       throw new Error("Must provide a path to redirect to");
     }
   } catch (e) {
-    res.status(500).render("errors/error",{ error: xss(e.toString()) });
+    res.status(500);
+    res.render("errors/error", {
+      title: "Error",
+      code: 500,
+      error: xss(e.toString()),
+    });
     return;
   }
 
@@ -67,7 +87,12 @@ router.post("/:id", async (req, res) => {
     );
     res.redirect(redirect);
   } catch (e) {
-    res.status(500).render("errors/error",{ error: xss(e.toString()) });
+    res.status(500);
+    res.render("errors/error", {
+      title: "Error",
+      code: 500,
+      error: xss(e.toString()),
+    });
     return;
   }
 });
