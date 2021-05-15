@@ -100,7 +100,7 @@ router.post("/activate", async (req, res) => {
     let new_session = {
       sessionDate: group.currentSession.sessionDate,
       sessionMembers: group.currentSession.sessionMembers,
-      voteCountNeeded: group.currentSession.voteCountNeeded,
+      voteCountNeeded: (group.currentSession.sessionMembers.length / 2 + 1),
       movieList: [],
       filters: group.currentSession.filters,
       chosen: "na",
