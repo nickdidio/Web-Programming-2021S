@@ -7,7 +7,7 @@
     movieItem.on("click", ".removeLink", (event) => {
       event.preventDefault();
       var requestConfig = {
-        method: "POST",
+        method: "PATCH",
         url: "/wantToWatchList/remove",
         contentType: "application/json",
         data: JSON.stringify({
