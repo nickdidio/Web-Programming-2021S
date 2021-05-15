@@ -182,6 +182,8 @@ const main = async () => {
       await users.addToWatchList(nickerdoodles._id.toString(), sorry._id);
       await users.addToWatchList(nickerdoodles._id.toString(), howl._id);
       await users.addToWatchList(reilly._id.toString(), sorry._id);
+      await groups.setMovieToWatched([reilly._id], wind._id)
+      await groups.setMovieToWatched([reilly._id], sorry._id)
     }catch (e) {
       console.log(e)
     }
