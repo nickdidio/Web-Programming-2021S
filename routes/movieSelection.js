@@ -19,7 +19,7 @@ router.get('/', async (req, res) => {
         return
     }
 
-    sesh.groupID = req.query.id.replace(/"/g,"")
+    sesh.groupID = req.query.id
     group = {}
     //console.log()
     try {
@@ -226,6 +226,7 @@ router.post('/choice/:dec', async (req, res) => {
                 chosen: result.movie,
                 active: false
             }
+            console.log("MOVIE RESULT: ", result.movieId)
             sesh.chosen = true
             sesh.active = false
             

@@ -152,7 +152,7 @@ const createSession = async(groupId, voteCountNeeded, filters) => {
         chosen: "na",
         active: true
     };
-
+    console.log("Session owner: " + decisionGroup.groupLeaderId)
     const updateInfo = await groupCollection.updateOne({_id: parsedGroupId}, {$set: {currentSession: newSession}});
     if (updateInfo.modifiedCount === 0) throw new Error ('Could not create new session');
     return await groupCollection.getGroupById(parsedGroupId);
