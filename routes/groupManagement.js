@@ -1,15 +1,8 @@
 const express = require("express");
 const router = express.Router();
-<<<<<<< HEAD
-const userDB = require('../data/users');
-const groupDB = require('../data/groups');
-const utils = require("../utils")
-const { ObjectId } = require("mongodb");
-=======
 const userDB = require("../data/users");
 const groupDB = require("../data/groups");
 const utils = require("../utils");
->>>>>>> 710d9c5bfe22984333ac945bf5c40b86e6bd779d
 const xss = require("xss");
 
 //gets user's groups
