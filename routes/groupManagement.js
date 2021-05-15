@@ -65,8 +65,10 @@ router.post("/create", async (req, res) => {
 router.post('/activate', async (req, res) => {
     //todo: check user input
     try {
+        sesh = req.session
+        sesh.groupID = req.body.groupId
         group = await groupDB.getGroupById(req.body.groupId)
-        console.log("Group: " + group)
+        console.log("GroupId: " + req.body.groupId)
         let new_session = {
             sessionDate: group.currentSession.sessionDate,
             sessionMembers: group.currentSession.sessionMembers,
@@ -76,10 +78,10 @@ router.post('/activate', async (req, res) => {
             chosen: 'na',
             active: true
         };
-        members = group.currentSession.sessionMembers
+        members = [group.currentSession.sessionMembers]
         console.log("Members: " + members)
-        for(member of members) {
-            movies = await userDB.getWatchList(member)
+        for(member of group.currentSession.sessionMembers) {
+            movies = await userDB.getWatchList(""+member)
             //console.log(movies)
             for(m of movies) {
                 new_session.movieList.push({movie: m, votes: 0})
