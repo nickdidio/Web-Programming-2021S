@@ -1,27 +1,28 @@
 <div class="watchList">
-    <h1>My Watch List:</h1>
+    <h1>My {{listName}} List:</h1>
     <p class="error"></p>
     <div class="list-group list-group-horizontal">
         <ul id="movieList">
             {{#each movieList}}
             <div class="card" style="width: 18rem">
-                    <img src={{this.img}} alt={{this.title}} class="card-img-top">
-                    <div class="card-body">
+                <img src={{this.img}} alt={{this.title}} class="card-img-top">
+                <div class="card-body">
                     <h5 class="card-title">{{this.title}}</h1>
-                    <br>
-                    <br>
-                    <button type="submit" class="removeLink btn btn btn-warning" id={{this._id}}>Remove this movie from my list</button>
-                    <br>
+                        <br>
+                        <br>
+                        <button type="submit" class="removeLink btn btn btn-warning" id={{this._id}}>Remove this movie
+                            from my list</button>
+                        <br>
 
-                    <br>
-                    <br>
-                    <a href={{this.moreDetailsRoute}}> Show more details</a>
-                    <br>
-                    <br>
+                        <br>
+                        <br>
+                        <a href={{this.moreDetailsRoute}}> Show more details</a>
+                        <br>
+                        <br>
                 </div>
             </div>
             {{else}}
-            <p class="error">You watch list is empty</p>
+            <p class="error">You {{listName}} list is empty</p>
             {{/each}}
         </ul>
     </div>

@@ -153,6 +153,12 @@ let exportedMethods = {
     const user = await this.getUserById(parsedUserId);
     return user.watchList;
   },
+
+  async getWatchedList(userId) {
+    const parsedUserId = utils.checkId(userId);
+    const user = await this.getUserById(parsedUserId);
+    return user.watchedMovieList;
+  },
 };
 
 module.exports = exportedMethods;

@@ -32,6 +32,7 @@ router.get("/", async (req, res) => {
     res.status(200);
     res.render("wantToWatchList/myList", {
       movieList: watchList,
+      listName: "Watch",
       title: "My Watch List",
     });
   } else {
@@ -345,6 +346,41 @@ router.get("/movieDetails/:id", async (req, res) => {
 
   res.render("movies/movieDetails", { title: movie.title, movie: movie });
   res.status(200);
+});
+
+router.get("/watchedList", async (req, res) => {
+  const watchListIds = await users.getWatchedList(xss(req.session.user._id));
+  let watchList = [];
+  let m;
+  try {
+    for (let i = 0; i < watchListIds.length; i++) {
+      m = await movies.getMovieById(watchListIds[i]);
+      watchList.push(m);
+      watchList[i].moreDetailsRoute = "/wantToWatchList/movieDetails/" + m._id;
+      utils.editMovieForViews(m, `/wantToWatchList/`);
+    }
+  } catch (e) {
+    res.status(500).json({ error: e.toString() });
+    return;
+  }
+
+  if (req.body && req.body.error) {
+    console.log(req.body.error);
+  }
+  if (watchList) {
+    res.status(200);
+    res.render("wantToWatchList/myList", {
+      movieList: watchList,
+      listName: "Watched",
+      title: "My Watched List",
+    });
+  } else {
+    res.status(500).render("errors/error", {
+      title: "Error",
+      error: xss("Watch List Failed"),
+    });
+    return;
+  }
 });
 
 module.exports = router;
