@@ -146,4 +146,14 @@ img {
 
 .watchList {
   align-items: flex-start;
+<<<<<<< HEAD
 }
+||||||| 3f740bd
+}
+=======
+}
+
+.group-name {
+  font-weight: bold;
+}
+>>>>>>> a4f0e60536f1fea57c87a0af743e9a1c4c80862e
