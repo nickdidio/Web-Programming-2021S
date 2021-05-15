@@ -1,4 +1,4 @@
-const { movies, users } = require("../data");
+const { movies, users, reviews } = require("../data");
 const express = require("express");
 const axios = require("axios");
 const router = express.Router();
@@ -18,20 +18,28 @@ router.get("/", async (req, res) => {
       m = await movies.getMovieById(watchListIds[i]);
       watchList.push(m);
       watchList[i].moreDetailsRoute = "/wantToWatchList/movieDetails/" + m._id;
+      utils.editMovieForViews(m, `/wantToWatchList/`);
     }
   } catch (e) {
     res.status(500).json({ error: e.toString() });
     return;
   }
 
+  if (req.body && req.body.error) {
+    console.log(req.body.error);
+  }
   if (watchList) {
     res.status(200);
-    res.render("wantToWatchList/removeFromWatchList", {
+    res.render("wantToWatchList/myList", {
       movieList: watchList,
+      listName: "Watch",
       title: "My Watch List",
     });
   } else {
-    res.status(500).json({ error: xss("Watch List Failed") });
+    res.status(500).render("errors/error", {
+      title: "Error",
+      error: xss("Watch List Failed"),
+    });
     return;
   }
 });
@@ -39,7 +47,12 @@ router.get("/", async (req, res) => {
 // Add a movie to the mongoDB movie database and user wantToWatchList database
 router.post("/add", async (req, res) => {
   if (!xss(req.body.movieId) || typeof xss(req.body.movieId) !== "string") {
-    res.status(400).json({ error: "Error: movieId not found" });
+    res.status(400);
+    res.render("errors/error", {
+      title: "Error",
+      code: 400,
+      error: "Error: movieId not found",
+    });
     return;
   }
 
@@ -49,7 +62,12 @@ router.post("/add", async (req, res) => {
   try {
     movie = await TMDbIdGet(tmdbId);
   } catch (e) {
-    res.status(500).json({ error: xss(e.toString()) });
+    res.status(500);
+    res.render("errors/error", {
+      title: "Error",
+      code: 500,
+      error: xss(e.toString()),
+    });
     return;
   }
 
@@ -78,10 +96,15 @@ router.post("/add", async (req, res) => {
         TMDbId
       );
     } catch (e) {
-      res.status(400).json({ error: xss(e.toString()) });
+      res.status(400);
+      res.render("errors/error", {
+        title: "Error",
+        code: 400,
+        error: xss(e.toString()),
+      });
       return;
     }
-    for(let i = 0; i < genre.length;i++){
+    for (let i = 0; i < genre.length; i++) {
       genre[i] = xss(genre[i]);
     }
     try {
@@ -96,7 +119,12 @@ router.post("/add", async (req, res) => {
         parseInt(xss(TMDbId))
       );
     } catch (e) {
-      res.status(500).json({ error: xss(e.toString()) });
+      res.status(500);
+      res.render("errors/error", {
+        title: "Error",
+        code: 500,
+        error: xss(e.toString()),
+      });
     }
   }
   try {
@@ -112,9 +140,14 @@ router.post("/add", async (req, res) => {
 });
 
 // Remove a movie from the user wantToWatchList database
-router.post("/remove", async (req, res) => {
+router.patch("/remove", async (req, res) => {
   if (!xss(req.body.movieId) || typeof xss(req.body.movieId) !== "string") {
-    res.status(400).json({ error: "Error: movieId not found" });
+    res.status(400);
+    res.render("errors/error", {
+      title: "Error",
+      code: 400,
+      error: "Error: movieId not found",
+    });
     return;
   }
 
@@ -122,13 +155,29 @@ router.post("/remove", async (req, res) => {
   try {
     movie = await movies.getMovieById(xss(req.body.movieId));
   } catch (e) {
-    res.status(500).json({ error: xss(e.toString()) });
+    res.status(500);
+    res.render("errors/error", {
+      title: "Error",
+      code: 500,
+      error: xss(e.toString()),
+    });
     return;
   }
-  if (!movie || !movie._id) throw "Error: Movie not found in movie database";
+  try {
+    if (!movie || !movie._id)
+      throw new Error("Error: Movie not found in movie database");
 
-  if (await users.removeFromWatchList(req.session.user._id, movie._id)) {
-    res.json(true);
+    if (await users.removeFromWatchList(req.session.user._id, movie._id)) {
+      res.json(true);
+      return;
+    }
+  } catch (e) {
+    res.status(500);
+    res.render("errors/error", {
+      title: "Error",
+      code: 500,
+      error: xss(e.toString()),
+    });
     return;
   }
   res.json(false);
@@ -140,6 +189,30 @@ router.get("/add", (req, res) => {
   res.render("wantToWatchList/addToWatchList", {
     title: "Add to My Watch List",
   });
+});
+
+//How to view and remove items from list
+router.get("/", async (req, res) => {
+  const watchListIds = await users.getWatchList(req.session.user._id);
+  let watchList = [];
+  for (let i = 0; i < watchListIds.length; i++) {
+    watchList.push(await movies.getMovieById(watchListIds[i]));
+  }
+  if (watchList) {
+    res.status(200);
+    res.render("wantToWatchList/myList", {
+      movieList: watchList,
+      title: "My Watch List",
+    });
+  } else {
+    res.status(500);
+    res.render("errors/error", {
+      title: "Error",
+      code: 500,
+      error: xss("Watch list failed"),
+    });
+    return;
+  }
 });
 
 // Use TMDb API to get query results
@@ -157,7 +230,7 @@ router.get("/userQuery/:q", async (req, res) => {
     );
     res.json(data);
   } catch (e) {
-    res.status(400).json({ error: xss("No results for this query") });
+    res.status(400)({ error: xss("No results for this query") });
     return;
   }
 });
@@ -167,7 +240,12 @@ router.get("/random/:randPage", async (req, res) => {
   const randPage = Number(req.params.randPage);
 
   if (!randPage || randPage < 0) {
-    res.status(400).json({ error: xss("Invalid random page number") });
+    res.status(500);
+    res.render("errors/error", {
+      title: "Error",
+      code: 500,
+      error: xss("Invalid random page number."),
+    });
     return;
   }
 
@@ -177,7 +255,12 @@ router.get("/random/:randPage", async (req, res) => {
     );
     res.json(data);
   } catch (e) {
-    res.status(404).json({ error: xss("No results for this random page") });
+    res.status(500);
+    res.render("errors/error", {
+      title: "Error",
+      code: 500,
+      error: xss("No results for this random page."),
+    });
     return;
   }
 });
@@ -259,11 +342,45 @@ router.get("/movieDetails/:id", async (req, res) => {
     return;
   }
 
-  movie.alt = movie.img.includes("../public")
-    ? "Poster Unvailable for"
-    : "Poster for" + movie.title;
+  utils.editMovieForViews(movie, `/wantToWatchList/movieDetails/${movie._id}`);
 
   res.render("movies/movieDetails", { title: movie.title, movie: movie });
+  res.status(200);
+});
+
+router.get("/watchedList", async (req, res) => {
+  const watchListIds = await users.getWatchedList(xss(req.session.user._id));
+  let watchList = [];
+  let m;
+  try {
+    for (let i = 0; i < watchListIds.length; i++) {
+      m = await movies.getMovieById(watchListIds[i]);
+      watchList.push(m);
+      watchList[i].moreDetailsRoute = "/wantToWatchList/movieDetails/" + m._id;
+      utils.editMovieForViews(m, `/wantToWatchList/`);
+    }
+  } catch (e) {
+    res.status(500).json({ error: e.toString() });
+    return;
+  }
+
+  if (req.body && req.body.error) {
+    console.log(req.body.error);
+  }
+  if (watchList) {
+    res.status(200);
+    res.render("wantToWatchList/myList", {
+      movieList: watchList,
+      listName: "Watched",
+      title: "My Watched List",
+    });
+  } else {
+    res.status(500).render("errors/error", {
+      title: "Error",
+      error: xss("Watch List Failed"),
+    });
+    return;
+  }
 });
 
 module.exports = router;

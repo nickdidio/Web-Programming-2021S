@@ -5,7 +5,8 @@ const data = require("../data");
 const bcrypt = require("bcrypt");
 const utils = require("../utils");
 const userData = data.users;
-const xss = require('xss');
+const xss = require("xss");
+const { response } = require("express");
 
 // Cookie
 app.use(
@@ -19,34 +20,51 @@ app.use(
 
 // Check if a cookie is active
 const activeSession = function (req) {
-  if(typeof req.session.user !== "undefined")
-    return true;
+  if (typeof req.session.user !== "undefined") return true;
   return false;
 };
 
 // Get landing page
 app.get("/", async function (req, res) {
-  res.render("home/landing", { title: "FlikPik" });
+  if (activeSession(req)) {
+    res.redirect("/home/profile");
+    return;
+  }
+  res.render("home/landing", { title: "FlikPik", unauthenticated: true });
 });
 
 // Get login page
 app.get("/home/login", async function (req, res) {
-  res.render("home/login", { title: "Login to FlikPik" });
+  if (activeSession(req)) {
+    res.redirect("/home/profile");
+    return;
+  } else {
+    res.render("home/login", {
+      title: "Login to FlikPik",
+      unauthenticated: true,
+    });
+  }
 });
 
 // Post login form info
 // Redirect to profile page if authorized
 app.post("/login", async function (req, res) {
+  if (activeSession(req)) {
+    res.redirect("/home/profile");
+    return;
+  }
+
   const password = req.body.password;
   const username = req.body.username;
-  console.log("CONTROLAASDFG")
   // Check if username or password is provided
   if (!username || !password) {
     res.status(401);
     res.render("home/login", {
       title: "Login error",
       error: "A username and password must be provided.",
+      unauthenticated: true,
     });
+    return;
   }
   // Check username and password against all users
   let users = await userData.getAllUsers();
@@ -66,10 +84,19 @@ app.post("/login", async function (req, res) {
           res.render("home/login", {
             title: "Login Error",
             error: "Invalid username and/or password. Try again.",
+            unauthenticated: true,
           });
           return;
         }
-      } catch (error) {}
+      } catch (error) {
+        res.status(401);
+        res.render("home/login", {
+          title: "Login Error",
+          error: "Invalid username and/or password. Try again.",
+          unauthenticated: true,
+        });
+        return;
+      }
     }
   }
   // If no active cookie is found
@@ -78,6 +105,7 @@ app.post("/login", async function (req, res) {
     res.render("home/login", {
       title: "Login Error",
       error: "Please login.",
+      unauthenticated: true,
     });
     return;
   }
@@ -85,50 +113,74 @@ app.post("/login", async function (req, res) {
 
 // Get signup page
 app.get("/home/signup", async function (req, res) {
-  res.render("home/signup", { title: "Signup for FlikPik" });
+  if (activeSession(req)) {
+    res.redirect("/home/profile");
+    return;
+  }
+  res.render("home/signup", {
+    title: "Signup for FlikPik",
+    unauthenticated: true,
+  });
 });
 
 // Post form from signup info
 // Redirect to profile page if authorized
 app.post("/signup", async function (req, res) {
+  if (activeSession(req)) {
+    res.redirect("/home/profile");
+    return;
+  }
+
   const userInfo = req.body;
   // Check for info submitted
   if (!userInfo) {
-    res
-      .status(400)
-      .render("home/signup", { error: "You must fill in all fields." });
+    res.status(400).render("home/signup", {
+      title: "Sign up Error",
+      error: "You must fill in all fields.",
+      unauthenticated: true,
+    });
     return;
   }
   // Check for proper email
   if (!userInfo.email || !utils.emailValidator(userInfo.email)) {
-    res
-      .status(400)
-      .render("home/signup", { error: "You must enter a valid email" });
+    res.status(400).render("home/signup", {
+      title: "Sign up Error",
+      error: "You must enter a valid email",
+      unauthenticated: true,
+    });
     return;
   }
   // Check for first namwe
   if (!userInfo.firstName || userInfo.firstName === "") {
-    res
-      .status(400)
-      .render("home/signup", { error: "You must enter a first name" });
+    res.status(400).render("home/signup", {
+      title: "Sign up Error",
+      error: "You must enter a first name",
+      unauthenticated: true,
+    });
     return;
   }
   if (!userInfo.lastName || userInfo.lastName === "") {
-    res
-      .status(400)
-      .render("home/signup", { error: "You must enter a last name" });
+    res.status(400).render("home/signup", {
+      title: "Sign up Error",
+      error: "You must enter a last name",
+      unauthenticated: true,
+    });
     return;
   }
   if (!userInfo.username || userInfo.userName === "") {
-    res
-      .status(400)
-      .render("home/signup", { error: "You must enter a username" });
+    res.status(400).render("home/signup", {
+      title: "Sign up Error",
+      error: "You must enter a username",
+      unauthenticated: true,
+    });
     return;
   }
   if (!userInfo.password || userInfo.password === "") {
-    res
-      .status(400)
-      .render("home/signup", { error: "You must enter a password" });
+    res.status(400).render("home/signup", {
+      title: "Sign up Error",
+      error: "You must enter a password",
+      unauthenticated: true,
+    });
     return;
   }
 
@@ -142,8 +194,11 @@ app.post("/signup", async function (req, res) {
         user.email === userInfo.email
       ) {
         res.status(401).render("home/signup", {
+          title: "Sign up Error",
           error: "That account is already registered.",
+          unauthenticated: true,
         });
+        return;
       }
     }
     // Add user to DB
@@ -160,7 +215,11 @@ app.post("/signup", async function (req, res) {
     return;
   } catch (error) {
     res.status(400);
-    res.render("home/signup", { error: "Could not register account." });
+    res.render("home/signup", {
+      title: "Signup for FlikPik",
+      error: "Could not register account.",
+      unauthenticated: true,
+    });
   }
 });
 

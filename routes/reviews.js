@@ -11,7 +11,12 @@ router.get("/:id", async (req, res) => {
   try {
     utils.checkId(movieId);
   } catch (e) {
-    res.status(400).json({ error: xss("Invalid id") });
+    res.status(404);
+    res.render("errors/error", {
+      title: "error",
+      code: 404,
+      error: "Invalid ID",
+    });
     return;
   }
 
@@ -20,7 +25,12 @@ router.get("/:id", async (req, res) => {
     const movieReviews = await reviews.getMovieReviews(xss(movieId));
     res.json(movieReviews);
   } catch (e) {
-    res.status(404).json({ error: xss("Review not found") });
+    res.status(404);
+    res.render("errors/error", {
+      title: "Error",
+      code: 404,
+      error: "Review Not found",
+    });
     return;
   }
 });
@@ -32,16 +42,36 @@ router.post("/:id", async (req, res) => {
   try {
     utils.checkId(movieId);
   } catch (e) {
-    res.status(400).json({ error: xss(e.toString()) });
+    res.status(500);
+    res.render("errors/error", {
+      title: "Error",
+      code: 500,
+      error: xss(e.toString()),
+    });
     return;
   }
 
-  const { reviewDate, reviewText, rating, username } = req.body;
+  const { reviewText, rating, redirect } = req.body;
+  const d = new Date();
+  const reviewDate = `${d.getFullYear()}-${d.getMonth()}-${d.getDay()}`;
+  const username = req.session.user.username;
 
   try {
-    utils.checkReviewParameters(reviewDate, reviewText, rating, username);
+    utils.checkReviewParameters(
+      reviewDate,
+      reviewText,
+      parseInt(rating),
+      username
+    );
+
+    if (!redirect) {
+      throw new Error("Must provide a path to redirect to");
+    }
   } catch (e) {
-    res.status(400).json({
+    res.status(500);
+    res.render("errors/error", {
+      title: "Error",
+      code: 500,
       error: xss(e.toString()),
     });
     return;
@@ -55,9 +85,15 @@ router.post("/:id", async (req, res) => {
       xss(username),
       xss(movieId)
     );
-    res.json(newReview);
+    res.redirect(redirect);
   } catch (e) {
-    res.status(500).json({ error: xss(e.toString()) });
+    res.status(500);
+    res.render("errors/error", {
+      title: "Error",
+      code: 500,
+      error: xss(e.toString()),
+    });
+    return;
   }
 });
 

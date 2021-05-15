@@ -1,2 +1,0 @@
-- pass a title parameter to all handelbar renders
-- xss on all calls to db functions and res sends

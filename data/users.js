@@ -105,8 +105,11 @@ let exportedMethods = {
     const parsedUserId = utils.checkId(userId);
     utils.checkId(movieId);
     const userCollection = await users();
-    const found = await userCollection.findOne({ watchList: movieId, _id: parsedUserId });
-    if (found){
+    const found = await userCollection.findOne({
+      watchList: movieId,
+      _id: parsedUserId,
+    });
+    if (found) {
       return true;
     }
     return false;
@@ -117,7 +120,7 @@ let exportedMethods = {
     const parsedUserId = utils.checkId(userId);
     utils.checkId(movieId);
     const userCollection = await users();
-    if (await this.checkIfInWatchList(userId, movieId)){
+    if (await this.checkIfInWatchList(userId, movieId)) {
       return false;
     }
     const updateInfo = await userCollection.updateOne(
@@ -134,7 +137,7 @@ let exportedMethods = {
     const parsedUserId = utils.checkId(userId);
     utils.checkId(movieId);
     const userCollection = await users();
-    if (!await this.checkIfInWatchList(userId, movieId)) return false;
+    if (!(await this.checkIfInWatchList(userId, movieId))) return false;
     const updateInfo = await userCollection.updateOne(
       { _id: parsedUserId },
       { $pull: { watchList: movieId } }
@@ -149,6 +152,12 @@ let exportedMethods = {
     const parsedUserId = utils.checkId(userId);
     const user = await this.getUserById(parsedUserId);
     return user.watchList;
+  },
+
+  async getWatchedList(userId) {
+    const parsedUserId = utils.checkId(userId);
+    const user = await this.getUserById(parsedUserId);
+    return user.watchedMovieList;
   },
 };
 

@@ -1,17 +1,24 @@
-<div class="watchList">
+   <div class="watchList container emp-profile">
     <form id="searchForm">
         <label for="search_term">Search for a movie</label>
         <br>
         <input id="search_term" type="text">
         <button type="submit" class="btn btn-primary">Search</button>
     </form>
-    <p class="error"></p>
+    <br>
+    <div class="container" id="searchMoviesErrorContainer" hidden>
+        <div class="error alert alert-danger" id="searchMoviesError"></div>
+    </div>
     <form id="randomButton">
         <button type="submit" class="btn btn-outline-primary btn-lg">Show me a RANDOM movie</button>
     </form>
+    </div> 
+<div class="watchListResult container emp-profile" hidden>
+    <div class="col-md-4">
     <form id="addMovieButton" hidden>
         <button type="submit" class="btn btn-success"></button>
     </form>
+         </div>
     <ul id="movieList" hidden></ul>
     <div class="movie" hidden></div>
     <script src="https://code.jquery.com/jquery-2.2.4.min.js"

@@ -4,7 +4,10 @@
   const searchInput = $("#search_term");
   const moviesList = $("#movieList");
   const movieDiv = $(".movie");
+  const movieContainer = $(".watchListResult");
   const errorMsg = $(".error");
+  const errorMsgContainer = $("#searchMoviesErrorContainer");
+  const errorMsg = $("#searchMoviesError");
   const randButton = $("#randomButton");
   const addButton = $("#addMovieButton");
   const date = new Date();
@@ -44,44 +47,109 @@
     }
 
     movieDiv.empty();
+    // Show Movie Details After Search/Random
     movieDiv.append(
-      `<h1>${title ? title : "N/A"}</h1>`,
-      `<br><img src="${img}" alt="${
+      `<div class="row">
+          <div class="col-md-4">
+            <div class="profile-img">
+              <img src="${img}" alt="${
         img.includes("../public") ? "Poster Unvailable for" : "Poster for"
-      } ${movie.title}" width="270" height="400">`,
-      `<dl>
-        <dt>Summary</dt>
-        <dd>${desc ? desc : "N/A"}</dd>
-        <dt>MPAA Rating</dt>
-        <dd>${
-          !mpaaRating || mpaaRating === "NR" ? "Not Rated" : mpaaRating
-        }</dd>
-        <dt>Genres</dt>
-        <dd>
-          <ul>                
-            ${genresList}
-          </ul>
-        </dd>
-        <dt>Runtime</dt>
-        <dd>
-          ${runtime ? runtime : "N/A"} minutes
-        </dd>
-        <dt>Release Date</dt>
-        <dd>
-          ${releaseYear ? releaseYear : "N/A"}
-        </dd>
-        <dt> Average User Rating </dt>
-        <dd>
-          ${userAvgRating ? userAvgRating : "No ratings added yet"}
-        </dd>
-        <dt>Reviews</dt>
-          <dd>
-            <ul>                
-              ${reviewsList}
-            </ul>
-          </dd>
-      </dl>`
+      } ${movie.title}" width="270" height="400">
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="profile-head">
+              <h1>${title ? title : "N/A"}</h1>
+              <h6>${
+                !mpaaRating || mpaaRating === "NR" ? "Not Rated" : mpaaRating
+              }</h6>
+              <p class="proile-rating">If this movie looks interesting, <span>add it to your watch list!</span></p>
+              <ul class="nav nav-tabs" id="myTab" role="tablist">
+                  <li class="nav-item">
+                     <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Details</a>
+                  </li>
+               </ul>
+            </div>
+          </div>
+        </div>`,
+      `<div class="row">
+      <div class="col-md-4">
+      <div class="profile-actions">
+         <p>FIND A MOVIE</p>
+         <a href="/movieSelection">Movie Selection</a><br/>
+         <p>WANT TO WATCH LIST</p>
+         <a href="/wantToWatchList/">My List</a>
+         <br>
+         <a href="/wantToWatchList/add">Add Movies</a><br/>
+         <p>DECISION GROUPS</p>
+         <a href="/groups">Find a Group</a><br/>
+      </div>
+   </div>
+          <div class="col-md-8">
+          <div class="tab-content profile-tab" id="myTabContent">
+          <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+          <div class="row">
+                <div class="col-md-6">
+                   <label>Summary</label>
+                </div>
+                <div class="col-md-6">
+                ${desc ? desc : "N/A"}
+                </div>
+             </div>   
+          <div class="row">
+                <div class="col-md-6">
+                   <label>Genres:</label>
+                </div>
+                <div class="col-md-6">
+                  <ul>                
+                    ${genresList}
+                  </ul>
+                </div>
+             </div>
+             <div class="row">
+                <div class="col-md-6">
+                   <label>Runtime</label>
+                </div>
+                <div class="col-md-6">
+                ${runtime ? runtime : "N/A"} minutes
+                </div>
+             </div>
+             <div class="row">
+                <div class="col-md-6">
+                   <label>Release Date</label>
+                </div>
+                <div class="col-md-6">
+                ${releaseYear ? releaseYear : "N/A"}
+                </div>
+             </div>
+             <div class="row">
+                <div class="col-md-6">
+                  <label>Average User Rating</label>
+                </div>
+                <div class="col-md-6">
+                  ${
+                    userAvgRating
+                      ? userAvgRating.toFixed(1)
+                      : "No ratings added yet"
+                  }
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6">
+                  <label>Reviews</label>
+                </div>
+                <div class="col-md-6">
+                  <ul>                
+                    ${reviewsList}
+                  </ul>
+                </div>
+              </div>
+          </div>
+       </div>
+          </div>
+      </div>`
     );
+    movieContainer.attr("hidden", false);
     movieDiv.attr("hidden", false);
     moviesList.attr("hidden", true);
   };
@@ -106,7 +174,7 @@
     movieItem.on("click", ".movieLink", (event) => {
       event.preventDefault();
       moviesList.attr("hidden", true);
-      errorMsg.attr("hidden", true);
+      errorMsgContainer.attr("hidden", true);
       movieDiv.empty();
       const movieId = movieItem.find(".movieLink").attr("id");
       showMovieDetails(movieId);
@@ -131,7 +199,7 @@
         } else {
           errorMsg.empty();
           errorMsg.append(`Error: This movie is already on your list.`);
-          errorMsg.attr("hidden", false);
+          errorMsgContainer.attr("hidden", false);
         }
       });
     });
@@ -146,7 +214,7 @@
     if (typeof unrefinedInput !== "string") {
       errorMsg.empty();
       errorMsg.append(`Error: Input must be a string.`);
-      errorMsg.attr("hidden", false);
+      errorMsgContainer.attr("hidden", false);
       movieDiv.attr("hidden", true);
       addButton.attr("hidden", true);
       moviesList.attr("hidden", true);
@@ -157,7 +225,7 @@
         errorMsg.append(
           `Error: Input is too long, input cannot be greater than 200 characters.`
         );
-        errorMsg.attr("hidden", false);
+        errorMsgContainer.attr("hidden", false);
         movieDiv.attr("hidden", true);
         addButton.attr("hidden", true);
         moviesList.attr("hidden", true);
@@ -205,7 +273,7 @@
               moviesList
                 .children()
                 .each((index, element) => bindEventsToMovieItem($(element)));
-              errorMsg.attr("hidden", true);
+              errorMsgContainer.attr("hidden", true);
               movieDiv.attr("hidden", true);
               addButton.attr("hidden", true);
               moviesList.attr("hidden", false);
@@ -216,7 +284,7 @@
               errorMsg.append(
                 `Error: No movies were found that matched the given search term, "${userInput}".`
               );
-              errorMsg.attr("hidden", false);
+              errorMsgContainer.attr("hidden", false);
               movieDiv.attr("hidden", true);
               addButton.attr("hidden", true);
               moviesList.attr("hidden", true);
@@ -229,7 +297,7 @@
           errorMsg.append(
             `Error: You must input something into the search bar. "${userInput}".`
           );
-          errorMsg.attr("hidden", false);
+          errorMsgContainer.attr("hidden", false);
         }
       }
     }
@@ -257,11 +325,11 @@
         showMovieDetails(movieId);
         addButton.children().html("Add this movie to my list");
         addButton.attr("hidden", false);
-        errorMsg.attr("hidden", true);
+        errorMsgContainer.attr("hidden", true);
       } else {
         errorMsg.empty();
         errorMsg.append(`Error: No movies were found for some reason.`);
-        errorMsg.attr("hidden", false);
+        errorMsgContainer.attr("hidden", false);
       }
     });
   });
@@ -288,7 +356,7 @@
         } else {
           errorMsg.empty();
           errorMsg.append(`Error: This movie is already on your list.`);
-          errorMsg.attr("hidden", false);
+          errorMsgContainer.attr("hidden", false);
         }
       }
     });
