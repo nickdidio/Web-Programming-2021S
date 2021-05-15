@@ -290,7 +290,7 @@ const applyFilters = async(filters, movieId) => {
         throw new Error ("No movie exists with that ID")
     }
 
-    if (filters.genres) {
+    if (filters.genres.length > 0) {
         //if theres no overlap between provided genres and genres return false
         let intersection = (filters.genres.filter(x => movie.genre.includes(x)))
         if (intersection.length === 0) {
@@ -303,9 +303,32 @@ const applyFilters = async(filters, movieId) => {
         }
     }
     if (filters.mpaa){
-        if (movie.mpaaRating == 'NR'){
+        //Compare rating to max rating 
+        if (movie.mpaaRating == 'NR' || movie.mpaaRating == 'Not Rated'){
+            console.log("1")
             return false;
         }
+        if (filters.mpaa == 'G' && movie.mpaaRating != 'G') {
+            console.log("2")
+            return false
+        }
+        if (filters.mpaa == 'PG' && (movie.mpaaRating != 'G' && movie.mpaaRating != 'PG')) {
+            console.log("3")
+            return false
+        }
+        if (filters.mpaa == 'PG-13' && (movie.mpaaRating != 'G' && movie.mpaaRating != 'PG' && movie.mpaaRating != 'PG-13')) {
+            console.log("4")
+            return false
+        }
+        if (filters.mpaa == 'R' && (movie.mpaaRating != 'G' && movie.mpaaRating != 'PG' && movie.mpaaRating != 'PG-13' && movie.mpaaRating != 'R')) {
+            console.log("5")
+            return false
+        }
+        if (filters.mpaa == 'NC-17' && (movie.mpaaRating != 'G' && movie.mpaaRating != 'PG' && movie.mpaaRating != 'PG-13' && movie.mpaaRating != 'R' && movie.mpaaRating != 'NC-17')) {
+            console.log("6")
+            return false
+        }
+
     }
     return true
 }

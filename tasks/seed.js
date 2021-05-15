@@ -161,7 +161,7 @@ const main = async () => {
       // console.log(vote2);
       // console.log(vote3)
       // console.log(group1new)
-      let filteredList = await groups.applyFilters({genres: ["glopdip"], runtime: 0, mpaa: 0}, howl._id)
+      let filteredList = await groups.applyFilters({genres: [], runtime: 0, mpaa: 'PG'}, howl._id)
       console.log(filteredList);
     }catch (e) {
       console.log(e)
