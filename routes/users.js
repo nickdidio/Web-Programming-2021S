@@ -199,6 +199,8 @@ app.use("/home/profile", async function (req, res, next) {
 
 // Get profile page
 app.get("/home/profile", async function (req, res) {
+  req.session.active = false
+  req.session.chosen = false
   res.render("home/profile", {
     title: "FlikPik Profile",
     user: req.session.user,

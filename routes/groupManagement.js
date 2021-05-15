@@ -14,12 +14,12 @@ router.get("/", async (req, res) => {
       let groupList = [];
       for (let groupId of user.userGroups) {
         let group = await groupDB.getGroupById(groupId);
-        let leader = group.groupLeaderId == userId;
+        let leader = (group.groupLeaderId.toString() == userId.toString());
         groupList.push({
           name: group.groupName,
           id: groupId,
           leader: leader,
-          active: group.currentSession.active,
+          active: group.currentSession.active
         });
       }
       res.render("groups/groupList", {
@@ -108,7 +108,7 @@ router.post("/activate", async (req, res) => {
     let new_session = {
       sessionDate: group.currentSession.sessionDate,
       sessionMembers: group.currentSession.sessionMembers,
-      voteCountNeeded: group.currentSession.voteCountNeeded,
+      voteCountNeeded: (group.currentSession.sessionMembers.length / 2 + 1),
       movieList: [],
       filters: group.currentSession.filters,
       chosen: "na",
