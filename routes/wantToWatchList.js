@@ -30,17 +30,15 @@ router.get("/", async (req, res) => {
   }
   if (watchList) {
     res.status(200);
-    res.render("wantToWatchList/removeFromWatchList", {
+    res.render("wantToWatchList/myList", {
       movieList: watchList,
       title: "My Watch List",
     });
   } else {
-    res
-      .status(500)
-      .render("errors/error", {
-        title: "Error",
-        error: xss("Watch List Failed"),
-      });
+    res.status(500).render("errors/error", {
+      title: "Error",
+      error: xss("Watch List Failed"),
+    });
     return;
   }
 });
@@ -201,7 +199,7 @@ router.get("/", async (req, res) => {
   }
   if (watchList) {
     res.status(200);
-    res.render("wantToWatchList/removeFromWatchList", {
+    res.render("wantToWatchList/myList", {
       movieList: watchList,
       title: "My Watch List",
     });

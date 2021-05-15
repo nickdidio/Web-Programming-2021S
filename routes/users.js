@@ -165,7 +165,10 @@ app.post("/signup", async function (req, res) {
     return;
   } catch (error) {
     res.status(400);
-    res.render("home/signup", { error: "Could not register account." });
+    res.render("home/signup", {
+      title: "Signup for FlikPik",
+      error: "Could not register account.",
+    });
   }
 });
 
