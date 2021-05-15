@@ -63,7 +63,7 @@ let exportedMethods = {
 
   //Update a User
   async updateUser(id, updatedUser) {
-    utils.checkId(id);
+    const parsedUserId = utils.checkId(id);
     const {email, firstName, lastName, username, password} = updatedUser;
     checkUserParams(email,firstName,lastName,username,password);
     const user = await this.getUserById(id);
@@ -80,7 +80,7 @@ let exportedMethods = {
 
     const userCollection = await users();
     const updateInfo = await userCollection.updateOne(
-      { _id: id },
+      { _id: parsedUserId },
       { $set: userUpdateInfo }
     );
     if (!updateInfo.matchedCount && !updateInfo.modifiedCount)
@@ -91,12 +91,15 @@ let exportedMethods = {
 
   // Add Review to User
   async addReviewToUser(userId, reviewId, reviewTitle) {
+    const parsedUserId = utils.checkId(userId);
+    const parsedReviewId = utils.checkId(reviewId);
     let currentUser = await this.getUserById(userId);
+    if(!reviewTitle || typeof reviewTitle !== "string") throw "review title must exist and be of type string";
 
     const userCollection = await users();
     const updateInfo = await userCollection.updateOne(
-      { _id: userId },
-      { $addToSet: { reviews: { id: reviewId, title: reviewTitle } } }
+      { _id: parsedUserId },
+      { $addToSet: { reviews: { id: parsedReviewId, title: reviewTitle } } }
     );
 
     if (!updateInfo.matchedCount && !updateInfo.modifiedCount)
@@ -108,11 +111,13 @@ let exportedMethods = {
   // Remoview Review from User
   async removeReviewFromUser(userId, reviewId) {
     let currentUser = await this.getUserById(userId);
+    const parsedUserId = utils.checkId(userId);
+    const parsedReviewId = utils.checkId(reviewId);
 
     const userCollection = await users();
     const updateInfo = await userCollection.updateOne(
-      { _id: userId },
-      { $pull: { reviews: { id: reviewId } } }
+      { _id: parsedUserId },
+      { $pull: { reviews: { id: parsedReviewId } } }
     );
     if (!updateInfo.matchedCount && !updateInfo.modifiedCount)
       throw "Update failed";
@@ -122,12 +127,12 @@ let exportedMethods = {
 
   // See if the movie is already in the user's watchList
   async checkIfInWatchList(userId, movieId) {
-    const parsedUserId = utils.checkId(userId);
+    utils.checkId(userId);
     utils.checkId(movieId);
     const userCollection = await users();
     const found = await userCollection.findOne({
       watchList: movieId,
-      _id: parsedUserId,
+      _id: userId,
     });
     if (found) {
       return true;
