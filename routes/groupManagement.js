@@ -9,6 +9,9 @@ const xss = require("xss");
 
 //gets user's groups 
 router.get('/', async (req, res) => {
+    if (!req.session.user) {
+        res.status(400).send("You must be logged in to access this page!")
+    }
     try{
         let userId = utils.checkId(req.session.user._id)
         let user = await userDB.getUserById(userId); //get userid from request
@@ -33,6 +36,9 @@ router.get('/', async (req, res) => {
 //Adds user to new group with id of id
 router.post('/join', async (req, res) => {
     //todo: check user input
+    if (!req.session.user) {
+        res.status(400).send("You must be logged in to access this page!")
+    }
     try {
         let userId = (req.session.user._id)
         let groupId = xss(req.body.groupId)
@@ -47,6 +53,9 @@ router.post('/join', async (req, res) => {
 });
 
 router.post('/create', async (req, res) => {
+    if (!req.session.user) {
+        res.status(400).send("You must be logged in to access this page!")
+    }
     try {
         let request = xss(req.body.groupName)
         let groupName = request;

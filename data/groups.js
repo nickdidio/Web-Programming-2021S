@@ -31,7 +31,7 @@ const createGroup = async(groupLeaderId, groupName) => {
             sessionMembers: [parsedLeaderId],
             voteCountNeeded: 1,
             movieList: [],
-            filters: [],
+            filters: {genres: [], runtime: 0, mpaa: 0},
             chosen: 'na',
             active: false
         }, 
@@ -124,10 +124,6 @@ const createSession = async(groupId, voteCountNeeded, filters) => {
         throw new Error(`voteCount must be positive integer greater than 0`);
     }
 
-    // TODO: test filter
-    // else if (typeof(filter) != typeof([])) {
-    //     throw new Error(`Filter must be of type list`);
-    // }
 
     const groupCollection = await groups();   
     const userCollection = await usersCollection();
@@ -225,7 +221,7 @@ const validSession = ({sessionDate, sessionMembers, voteCountNeeded, movieList, 
     else if (!movieList.isArray()) {
         throw new Error ("Could not update session, as movieList is invalid")
     }
-    else if (!filters.isArray()) {
+    else if (typeof(filters) != 'object') {
         throw new Error ("Could not update session, as filters is invalid")
     }
     else if (typeof(chosen) != string) {
@@ -272,12 +268,46 @@ const updateWatchList = async(groupId, watchList, userId) => {
     //Doesnt add movie if already watched by group or if its already in the watch list
     for (let movieId of userList) {
         if(!previousMovies.includes(movieId) && !watchList.includes(movieId)){
-            //let movie = await movies.getMovieById(movieId)
-            //TODO filter movie using filters
-            watchList.push(movieId);
+            if (applyFilters(filter, movieId)) {
+                watchList.push(movieId);
+            } 
         }
     }
     return watchList;
 }
 
-module.exports = {createGroup, addGroupMember, getGroupById, deleteGroup, createSession, addVote, updateSession, updateWatchList};
+//returns true or false if movie pases filters
+const applyFilters = async(filters, movieId) => {
+    let parsedMovieId;
+    let movie
+    try {
+        parsedMovieId = utils.checkId(movieId);
+        movie = await movies.getMovieById(movieId)
+    } catch (e) {
+        throw new Error ("Invalid movie id")
+    }
+    if (!movie) {
+        throw new Error ("No movie exists with that ID")
+    }
+
+    if (filters.genres) {
+        //if theres no overlap between provided genres and genres return false
+        let intersection = (filters.genres.filter(x => movie.genre.includes(x)))
+        if (intersection.length === 0) {
+            return false;
+        }
+    }
+    if (filters.runtime) {
+        if (filters.runtime > movie.runtime) {
+            return false;
+        }
+    }
+    if (filters.mpaa){
+        if (movie.mpaaRating == 'NR'){
+            return false;
+        }
+    }
+    return true
+}
+
+module.exports = {createGroup, addGroupMember, getGroupById, deleteGroup, createSession, addVote, updateSession, updateWatchList, applyFilters};

@@ -10,8 +10,8 @@ const howlObj = {
   img: "https://image.tmdb.org/t/p/w500/TkTPELv4kC3u1lkloush8skOjE.jpg",
   releaseYear: "2004-11-19",
   runtime: 119,
-  mpaaRating: "PG",
-  genre: ["Fantasy", "Animation", "Adventrue"],
+  mpaaRating: "NR",
+  genre: ["Fantasy", "Animation", "Adventure"],
   TMDbId: 4935,
 };
 
@@ -149,9 +149,9 @@ const main = async () => {
       await users.addToWatchList(fawkes._id.toString(), inception._id.toString());
       await users.addToWatchList(fawkes._id.toString(), sorry._id.toString());
       await users.addToWatchList(reilly._id.toString(), sorry._id.toString());
-      let list2 = await groups.updateWatchList(group1._id.toString(), [], reilly._id.toString())
-      let list1 = await groups.updateWatchList(group1._id.toString(), list2, fawkes._id.toString())
-      console.log(list2)
+      // let list2 = await groups.updateWatchList(group1._id.toString(), [], reilly._id.toString())
+      // let list1 = await groups.updateWatchList(group1._id.toString(), list2, fawkes._id.toString())
+      // console.log(list2)
       // await groups.createSession(group1._id.toString(), 3, []);
       // let group1new = await groups.updateSession(group1._id.toString(), updatedSession)
       // let vote1 = await groups.addVote(group1._id.toString(), howl._id)
@@ -161,6 +161,8 @@ const main = async () => {
       // console.log(vote2);
       // console.log(vote3)
       // console.log(group1new)
+      let filteredList = await groups.applyFilters({genres: ["glopdip"], runtime: 0, mpaa: 0}, howl._id)
+      console.log(filteredList);
     }catch (e) {
       console.log(e)
     }
