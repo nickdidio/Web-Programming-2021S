@@ -25,14 +25,16 @@ let exportedMethods = {
 
   // Add User
   async addUser(email, firstName, lastName, username, password) {
+    utils.checkUserParameters(email, firstName, lastName, username, password);
+
     const userCollection = await users();
 
     let newUser = {
       _id: ObjectId(),
-      firstName: firstName,
-      lastName: lastName,
-      email: email,
-      username: username,
+      firstName: firstName.trim(),
+      lastName: lastName.trim(),
+      email: email.trim(),
+      username: username.trim(),
       password: await bcrypt.hashSync(password, 16),
       userGroups: [],
       watchedMovieList: [],
@@ -86,7 +88,7 @@ let exportedMethods = {
   },
 
   // Remoview Review from User
-  async removereviewFromUser(userId, reviewId) {
+  async removeReviewFromUser(userId, reviewId) {
     let currentUser = await this.getUserById(userId);
 
     const userCollection = await users();

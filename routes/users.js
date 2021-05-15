@@ -57,7 +57,12 @@ app.post("/login", async function (req, res) {
   const password = req.body.password;
   const username = req.body.username;
   // Check if username or password is provided
-  if (!username || !password) {
+  if (
+    !username ||
+    !password ||
+    typeof username != "string" ||
+    typeof password != "string"
+  ) {
     res.status(401);
     res.render("home/login", {
       title: "Login error",
@@ -131,54 +136,14 @@ app.post("/signup", async function (req, res) {
     return;
   }
 
-  const userInfo = req.body;
-  // Check for info submitted
-  if (!userInfo) {
+  // error check userInfo parameters
+  const { email, firstName, lastName, username, password } = req.body;
+  try {
+    utils.checkUserParameters(email, firstName, lastName, username, password);
+  } catch (e) {
     res.status(400).render("home/signup", {
       title: "Sign up Error",
-      error: "You must fill in all fields.",
-      unauthenticated: true,
-    });
-    return;
-  }
-  // Check for proper email
-  if (!userInfo.email || !utils.emailValidator(userInfo.email)) {
-    res.status(400).render("home/signup", {
-      title: "Sign up Error",
-      error: "You must enter a valid email",
-      unauthenticated: true,
-    });
-    return;
-  }
-  // Check for first namwe
-  if (!userInfo.firstName || userInfo.firstName === "") {
-    res.status(400).render("home/signup", {
-      title: "Sign up Error",
-      error: "You must enter a first name",
-      unauthenticated: true,
-    });
-    return;
-  }
-  if (!userInfo.lastName || userInfo.lastName === "") {
-    res.status(400).render("home/signup", {
-      title: "Sign up Error",
-      error: "You must enter a last name",
-      unauthenticated: true,
-    });
-    return;
-  }
-  if (!userInfo.username || userInfo.userName === "") {
-    res.status(400).render("home/signup", {
-      title: "Sign up Error",
-      error: "You must enter a username",
-      unauthenticated: true,
-    });
-    return;
-  }
-  if (!userInfo.password || userInfo.password === "") {
-    res.status(400).render("home/signup", {
-      title: "Sign up Error",
-      error: "You must enter a password",
+      error: "Must enter a value for all fields",
       unauthenticated: true,
     });
     return;
@@ -189,10 +154,7 @@ app.post("/signup", async function (req, res) {
     const userDb = await userData.getAllUsers();
     // Check if user is already registered
     for (const user of userDb) {
-      if (
-        user.username === userInfo.username ||
-        user.email === userInfo.email
-      ) {
+      if (user.username === username || user.email === email) {
         res.status(401).render("home/signup", {
           title: "Sign up Error",
           error: "That account is already registered.",
@@ -203,11 +165,11 @@ app.post("/signup", async function (req, res) {
     }
     // Add user to DB
     const newUser = await userData.addUser(
-      xss(userInfo.email),
-      xss(userInfo.firstName),
-      xss(userInfo.lastName),
-      xss(userInfo.username),
-      xss(userInfo.password)
+      xss(email),
+      xss(firstName),
+      xss(lastName),
+      xss(username),
+      xss(password)
     );
 
     req.session.user = newUser;
@@ -217,7 +179,7 @@ app.post("/signup", async function (req, res) {
     res.status(400);
     res.render("home/signup", {
       title: "Signup for FlikPik",
-      error: "Could not register account.",
+      error: "Sign in error",
       unauthenticated: true,
     });
   }
