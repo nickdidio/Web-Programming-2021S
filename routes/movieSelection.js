@@ -13,9 +13,12 @@ router.use(express.static('public'));
 router.get('/', async (req, res) => {
     sesh = req.session
     if(!req.session.user) {
-        res.status(400).send("You must be logged in to access this page!")
+        res.status(400).send("<h3>You must be logged in to access this page!</h3>")
     } else if(sesh.leader && !sesh.chosen) {
         // group leader shouldn't use this route
+        return
+    } else if(!req.query.id) {
+        res.status(400).send("<h3>You must provide a valid group ID to access this page!</h3>")
         return
     }
 
@@ -223,10 +226,10 @@ router.post('/choice/:dec', async (req, res) => {
                 voteCountNeeded: grpSession.voteCountNeeded,
                 movieList: grpSession.movie_list,
                 filters: grpSession.filters,
-                chosen: result.movie,
+                chosen: result.movieId,
                 active: false
             }
-            console.log("MOVIE RESULT: ", result.movieId)
+            //console.log("MOVIE RESULT: ", result.movieId)
             sesh.chosen = true
             sesh.active = false
             
