@@ -182,8 +182,8 @@ const emailValidator = (email) => {
 
 const editMovieForViews = (m, redirect) => {
   m.alt = m.img.includes("../public")
-    ? "Poster Unvailable for"
-    : "Poster for" + m.title;
+    ? "Poster Unvailable for "
+    : "Poster for " + m.title;
 
   m.reviewsRoute = `/reviews/${m._id}`;
 

@@ -116,7 +116,7 @@ router.post("/add", async (req, res) => {
 });
 
 // Remove a movie from the user wantToWatchList database
-router.post("/remove", async (req, res) => {
+router.patch("/remove", async (req, res) => {
   if (!xss(req.body.movieId) || typeof xss(req.body.movieId) !== "string") {
     res.status(400).json({ error: "Error: movieId not found" });
     return;

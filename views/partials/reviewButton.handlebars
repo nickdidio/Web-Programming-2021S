@@ -15,7 +15,7 @@ Write a New Review
          <div class="modal-body">
             <form id="reviewText" method="POST" action={{this.reviewsRoute}}>
                <div class="form-group">
-                  <label for="reviewTextArea">Write a new review</label>
+                  <label for="reviewTextArea">Review {{this.title}}</label>
                   <textarea class="form-control" id="reviewTextArea" name="reviewText" rows="3" required="required"></textarea>
                   <br>
                   <div class="alert alert-danger" id="reviewTextAlert" hidden="true">
