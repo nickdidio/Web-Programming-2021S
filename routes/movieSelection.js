@@ -90,7 +90,8 @@ router.get('/done', async(req, res) => {
         return
     } else {
         res.render('movieSelection/home', 
-        { 
+        {
+            groupName: `${group.name}`,
             title: "Waiting on group members to pick movies.",
             exit: "appear",
             pick: "gone",
