@@ -52,40 +52,40 @@ const main = async () => {
     await groups.addGroupMember(group1._id.toString(), fawkes._id.toString());
     await groups.addGroupMember(group1._id.toString(), generic._id.toString());
     group1 = await groups.getGroupById(group1._id.toString())
-    console.log(group1);
+    //console.log(group1);
   } catch (e) {
     console.log(e);
   }
 
   try {
     howl = await movies.createMovie(...Object.values(howlObj));
-    console.log(howl);
+    //console.log(howl);
   } catch (e) {
     console.log(e);
   }
 
   try {
     inception = await movies.createMovie(...Object.values(inceptionObj));
-    console.log(inception);
+    //console.log(inception);
   } catch (e) {
     console.log(e);
   }
 
   try {
     sorry = await movies.createMovie(...Object.values(sorryObj));
-    console.log(sorry);
+    //console.log(sorry);
   } catch (e) {
     console.log(e);
   }
 
   try {
-    console.log(await movies.getMovieById(howl._id));
+    //console.log(await movies.getMovieById(howl._id));
   } catch (e) {
     console.log(e);
   }
 
   try {
-    console.log(await movies.getAllMovies());
+    //console.log(await movies.getAllMovies());
   } catch (e) {
     console.log(e);
   }
@@ -131,20 +131,27 @@ const main = async () => {
     }
 
     //Test adding movies to users then creating a session
-    let sessionDate = group1.sessionDate;
-    let sessionMembers = group1.sessionMembers;
-    let voteCountNeeded = group1.voteCountNeeded
-    let movieList = group1.movieList
-    let filter = group1.filters
-    let chosen = group1.chosen
-    let active = true
+    let sessionDate = group1.currentSession.sessionDate;
+    let sessionMembers = group1.currentSession.sessionMembers;
+    let voteCountNeeded = 2;
+    let howlId = howl._id
+    let sorryId = sorry._id
+    let inceptionId = inception._id
+    let movieList = [{movie: howlId, votes: 0}, {movie: sorryId, votes: 0}, {movie: inceptionId, votes:0}];
+    let filter = group1.currentSession.filters
+    let chosen = group1.currentSession.chosen
+    let active = false
     let updatedSession = {sessionDate, sessionMembers, voteCountNeeded, movieList, filter, chosen, active}
+    console.log("Hey listen!")
+    console.log(group1)
     try {
       // await users.addToWatchList(fawkes._id.toString(), howl._id.toString());
       // await users.addToWatchList(fawkes._id.toString(), inception._id.toString());
       // await users.addToWatchList(reilly._id.toString(), sorry._id.toString());
       // await groups.createSession(group1._id.toString(), 3, []);
       let group1new = await groups.updateSession(group1._id.toString(), updatedSession)
+      let vote1 = await groups.addVote(group1._id.toString(), howl._id)
+      console.log(vote1)
       console.log(group1new)
     }catch (e) {
       console.log(e)

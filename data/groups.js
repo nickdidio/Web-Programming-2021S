@@ -2,7 +2,7 @@ const mongoCollections = require("../config/mongoCollections.js");
 const { ObjectId } = require("mongodb");
 const groups = mongoCollections.groups;
 const usersCollection = mongoCollections.users;
-const pastSessions = mongoCollections.pastSessions;
+const pastSessions = require("./pastSessions");
 const users = require("./users");
 const utils = require("../utils");
 
@@ -135,13 +135,12 @@ const createSession = async(groupId, voteCountNeeded, filters) => {
     let movieList = [];
 
     //Get combination of all users lists
-    console.log(decisionGroup)
     for (let userId of sessionMembers) {
         let parsedId = ObjectId(userId);
         let user =  users.getUserById(parsedId); 
         let userMovies = user.userMovieList; 
         for (let movie of userMovies) {
-            movieList += {movie, votes: 0};
+            movieList += {movie: movie, votes: 0};
         }
         
     }
@@ -173,19 +172,22 @@ const createSession = async(groupId, voteCountNeeded, filters) => {
 
 //adds a vote to movieId, returns if vote decides outcome
 const addVote = async(groupId, movieId) => {
-    let group = getGroupById(groupId);
+    let group = await getGroupById(groupId);
+    console.log(group)
     for (let item of group.currentSession.movieList) {
-        if (item.movie == movieId) {
+        console.log(item)
+        if (item.movie.toString() == movieId.toString()) {
             item.votes++;
 
             //If vote count reached
             if (item.votes == group.currentSession.voteCountNeeded) {
                 pastSessions.createPastSession(groupId, group.currentSession, item.movie);
-                //TODO: possibly empty the currentSession value
+                //TODO: set active to false
                 return {movieId, winner: true}
             }
         }
     }
+    let parsedGroupId = ObjectId(groupId)
     const groupCollection = await groups();   
     const updateInfo = await groupCollection.updateOne({_id: parsedGroupId}, {$set: group});
     if (updateInfo.modifiedCount === 0) throw new Error ('Could not add vote');
@@ -197,10 +199,8 @@ const updateSession = async(groupId, {sessionDate, sessionMembers, voteCountNeed
     try {
         parsedGroupId = utils.checkId(groupId)
     } catch(e) {
-        return false;
-        //throw new Error ("Could not update session: Invalid ID");
+        throw new Error ("Could not update session: Invalid ID");
     }
-    console.log("About to updat the session")
     const groupCollection = await groups();   
     let updatedSession = {
         sessionDate,
@@ -211,12 +211,40 @@ const updateSession = async(groupId, {sessionDate, sessionMembers, voteCountNeed
         chosen,
         active
     }
-    console.log(updatedSession);
+    // if (!validSession(updatedSession)) {
+    //     throw new Error ("Could not update session, as the fields are invalid")
+    // }
     const updateInfo = await groupCollection.updateOne({_id: parsedGroupId}, {$set: {currentSession: updatedSession}});
     if (updateInfo.modifiedCount === 0) throw new Error ('Could not update session');
     return true;
 
     
+}
+
+//checks that all fields in a supplied session are valid
+const validSession = ({sessionDate, sessionMembers, voteCountNeeded, movieList, filters, chosen, active}) => {
+    if (!sessionDate) {
+        throw new Error ("Could not update session, as sessionDate is invalid")
+    }
+    else if (!sessionMembers.isArray()) {
+        throw new Error ("Could not update session, as sessionMembers is invalid")
+    }
+    else if (typeof(voteCountNeeded) != 'number') {
+        throw new Error ("Could not update session, as voteCount is invalid")
+    }
+    else if (!movieList.isArray()) {
+        throw new Error ("Could not update session, as movieList is invalid")
+    }
+    else if (!filters.isArray()) {
+        throw new Error ("Could not update session, as filters is invalid")
+    }
+    else if (typeof(chosen) != string) {
+        throw new Error ("Could not update session, as chosen is invalid")
+    }
+    else if (typeof(active) != 'boolean') {
+        throw new Error ("Could not update session, as active is invalid")
+    }
+    return true;
 }
 
 module.exports = {createGroup, addGroupMember, getGroupById, deleteGroup, createSession, addVote, updateSession};
