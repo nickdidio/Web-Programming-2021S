@@ -5,7 +5,7 @@ const data = require("../data");
 const bcrypt = require("bcrypt");
 const utils = require("../utils");
 const userData = data.users;
-const xss = require('xss');
+const xss = require("xss");
 
 // Cookie
 app.use(
@@ -19,8 +19,7 @@ app.use(
 
 // Check if a cookie is active
 const activeSession = function (req) {
-  if(typeof req.session.user !== "undefined")
-    return true;
+  if (typeof req.session.user !== "undefined") return true;
   return false;
 };
 
@@ -31,7 +30,12 @@ app.get("/", async function (req, res) {
 
 // Get login page
 app.get("/home/login", async function (req, res) {
-  res.render("home/login", { title: "Login to FlikPik" });
+  if (activeSession(req)) {
+    res.redirect("/home/profile");
+    return;
+  } else {
+    res.render("home/login", { title: "Login to FlikPik" });
+  }
 });
 
 // Post login form info
@@ -46,6 +50,7 @@ app.post("/login", async function (req, res) {
       title: "Login error",
       error: "A username and password must be provided.",
     });
+    return;
   }
   // Check username and password against all users
   let users = await userData.getAllUsers();
@@ -143,6 +148,7 @@ app.post("/signup", async function (req, res) {
         res.status(401).render("home/signup", {
           error: "That account is already registered.",
         });
+        return;
       }
     }
     // Add user to DB
