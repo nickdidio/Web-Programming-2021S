@@ -1,10 +1,10 @@
-<div class="watchList">
+<div class="watchList container emp-profile">
     <h1>My {{listName}} List:</h1>
     <p class="error"></p>
     <div class="list-group list-group-horizontal">
         <ul id="movieList">
             {{#each movieList}}
-            <div class="card" style="width: 18rem">
+            <div class="card" style="width: 20rem">
                 <img src={{this.img}} alt={{this.title}} class="card-img-top">
                 <div class="card-body">
                     <h5 class="card-title">{{this.title}}</h1>
