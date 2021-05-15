@@ -145,24 +145,11 @@ const main = async () => {
     console.log("Hey listen!")
     console.log(group1)
     try {
-      await users.addToWatchList(fawkes._id.toString(), howl._id.toString());
-      await users.addToWatchList(fawkes._id.toString(), inception._id.toString());
-      await users.addToWatchList(fawkes._id.toString(), sorry._id.toString());
-      await users.addToWatchList(reilly._id.toString(), sorry._id.toString());
-      // let list2 = await groups.updateWatchList(group1._id.toString(), [], reilly._id.toString())
-      // let list1 = await groups.updateWatchList(group1._id.toString(), list2, fawkes._id.toString())
-      // console.log(list2)
-      // await groups.createSession(group1._id.toString(), 3, []);
-      // let group1new = await groups.updateSession(group1._id.toString(), updatedSession)
-      // let vote1 = await groups.addVote(group1._id.toString(), howl._id)
-      // let vote2 = await groups.addVote(group1._id.toString(), inception._id)
-      // let vote3 = await groups.addVote(group1._id.toString(), howl._id)
-      // console.log(vote1)
-      // console.log(vote2);
-      // console.log(vote3)
-      // console.log(group1new)
-      let filteredList = await groups.applyFilters({genres: ["glopdip"], runtime: 0, mpaa: 0}, howl._id)
-      console.log(filteredList);
+      let value = await users.addToWatchList(fawkes._id.toString(), howl._id);
+      await users.addToWatchList(fawkes._id.toString(), inception._id);
+      await users.addToWatchList(fawkes._id.toString(), sorry._id);
+      await users.addToWatchList(reilly._id.toString(), sorry._id);
+      await groups.setMovieToWatched([fawkes._id, reilly._id], sorry._id)
     }catch (e) {
       console.log(e)
     }

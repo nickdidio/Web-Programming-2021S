@@ -6,7 +6,7 @@ const pastSessions = require("./pastSessions");
 const users = require("./users");
 const utils = require("../utils");
 const movies = require('./movies');
-const { getUserById } = require("./users");
+const { getUserById, addToWatchList } = require("./users");
 
 
 
@@ -169,6 +169,7 @@ const addVote = async(groupId, movieId) => {
             if (item.votes == group.currentSession.voteCountNeeded) {
                 await pastSessions.createPastSession(groupId, group.currentSession, item.movie);
                 //TODO: set active to false
+                await setMovieToWatched(group.currentSession.sessionMembers, movieId);
                 return {movieId, winner: true}
             }
         }
@@ -309,5 +310,20 @@ const applyFilters = async(filters, movieId) => {
     }
     return true
 }
+const setMovieToWatched = async(sessionMembers, movieId) => {   
+    for (member of sessionMembers) {
+        let user = await users.getUserById(member);
+        //adds to watched
+        user.watchedMovieList.push(movieId)
+        //removes from want to watch
+        let index = user.watchList.indexOf(movieId);
+        if (index > -1) {
+            user.watchList.splice(index, 1)
+        }
+        console.log(user)
+        await users.updateUser(member, user)
+    }
+    return true; //returns true if successful
+}
 
-module.exports = {createGroup, addGroupMember, getGroupById, deleteGroup, createSession, addVote, updateSession, updateWatchList, applyFilters};
+module.exports = {createGroup, addGroupMember, getGroupById, deleteGroup, createSession, addVote, updateSession, updateWatchList, applyFilters, setMovieToWatched};
