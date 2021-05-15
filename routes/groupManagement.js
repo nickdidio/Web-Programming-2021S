@@ -19,7 +19,7 @@ router.get("/", async (req, res) => {
           name: group.groupName,
           id: groupId,
           leader: leader,
-          active: group.currentSession.active,
+          active: group.currentSession.active
         });
       }
       res.render("groups/groupList", {
@@ -108,7 +108,7 @@ router.post("/activate", async (req, res) => {
     let new_session = {
       sessionDate: group.currentSession.sessionDate,
       sessionMembers: group.currentSession.sessionMembers,
-      voteCountNeeded: group.currentSession.voteCountNeeded,
+      voteCountNeeded: (group.currentSession.sessionMembers.length / 2 + 1),
       movieList: [],
       filters: group.currentSession.filters,
       chosen: "na",
