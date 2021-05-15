@@ -172,9 +172,21 @@ router.post('/choice/:dec', async (req, res) => {
     if(decision == "yes") {
         result = await groups.addVote(sesh.groupID, movie)
         if(result.winner) {
-            //  groups.declareMovie(sesh.groupID, movie) ^^ Could be done by "addVote" function\
+            // update current session with new chosen ID
+            new_session = {
+                sessionDate: grpSession.sessionDate,
+                sessionMembers: grpSession.sessionMembers,
+                voteCountNeeded: grpSession.voteCountNeeded,
+                movieList: grpSession.movie_list,
+                filters: grpSession.filters,
+                chosen: result.movie,
+                active: true
+            }
             sesh.chosen = true
             sesh.active = false
+            
+            groups.updateSession(sesh.groupID, new_session)
+            
             res.redirect('/pick')
             return
         }
