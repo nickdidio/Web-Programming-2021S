@@ -9,7 +9,7 @@
       <div class="col-md-6">
          <div class="profile-head">
             <h1>{{movie.title}}</h1>
-            <h6>{{movie.mpaaRating}}</h6>
+            <h2>{{movie.mpaaRating}}</h2>
             <p class="proile-rating">View Details About   <span>"{{movie.title}}"</span></p>
             <ul class="nav nav-tabs" id="myTab" role="tablist">
                   <li class="nav-item">
@@ -100,13 +100,13 @@
                            <ul>
                            {{#each movie.reviews}}                
                               <li class="review-li">
-                                 {{this.username}}
+                                 {{this.username}} says:
                                  <br>
-                                 {{this.reviewText}}
+                                 "{{this.reviewText}}"
                                  <br>
-                                 {{this.rating}}
+                                 user review rating: {{this.rating}}
                                  <br>
-                                 {{this.reviewDate}}
+                                 reviewed on: {{this.reviewDate}}
                               </li>
                               {{else}}
                               <li>No reviews have been made for this movie yet</li>
