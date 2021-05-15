@@ -51,6 +51,11 @@ let exportedMethods = {
     let userUpdateInfo = {
       firstName: updatedUser.firstName,
       lastName: updatedUser.lastName,
+      email: updatedUser.email,
+      username: updatedUser.username,
+      userGroups: updatedUser.userGroups,
+      watchedMovieList: updatedUser.watchedMovieList,
+      watchList: updatedUser.watchList,
     };
 
     const userCollection = await users();
