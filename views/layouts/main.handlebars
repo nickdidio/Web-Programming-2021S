@@ -25,6 +25,7 @@
 </head>
 
 <body>
+    {{#if unauthenticated}}
     <nav class="navbar">
     <span class="navbar-toggle" id="js-navbar-toggle">
             <i class="fas fa-bars"></i>
@@ -43,6 +44,32 @@
       
     </ul>
   </nav>
+  {{/if}}
+
+  {{#unless unauthenticated}}
+    <nav class="navbar">
+    <span class="navbar-toggle" id="js-navbar-toggle">
+            <i class="fas fa-bars"></i>
+        </span>
+    <a href="/" class="logo">FlikPik</a>
+    <ul class="main-nav" id="js-menu">
+      <li>
+        <a href="/home/profile" class="nav-links">Profile</a>
+      </li>
+      <li>
+        <a href="/wantToWatchList/" class="nav-links">Want to Watch List</a>
+      </li>
+      <li>
+        <a href="/groups/" class="nav-links">Find a Group</a>
+      </li>
+      <li>
+        <a href="/logout" class="nav-links">Log Out</a>
+      </li>
+      
+    </ul>
+  </nav>
+  {{/unless}}
+
     {{{body}}}
 </body>
 
