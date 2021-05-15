@@ -14,7 +14,7 @@ router.get("/", async (req, res) => {
       let groupList = [];
       for (let groupId of user.userGroups) {
         let group = await groupDB.getGroupById(groupId);
-        let leader = group.groupLeaderId == userId;
+        let leader = (group.groupLeaderId.toString() == userId.toString());
         groupList.push({
           name: group.groupName,
           id: groupId,

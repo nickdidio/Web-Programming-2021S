@@ -223,10 +223,10 @@ router.post('/choice/:dec', async (req, res) => {
                 voteCountNeeded: grpSession.voteCountNeeded,
                 movieList: grpSession.movie_list,
                 filters: grpSession.filters,
-                chosen: result.movie,
+                chosen: result.movieId,
                 active: false
             }
-            console.log("MOVIE RESULT: ", result.movieId)
+            //console.log("MOVIE RESULT: ", result.movieId)
             sesh.chosen = true
             sesh.active = false
             
