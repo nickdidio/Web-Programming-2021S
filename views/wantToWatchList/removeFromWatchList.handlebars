@@ -4,18 +4,21 @@
     <div class="list-group list-group-horizontal">
         <ul id="movieList">
             {{#each movieList}}
-            <div class="list-group-item">
-                <li class="list-group-item">
-                    <img src={{this.img}} alt={{this.title}} width="108" height="160">
-                    <h1 display-3>{{this.title}}</h1>
+            <div class="card" style="width: 18rem">
+                    <img src={{this.img}} alt={{this.title}} class="card-img-top">
+                    <div class="card-body">
+                    <h5 class="card-title">{{this.title}}</h1>
                     <br>
-                    <button type="submit" class="removeLink btn btn-primary" id={{this._id}}>Remove this movie from my
-                        list</button>
+                    <br>
+                    <button type="submit" class="removeLink btn btn btn-warning" id={{this._id}}>Remove this movie from my list</button>
+                    <br>
+
+                    <br>
                     <br>
                     <a href={{this.moreDetailsRoute}}> Show more details</a>
                     <br>
                     <br>
-                </li>
+                </div>
             </div>
             {{else}}
             <p class="error">You watch list is empty</p>

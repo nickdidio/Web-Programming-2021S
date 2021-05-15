@@ -379,3 +379,7 @@ img {
   color: black;
   background-color: white;
 }
+
+.group-name {
+  font-weight: bold;
+}
