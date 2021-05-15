@@ -5,6 +5,7 @@ const groupDB = require('../data/groups');
 const utils = require("../utils")
 const xss = require("xss");
 
+
 //gets user's groups
 router.get("/", async (req, res) => {
   try {

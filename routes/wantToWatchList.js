@@ -35,7 +35,7 @@ router.get("/", async (req, res) => {
       title: "My Watch List",
     });
   } else {
-    res.status(500).json({ error: xss("Watch List Failed") });
+    res.status(500).render("errors/error", { error: xss("Watch List Failed") });
     return;
   }
 });

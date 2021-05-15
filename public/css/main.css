@@ -60,6 +60,10 @@ body {
   box-shadow: 13px 13px 20px #cbced1 -13px -13px 20px #fff;
 }
 
+a {
+  color: #0072ee;
+}
+
 .cardTitle {
   text-align: center;
   font-size: 28px;
@@ -109,6 +113,10 @@ body {
   text-align: center;
   background-color: aqua;
   transition: all 0.5s;
+}
+
+.signon-button {
+  background-color: #008484;
 }
 
 .signon-button:hover {
@@ -261,6 +269,21 @@ img {
   align-items: flex-start;
 }
 
+.btn-primary {
+  background-color: #0072ee;
+}
+
+.btn-outline-primary {
+  color: #0072ee;
+}
+
+.btn-success {
+  background-color: #008a00;
+}
+
+.btn-link {
+  color: #0072ee;
+}
 .navbar {
   font-size: 18px;
   width: 100;
