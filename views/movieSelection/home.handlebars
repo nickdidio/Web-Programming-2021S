@@ -5,11 +5,13 @@
 <img src="{{img}}" alt="{{img}}">
 <h3>{{message}}</h3>
 <form class="{{pick}}" action="/pick/list" method="GET">
-   <input type="submit" value="Pick Flicks">
+ <button class="create-button btn btn-primary" id="pickflick-button" type="submit">Pick Flicks</button>
+   {{!-- <input type="submit" value="Pick Flicks"> --}}
 </form>
 <!-- Where should this lead? -->
 <form class="{{exit}}" action="/pick/leave" method="GET">
-   <input type="submit" value="Exit Lobby">
+   <button class="create-button btn btn-primary" id="exit-button" type="submit">Exit Lobby</button>
+   {{!-- <input type="submit" value="Exit Lobby"> --}}
 </form>
 <form class="{{done}}" action="/pick/done" method="GET">
    <input type="submit" value="Check if they're finished.">
