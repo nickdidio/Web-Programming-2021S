@@ -48,7 +48,7 @@ router.get("/", async (req, res) => {
           user: user.firstName,
         });
       }
-      res.render("groups/groupList", { groupList: groupList }); //renders page under groups/grouplist.handlebars
+      res.render("groups/groupList", { groupList: groupList }); 
       return;
     }
     res.render("groups/groupList", { groupList: false });

@@ -281,7 +281,10 @@ const setMovieToWatched = async(sessionMembers, movieId) => {
     for (let member of sessionMembers) {
         let user = await users.getUserById(member);
         //adds to watched
-        user.watchedMovieList.push(movieId)
+        let watchListIndex = user.watchedMovieList.indexOf(movieId);
+        if (watchListIndex > -1) {
+            user.watchedMovieList.push(movieId)
+        }
         //removes from want to watch
         let index = user.watchList.indexOf(movieId);
         if (index > -1) {
