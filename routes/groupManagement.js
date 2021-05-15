@@ -40,7 +40,7 @@ router.post('/join', async (req, res) => {
         let request = xss(req.body.groupId)
         let groupId = request.toString()
         group = groupDB.addGroupMember(groupId, userId);
-        res.redirect('.') 
+        res.redirect('/pick/') 
     } catch (e) {
         res.status(400).json({ error: xss("Could not join group") });
     }
@@ -53,7 +53,8 @@ router.post('/create', async (req, res) => {
         let request = xss(req.body.groupName)
         let groupName = request;
         await groupDB.createGroup(req.session.user._id, groupName);
-        res.redirect('.');
+        // group.currentSession.active should be set to true, and groupWatchList compiled ^^^
+        res.redirect('/pick/list');
     } catch(e) {
         res.status(400).json({ error: xss("Could not create group") });
     }
