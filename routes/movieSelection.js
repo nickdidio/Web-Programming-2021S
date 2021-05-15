@@ -13,15 +13,25 @@ router.get('/', async (req, res) => {
     if (!req.session.user) {
         res.status(400).send("You must be logged in to access this page!")
     }
-    try{
-        let userId = utils.checkId(req.session.user._id)
-        let user = await userDB.getUserById(userId); //get userid from request
-        if (user.userGroups) {
-            let groupList = [];
-            for (let groupId of user.userGroups) {
-                let group = await groupDB.getGroupById(groupId);
-                let leader = (group.groupLeaderId.toString() === userId.toString())
-                groupList.push({name: group.groupName, id: groupId, leader: leader, active: group.currentSession.active, user: user.firstName});
+    sesh = req.session
+    sesh.groupID = req.query.id
+    group = await groups.getGroupById(req.query.id)
+    if(!group) {
+        res.status(400).send("That group doesn't exist!")
+        return
+    }
+    // fresh join (after leaving, or new session member)
+    if(!sesh.chosen && !sesh.active) {
+        if(group.currentSession.sessionMembers.includes(sesh.user._id)) {
+            //sesh.active = true
+            res.redirect("/pick")
+            return
+        } else {
+            group.currentSession.sessionMembers.push(sesh.user._id)
+            res = groups.updateSession(sesh.groupID, group)
+            if(!res) {
+                res.status(400).send("Could not update currentSession")
+                return
             }
             res.render('groups/groupList', {groupList: groupList}) //renders page under groups/grouplist.handlebars
             return;
