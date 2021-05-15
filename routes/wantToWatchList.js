@@ -18,6 +18,7 @@ router.get("/", async (req, res) => {
       m = await movies.getMovieById(watchListIds[i]);
       watchList.push(m);
       watchList[i].moreDetailsRoute = "/wantToWatchList/movieDetails/" + m._id;
+      utils.editMovieForViews(m, `/wantToWatchList/`);
     }
   } catch (e) {
     res.status(500).json({ error: e.toString() });
@@ -81,7 +82,7 @@ router.post("/add", async (req, res) => {
       res.status(400).json({ error: xss(e.toString()) });
       return;
     }
-    for(let i = 0; i < genre.length;i++){
+    for (let i = 0; i < genre.length; i++) {
       genre[i] = xss(genre[i]);
     }
     try {
@@ -125,10 +126,16 @@ router.post("/remove", async (req, res) => {
     res.status(500).json({ error: xss(e.toString()) });
     return;
   }
-  if (!movie || !movie._id) throw "Error: Movie not found in movie database";
+  try {
+    if (!movie || !movie._id)
+      throw new Error("Error: Movie not found in movie database");
 
-  if (await users.removeFromWatchList(req.session.user._id, movie._id)) {
-    res.json(true);
+    if (await users.removeFromWatchList(req.session.user._id, movie._id)) {
+      res.json(true);
+      return;
+    }
+  } catch (e) {
+    res.status(500).json({ error: xss(e.toString()) });
     return;
   }
   res.json(false);
@@ -259,55 +266,10 @@ router.get("/movieDetails/:id", async (req, res) => {
     return;
   }
 
-  movie.alt = movie.img.includes("../public")
-    ? "Poster Unvailable for"
-    : "Poster for" + movie.title;
-
-  movie.reviewsRoute = `../reviews/${movie._id}`;
-
-  movie.userAvgRating = movie.userAvgRating.toFixed(1);
+  utils.editMovieForViews(movie, `/wantToWatchList/movieDetails/${movie._id}`);
 
   res.render("movies/movieDetails", { title: movie.title, movie: movie });
   res.status(200);
-});
-
-router.post("/movieDetails/:id", async (req, res) => {
-  // check if movie id is a valid MongoDB id
-  const movieId = req.params.id;
-  try {
-    utils.checkId(movieId);
-  } catch (e) {
-    res.status(400).json({ error: xss(e.toString()) });
-    return;
-  }
-
-  const { reviewText } = req.body;
-  const rating = 5;
-  const d = new Date();
-  const reviewDate = `${d.getFullYear()}-${d.getMonth()}-${d.getDay()}`;
-  const username = req.session.user.username;
-
-  try {
-    utils.checkReviewParameters(reviewDate, reviewText, rating, username);
-  } catch (e) {
-    res.status(400).json({
-      error: xss(e.toString()),
-    });
-    return;
-  }
-
-  try {
-    const newReview = await reviews.createReview(
-      xss(reviewDate),
-      xss(reviewText),
-      parseInt(xss(rating)),
-      xss(username),
-      xss(movieId)
-    );
-    res.redirect(`/wantToWatchList/movieDetails/${movieId}`);
-  } catch (e) {
-    res.status(500).json({ error: xss(e.toString()) });
-  }
 });
 
 module.exports = router;

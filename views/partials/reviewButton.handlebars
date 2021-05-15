@@ -1,0 +1,35 @@
+{{!-- MAKE SURE MOVIE PASSED HAS BEEN PASSED TO editMovieForViews() --}}
+<button type="button" class="btn btn-primary" data-toggle="modal" id="modalButtonTrigger" data-target="#exampleModal">
+Write a New Review
+</button>
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" >
+   <div class="modal-dialog" role="document" style="z-index: 1">
+      <div class="modal-content">
+         <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Write a new Review</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+         </div>
+         <div class="modal-body">
+            <form id="reviewText" method="POST" action={{this.reviewsRoute}}>
+               <div class="form-group">
+                  <label for="reviewTextArea">Write a new review</label>
+                  <textarea class="form-control" id="reviewTextArea" name="reviewText" rows="3"></textarea>
+                  <label for="newReviewRating">Rate the movie from 1 to 5</label>
+                  <br>
+                  <input type="number" name="rating" id="newReviewRating" max="5" min="1" default="" />
+                  <br>
+                  <label for="redirectLink" hidden></label>
+                  <input type="text" name="redirect" value="{{this.redirect}}" hidden/>
+               </div>
+               <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                  <button type="submit" class="btn btn-primary">Post this review</button>
+               </div>
+         </div>
+         </form>
+      </div>
+   </div>
+</div>

@@ -9,8 +9,10 @@
                     <img src={{this.img}} alt={{this.title}} width="108" height="160">
                     <h1 display-3>{{this.title}}</h1>
                     <br>
-                    <button type="submit" class="removeLink btn btn-primary" id={{this._id}}>Remove this movie from my
+                    <button type="submit" class="removeLink btn btn btn-warning" id={{this._id}}>Remove this movie from my
                         list</button>
+                    {{!-- <br>
+                    {{> reviewButton movie}} --}}
                     <br>
                     <a href={{this.moreDetailsRoute}}> Show more details</a>
                     <br>
