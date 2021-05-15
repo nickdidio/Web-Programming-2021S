@@ -110,7 +110,7 @@ a {
 }
 
 .genre-title {
-  font-style: italic
+  font-style: italic;
 }
 
 .gone {
@@ -169,4 +169,8 @@ img {
 
 .btn-link {
   color: #0072ee;
+}
+
+.group-name {
+  font-weight: bold;
 }

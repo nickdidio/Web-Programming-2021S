@@ -162,7 +162,6 @@ const checkReviewParameters = (reviewDate, reviewText, rating, username) => {
   }
 
   if (typeof rating !== "number" || isNaN(rating) || rating > 5 || rating < 1) {
-    console.log(rating);
     throw new Error(
       "Must provide a real number value for rating parameter that is between 1 and 5 (inclusive)."
     );
@@ -181,10 +180,25 @@ const emailValidator = (email) => {
   return emailFormat.test(email);
 };
 
+const editMovieForViews = (m, redirect) => {
+  m.alt = m.img.includes("../public")
+    ? "Poster Unvailable for "
+    : "Poster for " + m.title;
+
+  m.reviewsRoute = `/reviews/${m._id}`;
+
+  m.userAvgRating = m.userAvgRating
+    ? m.userAvgRating.toFixed(1)
+    : "No ratings have been made yet";
+
+  m.redirect = redirect;
+};
+
 module.exports = {
   checkId,
   isValidDateString,
   checkMovieParameters,
   checkReviewParameters,
   emailValidator,
+  editMovieForViews,
 };
