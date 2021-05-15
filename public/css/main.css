@@ -20,10 +20,6 @@ body {
   background-repeat: no-repeat;
 }
 
-footer {
-  background-color: #0a4275;
-}
-
 .hero {
   display: flex;
   flex-direction: column;
