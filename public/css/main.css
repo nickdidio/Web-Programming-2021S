@@ -259,6 +259,7 @@ img {
 }
 .watchList {
   align-items: flex-start;
+
 }
 
 .navbar {
@@ -379,3 +380,9 @@ img {
   color: black;
   background-color: white;
 }
+
+
+.group-name {
+  font-weight: bold;
+}
+

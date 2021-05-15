@@ -43,7 +43,7 @@ app.get("/home/login", async function (req, res) {
 app.post("/login", async function (req, res) {
   const password = req.body.password;
   const username = req.body.username;
-  //console.log("CONTROLAASDFG");
+
   // Check if username or password is provided
   if (!username || !password) {
     res.status(401);
@@ -51,6 +51,7 @@ app.post("/login", async function (req, res) {
       title: "Login error",
       error: "A username and password must be provided.",
     });
+    return;
   }
   // Check username and password against all users
   let users = await userData.getAllUsers();
@@ -148,6 +149,7 @@ app.post("/signup", async function (req, res) {
         res.status(401).render("home/signup", {
           error: "That account is already registered.",
         });
+        return;
       }
     }
     // Add user to DB
