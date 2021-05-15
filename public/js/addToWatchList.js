@@ -4,10 +4,10 @@
   const searchInput = $("#search_term");
   const moviesList = $("#movieList");
   const movieDiv = $(".movie");
-  const movieContainer = $(".watchListResult");
+  //const moviesList = $(".watchListResult");
   const errorMsg = $(".error");
   const errorMsgContainer = $("#searchMoviesErrorContainer");
-  const errorMsg = $("#searchMoviesError");
+  // const errorMsg = $("#searchMoviesError");
   const randButton = $("#randomButton");
   const addButton = $("#addMovieButton");
   const date = new Date();
@@ -149,7 +149,6 @@
           </div>
       </div>`
     );
-    movieContainer.attr("hidden", false);
     movieDiv.attr("hidden", false);
     moviesList.attr("hidden", true);
   };
@@ -180,6 +179,7 @@
       showMovieDetails(movieId);
       addButton.children().html("Add this movie to my list");
       addButton.attr("hidden", false);
+      movieDiv.attr("hidden", false);
     });
 
     // On click, send to route to add a movie to the database
@@ -212,6 +212,7 @@
     // Basic error handling
     const unrefinedInput = searchInput.val();
     if (typeof unrefinedInput !== "string") {
+      
       errorMsg.empty();
       errorMsg.append(`Error: Input must be a string.`);
       errorMsgContainer.attr("hidden", false);
@@ -325,6 +326,8 @@
         showMovieDetails(movieId);
         addButton.children().html("Add this movie to my list");
         addButton.attr("hidden", false);
+        moviesList.attr("hidden", true);
+        movieDiv.attr("hidden", false);
         errorMsgContainer.attr("hidden", true);
       } else {
         errorMsg.empty();
