@@ -32,18 +32,11 @@ const constructorMethod = (app) => {
   // Prevent unauthenticated user from accessing routes that need authentification
   app.use("*", (req, res, next) => {
     if (!req.session.user) {
-      res.render("home/landing", { title: "FlikPik" });
+      res.render("home/landing", { title: "FlikPik", unauthenticated: true });
     } else {
       next();
     }
   });
-
-  // app.use("/home/signup", (req, res) => {
-  //   res.render("home/signup", { title: "Signup for FlikPik" });
-  // });
-  // app.use("/home/login", (req, res) => {
-  //   res.render("home/login", { title: "Login to FlikPik" });
-  // });
 
   app.use("/reviews", reviewRoutes);
   app.use("/movies", movieRoutes);
