@@ -22,10 +22,17 @@
             <li>
                 <p>{{this.name}} | Invite others with this link: Group Code: {{this.id}}</p>
                 {{#if leader}}
-                <button>Make Session</button>
-                {{/if}}
+                <button></button>
+                <form class="btn" action="/groups/join" method="post">
+                    <input type="text" name="groupId" value="{{id}}" hidden/>
+                    <input type="submit" name="make" value="Make Session"/>
+                </form>
                 {{#if active}}
-                <button>Join Live Session</button>
+                <button></button>
+                <form class="btn" action="/groups/join" method="post">
+                    <input type="text" name="groupId" value="{{id}}" hidden/>
+                    <input type="submit" name="join" value="Join Live Session"/>
+                </form>
                 {{/if}}
                 
             </li>

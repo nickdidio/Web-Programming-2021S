@@ -41,10 +41,11 @@ router.post('/join', async (req, res) => {
     }
     try {
         let userId = (req.session.user._id)
-        let groupId = xss(req.body.groupId)
-        //let groupId = request.toString()
+        let request = xss(req.body.groupId)
+        console.log("GID: " + request)
+        let groupId = request.toString()
         group = groupDB.addGroupMember(groupId, userId);
-        res.redirect('/pick/') 
+        res.redirect(`/pick?id=${groupId}`)
     } catch (e) {
         res.status(400).json({ error: xss("Could not join group") });
     }
@@ -60,8 +61,7 @@ router.post('/create', async (req, res) => {
         let request = xss(req.body.groupName)
         let groupName = request;
         await groupDB.createGroup(req.session.user._id, groupName);
-        // group.currentSession.active should be set to true, and groupWatchList compiled ^^^
-        res.redirect('/pick/list');
+        res.redirect('.');
     } catch(e) {
         res.status(400).json({ error: xss("Could not create group") });
     }

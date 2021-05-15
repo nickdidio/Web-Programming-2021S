@@ -10,17 +10,24 @@ router.use(express.static('public'));
 // sesh.active -> once a user enters starts judging, they're 'active' until a movie is selected as a winner by the group
 
 router.get('/', async (req, res) => {
+    sesh = req.session
     if(!req.session.user) {
         res.status(400).send("You must be logged in to access this page!")
     } else if(sesh.leader && !sesh.chosen) {
         // group leader shouldn't use this route
         return
     }
-    sesh = req.session
+
     sesh.groupID = req.query.id
-    group = await groups.getGroupById(req.query.id)
+    group = {}
+    try {
+        group = await groups.getGroupById(req.query.id)
+    } catch(e) {
+        res.status(400).send("<h3>That group doesn't exist!</h3>")
+    }
+    
     if(!group) {
-        res.status(400).send("That group doesn't exist!")
+        res.status(400).send("<h3>That group doesn't exist!</h3>")
         return
     }
     // fresh join (after leaving, or new session member)
@@ -40,6 +47,7 @@ router.get('/', async (req, res) => {
         // Decision rooms != watch groups, so anyone(?) can join a decision room
         res.render('movieSelection/home', 
         { 
+            groupName: `${group.groupName}`,
             title: "Waiting on group leader...", 
             message: "Sit tight.",
             pick: "appear",
@@ -51,6 +59,7 @@ router.get('/', async (req, res) => {
         // return (early)
         res.render('movieSelection/home', 
         { 
+            groupName: `${group.groupName}`,
             title: "Waiting on group members to pick movies.",
             exit: "appear",
             pick: "gone",
@@ -90,7 +99,8 @@ router.get('/done', async(req, res) => {
         return
     } else {
         res.render('movieSelection/home', 
-        { 
+        {
+            groupName: `${group.name}`,
             title: "Waiting on group members to pick movies.",
             exit: "appear",
             pick: "gone",
@@ -116,12 +126,20 @@ router.get('/list', async (req, res) => {
     if(!req.session.user) {
         res.status(403).send("You must be logged in to access this page!")
     }
+
     sesh = req.session
-    group = await groups.getGroupById(sesh.groupID)
+    group = {}
+    try {
+        group = await groups.getGroupById(sesh.groupID)
+    } catch(e) {
+        console.log(e)
+        res.status(400).send("<h3>Bad request!</h3>")
+        return
+    }
     // if user clicked "Pick Flicks" button too early, send them back
     if(!group.currentSession.active) {
         // should also present error message
-        res.status(400)
+        res.status(400).send("<h3>This group isn't active yet!</h3>")
         return
     }
     sesh.active = true
@@ -132,12 +150,22 @@ router.get('/list', async (req, res) => {
     for(item of group.currentSession.movieList) {
         sesh.movie_list.push(item.movie)
     }
+    if(sesh.movie_list.length == 0) {
+        res.status(400).send("<h3>No movies to choose from!</h3>")
+        return
+    }
     /*for (const [key, value] of Object.entries(group.currentSession.roster)) {
         sesh.movie_list.push(value)
     }*/
     sesh.movie_count = sesh.movie_list.length
-    
-    movie = await movies.getMovieById(sesh.movie_list[0])
+    movie = {}
+    try {
+        movie = await movies.getMovieById(sesh.movie_list[0])
+    } catch(e) {
+        console.log(e)
+        res.status(400).send("<h3>Something went wrong getting that movie!</h3>")
+        return
+    }
     res.render('movieSelection/selection', 
     { 
         movie: movie,
@@ -157,7 +185,14 @@ router.post('/choice/:dec', async (req, res) => {
     decision = req.params.dec
     sesh = req.session
     movie = sesh.movie_list[sesh.judged] // movieID (from TMDb)
-    group = groups.getGroupById(sesh.groupID)
+    group = {}
+    try {
+        group = await groups.getGroupById(sesh.groupID)
+    } catch(e) {
+        console.log(e)
+        res.status(400).send("<h3>Bad request!</h3>")
+        return
+    }
     grpSession = group.currentSession
     // First check if grpSession.selection != null. If it doesn't then, a movie has been selected,
     // and the user should return to group home page where the chosen movie will be displayed
@@ -172,9 +207,21 @@ router.post('/choice/:dec', async (req, res) => {
     if(decision == "yes") {
         result = await groups.addVote(sesh.groupID, movie)
         if(result.winner) {
-            //  groups.declareMovie(sesh.groupID, movie) ^^ Could be done by "addVote" function\
+            // update current session with new chosen ID
+            new_session = {
+                sessionDate: grpSession.sessionDate,
+                sessionMembers: grpSession.sessionMembers,
+                voteCountNeeded: grpSession.voteCountNeeded,
+                movieList: grpSession.movie_list,
+                filters: grpSession.filters,
+                chosen: result.movie,
+                active: true
+            }
             sesh.chosen = true
             sesh.active = false
+            
+            groups.updateSession(sesh.groupID, new_session)
+            
             res.redirect('/pick')
             return
         }
