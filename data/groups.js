@@ -5,6 +5,9 @@ const usersCollection = mongoCollections.users;
 const pastSessions = require("./pastSessions");
 const users = require("./users");
 const utils = require("../utils");
+const movies = require('./movies');
+const { getUserById } = require("./users");
+
 
 
 const createGroup = async(groupLeaderId, groupName) => {
@@ -137,26 +140,10 @@ const createSession = async(groupId, voteCountNeeded, filters) => {
     let sessionMembers = decisionGroup.groupMembers;
     let movieList = [];
 
-    //Get combination of all users lists
-    for (let userId of sessionMembers) {
-        let parsedId = ObjectId(userId);
-        let user =  users.getUserById(parsedId); 
-        let userMovies = user.userMovieList; 
-        for (let movie of userMovies) {
-            movieList += {movie: movie, votes: 0};
-        }
-        
-    }
+    //Adds leader's movies to movieList
+    movieList = updateWatchList(groupId, movieList, decisionGroup.groupLeaderId)
 
-    //TODO: Apply filters
-    for (let movie of movieList) {
-        //Genre
-        //Runtime
-        //MPAA Rating
-        //Previously watched
-    }
 
-    //TODO: FILTER past sessions films
     if (voteCountNeeded > decisionGroup.groupMembers.length) {
         throw new Error('vote count must be less than current total of group members')
     }
@@ -164,7 +151,7 @@ const createSession = async(groupId, voteCountNeeded, filters) => {
         sessionDate: new Date().getTime(), //Time since epoch
         sessionMembers: [decisionGroup.groupLeaderId],
         voteCountNeeded,
-        movieList: [],
+        movieList: movieList,
         filters,
         chosen: "na",
         active: true
@@ -250,4 +237,47 @@ const validSession = ({sessionDate, sessionMembers, voteCountNeeded, movieList, 
     return true;
 }
 
-module.exports = {createGroup, addGroupMember, getGroupById, deleteGroup, createSession, addVote, updateSession};
+//gets users watchlist, runs it through current session filter, both returns and modifies watchList
+const updateWatchList = async(groupId, watchList, userId) => {
+    let parsedUserId;
+    let parsedGroupId
+    try {
+        parsedUserId = utils.checkId(userId);
+        parsedGroupId = utils.checkId(groupId);
+    } catch(e) {
+        throw new Error ("Invalid user or group ID")
+    }
+    if (!Array.isArray(watchList)){
+        throw new Error ("Watchlist must be of type list")
+    }
+    let user;
+    let group;
+    try {
+        group = await getGroupById(groupId);
+        user = await getUserById(parsedUserId);
+    } catch (e) {
+        throw new Error ("UserId or GroupId not found!")
+    }
+    
+    let filter = group.currentSession.filters
+    let userList = user.watchList
+    let ps = group.pastSessions
+    let previousMovies = []
+
+    //Gets movies from pat sessions
+    for (let session of ps) {
+        previousMovies.push(session.moviePicked)
+    }
+
+    //Doesnt add movie if already watched by group or if its already in the watch list
+    for (let movieId of userList) {
+        if(!previousMovies.includes(movieId) && !watchList.includes(movieId)){
+            //let movie = await movies.getMovieById(movieId)
+            //TODO filter movie using filters
+            watchList.push(movieId);
+        }
+    }
+    return watchList;
+}
+
+module.exports = {createGroup, addGroupMember, getGroupById, deleteGroup, createSession, addVote, updateSession, updateWatchList};

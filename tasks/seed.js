@@ -145,18 +145,22 @@ const main = async () => {
     console.log("Hey listen!")
     console.log(group1)
     try {
-      // await users.addToWatchList(fawkes._id.toString(), howl._id.toString());
-      // await users.addToWatchList(fawkes._id.toString(), inception._id.toString());
-      // await users.addToWatchList(reilly._id.toString(), sorry._id.toString());
+      await users.addToWatchList(fawkes._id.toString(), howl._id.toString());
+      await users.addToWatchList(fawkes._id.toString(), inception._id.toString());
+      await users.addToWatchList(fawkes._id.toString(), sorry._id.toString());
+      await users.addToWatchList(reilly._id.toString(), sorry._id.toString());
+      let list2 = await groups.updateWatchList(group1._id.toString(), [], reilly._id.toString())
+      let list1 = await groups.updateWatchList(group1._id.toString(), list2, fawkes._id.toString())
+      console.log(list2)
       // await groups.createSession(group1._id.toString(), 3, []);
-      let group1new = await groups.updateSession(group1._id.toString(), updatedSession)
-      let vote1 = await groups.addVote(group1._id.toString(), howl._id)
-      let vote2 = await groups.addVote(group1._id.toString(), inception._id)
-      let vote3 = await groups.addVote(group1._id.toString(), howl._id)
-      console.log(vote1)
-      console.log(vote2);
-      console.log(vote3)
-      console.log(group1new)
+      // let group1new = await groups.updateSession(group1._id.toString(), updatedSession)
+      // let vote1 = await groups.addVote(group1._id.toString(), howl._id)
+      // let vote2 = await groups.addVote(group1._id.toString(), inception._id)
+      // let vote3 = await groups.addVote(group1._id.toString(), howl._id)
+      // console.log(vote1)
+      // console.log(vote2);
+      // console.log(vote3)
+      // console.log(group1new)
     }catch (e) {
       console.log(e)
     }
