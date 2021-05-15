@@ -180,6 +180,83 @@ const emailValidator = (email) => {
   return emailFormat.test(email);
 };
 
+const checkUserParameters = (
+  email,
+  firstName,
+  lastName,
+  username,
+  password,
+  userGroups,
+  watchedMovieList,
+  watchList
+) => {
+  // Error check string values of user object
+  const strArgs = [email, firstName, lastName, username, password];
+  const strArgNames = [
+    "email",
+    "first name",
+    "lastname",
+    "username",
+    "password",
+  ];
+
+  strArgs.forEach((arg, idx) => {
+    if (typeof arg !== "string" || arg.trim() === "") {
+      throw new Error(
+        `Must provide a non-null, non-empty value of type 'string' for ${strArgNames[idx]}.`
+      );
+    }
+  });
+
+  if (!emailValidator(email)) {
+    throw new Error("You must enter a valid email.");
+  }
+
+  if (userGroups) {
+    if (!Array.isArray(userGroups)) {
+      throw new Error(
+        "Must provide a non-null, non-empty array for 'userGroups' parameter."
+      );
+    } else if (
+      userGroup.some((g) => typeof g !== "string" || g.trim() === "")
+    ) {
+      throw new Error(
+        "Must provide an array of strings for userGroups parameter"
+      );
+    }
+  }
+
+  if (watchedMovieList) {
+    if (!Array.isArray(watchedMovieList)) {
+      throw new Error(
+        "Must provide a non-null, non-empty array for 'watchedMovieList' parameter."
+      );
+    } else if (
+      watchedMovieList.some((g) => typeof g !== "string" || g.trim() === "")
+    ) {
+      throw new Error(
+        "Must provide an array of strings for watchedMovieList parameter"
+      );
+    }
+  }
+
+  if (watchList) {
+    if (!Array.isArray(watchList)) {
+      throw new Error(
+        "Must provide a non-null, non-empty array for 'watchList' parameter."
+      );
+    } else if (
+      watchList.some((g) => typeof g !== "string" || g.trim() === "")
+    ) {
+      throw new Error(
+        "Must provide an array of strings for watchList parameter"
+      );
+    }
+  }
+};
+
+// redirect argument --- where users should be redirected to after posting a review
+// most likely the page that the review button was on
 const editMovieForViews = (m, redirect) => {
   m.alt = m.img.includes("../public")
     ? "Poster Unvailable for "
@@ -199,6 +276,7 @@ module.exports = {
   isValidDateString,
   checkMovieParameters,
   checkReviewParameters,
+  checkUserParameters,
   emailValidator,
   editMovieForViews,
 };

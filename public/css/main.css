@@ -5,7 +5,7 @@
 body {
   margin: 0;
   width: 100vw;
-  height: 100%;
+  height: 100vh;
   font-family: "PT Sans Caption", sans-serif;
   font-weight: 700;
   text-align: center;
@@ -139,7 +139,8 @@ a {
 
 .link a {
   text-decoration: none;
-  color: #aaa;
+  color: #636f76;
+
   font-size: 15px;
 }
 
@@ -181,7 +182,7 @@ img {
 }
 
 .error {
-  color: red;
+  color: #ee0000;
   font-weight: bold;
 }
 
@@ -219,6 +220,9 @@ img {
 .profile-head h6 {
   color: #0062cc;
 }
+.profile-head h2 {
+  color: #0062cc;
+}
 
 .logout-btn {
   border: #495057;
@@ -242,7 +246,7 @@ img {
 
 .proile-welcome {
   font-size: 12px;
-  color: #818182;
+  color: #767677;
   margin-top: 5%;
 }
 
@@ -273,7 +277,8 @@ img {
 
 .profile-actions p {
   font-size: 12px;
-  color: #818182;
+  color: #767677;
+
   font-weight: 600;
   margin-top: 10%;
 }
@@ -410,10 +415,12 @@ img {
 .hero-title {
   max-width: 16em;
   margin: 0;
+  padding: 70px 0;
   font-size: 30px;
   font-weight: bold;
   line-height: 0.9;
   justify-content: center;
+  color: #767676;
   font-family: "PT Sans Caption", sans-serif;
 }
 
@@ -434,6 +441,10 @@ img {
   color: white;
   text-decoration: none;
   border: 0.1em solid white;
+}
+
+.log-in-btn {
+  color: #767676;
 }
 
 .button-primary {
