@@ -1,9 +1,10 @@
 const express = require("express");
 const router = express.Router();
-const userDB = require("../data/users");
-const groupDB = require("../data/groups");
-const utils = require("../utils");
+const userDB = require('../data/users');
+const groupDB = require('../data/groups');
+const utils = require("../utils")
 const xss = require("xss");
+
 
 //gets user's groups
 router.get("/", async (req, res) => {
@@ -60,6 +61,7 @@ router.post("/join", async (req, res) => {
   try {
     let userId = req.session.user._id;
     let request = xss(req.body.groupId);
+    console.log("GID: " + request);
     let groupId = request.toString();
     group = groupDB.addGroupMember(groupId, userId);
     res.redirect(`/pick?id=${groupId}`);
@@ -67,43 +69,46 @@ router.post("/join", async (req, res) => {
     res.status(400).json({ error: xss("Could not join group") });
   }
 });
-router.post('/join', async (req, res) => {
+
+router.post("/create", async (req, res) => {
+  try {
+    let request = xss(req.body.groupName);
+    let groupName = request;
+    await groupDB.createGroup(req.session.user._id, groupName);
+    res.redirect(".");
+  } catch (e) {
+    res.status(400).json({ error: xss("Could not create group") });
+  }
+});
+
+// Sets currentSession.active = true (only visible to group leader)
+router.post('/activate', async (req, res) => {
     //todo: check user input
     try {
-        let userId = (req.session.user._id)
-        let request = xss(req.body.groupId)
-        let groupId = request.toString()
-        group = groupDB.addGroupMember(groupId, userId);
-        res.redirect(`/pick?id=${groupId}`)
+        group = await groupDB.getGroupById(req.body.groupId)
+        console.log("Group: " + group)
+        let new_session = {
+            sessionDate: group.currentSession.sessionDate,
+            sessionMembers: group.currentSession.sessionMembers,
+            voteCountNeeded: group.currentSession.voteCountNeeded,
+            movieList: [],
+            filters: group.currentSession.filters,
+            chosen: 'na',
+            active: true
+        };
+        members = group.currentSession.sessionMembers
+        console.log("Members: " + members)
+        for(member of members) {
+            movies = await userDB.getWatchList(member)
+            new_session.movieList.push(movies)
+        }
+        groupDB.updateSession(req.body.groupId, new_session)
+        res.redirect('/pick/list')
+        return
     } catch (e) {
+        console.log(e)
         res.status(400).json({ error: xss("Could not join group") });
-    }
-});
-    
-router.post('/join', async (req, res) => {
-    //todo: check user input
-    try {
-        let userId = (req.session.user._id)
-        let request = xss(req.body.groupId)
-        console.log("GID: " + request)
-        let groupId = request.toString()
-        group = groupDB.addGroupMember(groupId, userId);
-        res.redirect(`/pick?id=${groupId}`)
-    } catch (e) {
-        res.status(400).render("errors/error",{ error: "Could not join group" });
-    }
-    
-
-});
-
-router.post('/create', async (req, res) => {
-    try {
-        let request = xss(req.body.groupName)
-        let groupName = request;
-        await groupDB.createGroup(req.session.user._id, groupName);
-        res.redirect('.');
-    } catch(e) {
-        res.status(400).json({ error: xss("Could not create group") });
+        return
     }
     
 });
