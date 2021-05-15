@@ -38,6 +38,7 @@ router.post('/join', async (req, res) => {
     try {
         let userId = (req.session.user._id)
         let request = xss(req.body.groupId)
+        console.log("GID: " + request)
         let groupId = request.toString()
         group = groupDB.addGroupMember(groupId, userId);
         res.redirect(`/pick?id=${groupId}`)
