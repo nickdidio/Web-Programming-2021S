@@ -10,8 +10,8 @@ const howlObj = {
   img: "https://image.tmdb.org/t/p/w500/TkTPELv4kC3u1lkloush8skOjE.jpg",
   releaseYear: "2004-11-19",
   runtime: 119,
-  mpaaRating: "PG",
-  genre: ["Fantasy", "Animation", "Adventrue"],
+  mpaaRating: "NR",
+  genre: ["Fantasy", "Animation", "Adventure"],
   TMDbId: 4935,
 };
 
@@ -52,40 +52,40 @@ const main = async () => {
     await groups.addGroupMember(group1._id.toString(), fawkes._id.toString());
     await groups.addGroupMember(group1._id.toString(), generic._id.toString());
     group1 = await groups.getGroupById(group1._id.toString())
-    console.log(group1);
+    //console.log(group1);
   } catch (e) {
     console.log(e);
   }
 
   try {
     howl = await movies.createMovie(...Object.values(howlObj));
-    console.log(howl);
+    //console.log(howl);
   } catch (e) {
     console.log(e);
   }
 
   try {
     inception = await movies.createMovie(...Object.values(inceptionObj));
-    console.log(inception);
+    //console.log(inception);
   } catch (e) {
     console.log(e);
   }
 
   try {
     sorry = await movies.createMovie(...Object.values(sorryObj));
-    console.log(sorry);
+    //console.log(sorry);
   } catch (e) {
     console.log(e);
   }
 
   try {
-    console.log(await movies.getMovieById(howl._id));
+    //console.log(await movies.getMovieById(howl._id));
   } catch (e) {
     console.log(e);
   }
 
   try {
-    console.log(await movies.getAllMovies());
+    //console.log(await movies.getAllMovies());
   } catch (e) {
     console.log(e);
   }
@@ -125,23 +125,31 @@ const main = async () => {
   }
 
     try {
-      console.log(await movies.deleteMovie(howl._id));
-    } catch (e) {
-      console.log(e);
-    }
-
-    try {
       console.log(await movies.getAllMovies());
     } catch (e) {
       console.log(e);
     }
 
     //Test adding movies to users then creating a session
+    let sessionDate = group1.currentSession.sessionDate;
+    let sessionMembers = group1.currentSession.sessionMembers;
+    let voteCountNeeded = 2;
+    let howlId = howl._id
+    let sorryId = sorry._id
+    let inceptionId = inception._id
+    let movieList = [{movie: howlId, votes: 0}, {movie: sorryId, votes: 0}, {movie: inceptionId, votes:0}];
+    let filter = group1.currentSession.filters
+    let chosen = group1.currentSession.chosen
+    let active = false
+    let updatedSession = {sessionDate, sessionMembers, voteCountNeeded, movieList, filter, chosen, active}
+    console.log("Hey listen!")
+    console.log(group1)
     try {
-      await users.addToWatchList(fawkes._id.toString(), howl._id.toString());
-      await users.addToWatchList(fawkes._id.toString(), inception._id.toString());
-      await users.addToWatchList(reilly._id.toString(), sorry._id.toString());
-      await groups.createSession(group1_id.toString(), 3, []);
+      let value = await users.addToWatchList(fawkes._id.toString(), howl._id);
+      await users.addToWatchList(fawkes._id.toString(), inception._id);
+      await users.addToWatchList(fawkes._id.toString(), sorry._id);
+      await users.addToWatchList(reilly._id.toString(), sorry._id);
+      await groups.setMovieToWatched([fawkes._id, reilly._id], sorry._id)
     }catch (e) {
       console.log(e)
     }

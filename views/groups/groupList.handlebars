@@ -1,22 +1,22 @@
 <div class="container emp-profile">
 <h1>Your Groups</h1>
-<div>
+<div class = "container">
     <form id="group-form" method="POST" action="/groups/create">
             <div class="groupName">
                 <label for="groupname">Create New Group: </label>
-                <input id="groupName" type="text" name="groupName" placeholder="Group Name" />
+                <input id="groupName" type="text" name="groupName" placeholder="Group Name" required = "required">
             </div>
             <button class="create-button" id="create-button" type="submit">Create</button>
     </form>
     <form id="join-form" method="POST" action="/groups/join">
             <div class="groupId">
                 <label for="groupid">Join Existing Group: </label>
-                <input id="groupId" type="text" name="groupId" placeholder="Friend's Group ID" />
+                <input id="groupId" type="text" name="groupId" placeholder="Friend's Group ID" required = "required">
             </div>
             <button class="join-button" id="join-button" type="submit">Join</button>
     </form>
 </div>
-<div>
+<div class = "container">
     {{#if groupList}}
         <ul>
             {{#each groupList}}
@@ -35,11 +35,14 @@
                     <input type="submit" name="join" value="Join Live Session"/>
                 </form>
                 {{/if}}
-                {{/if}}
+                
             </li>
 
             {{/each}}
         </ul>
     {{/if}}
 </div>
-</div>
+
+{{#if error}}
+<h5 class = "error">{{error}}</h5>
+{{/if}}
