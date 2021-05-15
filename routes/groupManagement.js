@@ -97,37 +97,41 @@ router.post("/create", async (req, res) => {
 });
 
 // Sets currentSession.active = true (only visible to group leader)
-router.post("/activate", async (req, res) => {
-  //todo: check user input
-  try {
-    group = await groupDB.getGroupById(req.body.groupId);
-    console.log("Group: " + group);
-    let new_session = {
-      sessionDate: group.currentSession.sessionDate,
-      sessionMembers: group.currentSession.sessionMembers,
-      voteCountNeeded: group.currentSession.voteCountNeeded,
-      movieList: [],
-      filters: group.currentSession.filters,
-      chosen: "na",
-      active: true,
-    };
-    members = group.currentSession.sessionMembers;
-    console.log("Members: " + members);
-    for (member of members) {
-      movies = await userDB.getWatchList(member);
-      //console.log(movies)
-      for (m of movies) {
-        new_session.movieList.push({ movie: m, votes: 0 });
-      }
+
+router.post('/activate', async (req, res) => {
+    //todo: check user input
+    try {
+        sesh = req.session
+        sesh.groupID = req.body.groupId
+        group = await groupDB.getGroupById(req.body.groupId)
+        console.log("GroupId: " + req.body.groupId)
+        let new_session = {
+            sessionDate: group.currentSession.sessionDate,
+            sessionMembers: group.currentSession.sessionMembers,
+            voteCountNeeded: group.currentSession.voteCountNeeded,
+            movieList: [],
+            filters: group.currentSession.filters,
+            chosen: 'na',
+            active: true
+        };
+        members = [group.currentSession.sessionMembers]
+        console.log("Members: " + members)
+        for(member of group.currentSession.sessionMembers) {
+            movies = await userDB.getWatchList(""+member)
+            //console.log(movies)
+            for(m of movies) {
+                new_session.movieList.push({movie: m, votes: 0})
+            }
+        }
+        console.log(await groupDB.updateSession(req.body.groupId, new_session))
+        req.session.groupID = req.body.groupId
+        res.redirect('/pick/list')
+        return
+    } catch (e) {
+        console.log(e)
+        res.status(400).json({ error: xss("Could not join group") });
+        return
     }
-    console.log(await groupDB.updateSession(req.body.groupId, new_session));
-    req.session.groupID = req.body.groupId;
-    res.redirect("/pick/list");
-    return;
-  } catch (e) {
-    console.log(e);
-    res.status(400).json({ error: xss("Could not join group") });
-    return;
   }
 });
 
