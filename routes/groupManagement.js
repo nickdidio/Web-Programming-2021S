@@ -23,10 +23,10 @@ router.get('/', async (req, res) => {
                 let leader = (group.groupLeaderId.toString() === userId.toString())
                 groupList.push({name: group.groupName, id: groupId, leader: leader, active: group.currentSession.active, user: user.firstName});
             }
-            res.render('groups/groupList', {groupList: groupList}) //renders page under groups/grouplist.handlebars
+            res.render('groups/groupList', {groupList: groupList, title: "Group List"}) //renders page under groups/grouplist.handlebars
             return;
         }
-        res.render('groups/groupList', {groupList: false}) 
+        res.render('groups/groupList', {groupList: false, title: "Group List"}) 
         return;
     } catch (e) {
         res.status(500).render("errors/error",{ error: "Could not get group list" });
@@ -46,7 +46,7 @@ router.post('/join', async (req, res) => {
         group = groupDB.addGroupMember(groupId, userId);
         res.redirect(`/pick?id=${groupId}`)
     } catch (e) {
-        res.status(400).json({ error: xss("Could not join group") });
+        res.status(400).render("groups/groupList", { error: xss("Could not join group") });
     }
 });
 
