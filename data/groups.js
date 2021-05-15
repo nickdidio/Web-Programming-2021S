@@ -11,7 +11,7 @@ const { getUserById, addToWatchList } = require("./users");
 
 
 const createGroup = async(groupLeaderId, groupName) => {
-    let parsedLeaderId = await utils.checkId(groupLeaderId);
+    let parsedLeaderId = utils.checkId(groupLeaderId);
     if (typeof(groupName) != 'string') {
         throw new Error ("Could not create group: Name must be a string")
     }
@@ -48,8 +48,8 @@ const createGroup = async(groupLeaderId, groupName) => {
 
 
 const addGroupMember = async (groupId, userId) => {
-    let parsedGroupId= await utils.checkId(groupId);
-    let parsedUserId= await utils.checkId(userId);
+    let parsedGroupId= utils.checkId(groupId);
+    let parsedUserId= utils.checkId(userId);
     const groupCollection = await groups();
     let group = await getGroupById(groupId);
     if (!group) {
@@ -74,7 +74,7 @@ const addGroupMember = async (groupId, userId) => {
 
 
 const getGroupById = async (groupId) => {
-    let parsedGroupId = await utils.checkId(groupId);
+    let parsedGroupId = utils.checkId(groupId);
     const groupCollection = await groups();
     return groupCollection.findOne({ _id: parsedGroupId});
 };
@@ -98,7 +98,7 @@ const deleteGroup = async (groupId) => {
 //Takes in a groupid, and the leader's votecount and filters
 //sets appropriate variables in group.currentsession
 const createSession = async(groupId, voteCountNeeded, filters) => {
-    let parsedGroupId= await utils.checkId(groupId);
+    let parsedGroupId= utils.checkId(groupId);
     if (typeof(voteCountNeeded) != 'number' || voteCountNeeded < 1) {
         throw new Error(`voteCount must be positive integer greater than 0`);
     }
@@ -139,8 +139,8 @@ const createSession = async(groupId, voteCountNeeded, filters) => {
 
 //adds a vote to movieId, returns if vote decides outcome
 const addVote = async(groupId, movieId) => {
-    await utils.checkId(groupId);
-    await utils.checkId(movieId)
+    utils.checkId(groupId);
+    utils.checkId(movieId)
     let group = await getGroupById(groupId);
     for (let item of group.currentSession.movieList) {
         if (item.movie.toString() == movieId.toString()) {
@@ -163,7 +163,7 @@ const addVote = async(groupId, movieId) => {
 }
 
 const updateSession = async(groupId, {sessionDate, sessionMembers, voteCountNeeded, movieList, filters, chosen, active}) => {
-    let parsedGroupId = await utils.checkId(groupId);
+    let parsedGroupId = utils.checkId(groupId);
     const groupCollection = await groups();   
     let updatedSession = {
         sessionDate,
@@ -212,8 +212,8 @@ const validSession = ({sessionDate, sessionMembers, voteCountNeeded, movieList, 
 
 //gets users watchlist, runs it through current session filter, both returns and modifies watchList
 const updateWatchList = async(groupId, watchList, userId) => {
-    let parsedUserId = await utils.checkId(userId);
-    await utils.checkId(groupId);
+    let parsedUserId = utils.checkId(userId);
+    utils.checkId(groupId);
     if (!Array.isArray(watchList)){
         throw new Error ("Watchlist must be of type list")
     }
@@ -249,7 +249,7 @@ const updateWatchList = async(groupId, watchList, userId) => {
 
 //returns true or false if movie pases filters
 const applyFilters = async(filters, movieId) => {
-    await utils.checkId(movieId);
+    utils.checkId(movieId);
     let movie = await movies.getMovieById(movieId)
     if (!movie) {
         throw new Error ("No movie exists with that ID")
@@ -277,7 +277,7 @@ const applyFilters = async(filters, movieId) => {
     return true
 }
 const setMovieToWatched = async(sessionMembers, movieId) => {   
-    await utils.checkId(movieId)
+    utils.checkId(movieId)
     for (let member of sessionMembers) {
         let user = await users.getUserById(member);
         //adds to watched
