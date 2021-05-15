@@ -132,7 +132,6 @@ router.post('/activate', async (req, res) => {
         res.status(400).json({ error: xss("Could not join group") });
         return
     }
-  }
 });
 
 module.exports = router;
