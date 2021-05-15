@@ -6,32 +6,7 @@ const utils = require("../utils")
 const xss = require("xss");
 
 
-//gets user's groups
-router.get("/", async (req, res) => {
-  try {
-    let userId = utils.checkId(req.session.user._id);
-    let user = await userDB.getUserById(userId); //get userid from request
-    if (user.userGroups) {
-      let groupList = [];
-      for (let groupId of user.userGroups) {
-        let group = await groupDB.getGroupById(groupId);
-        let leader = group.groupLeaderId == userId;
-        groupList.push({
-          name: group.groupName,
-          id: groupId,
-          leader: leader,
-          active: group.currentSession.active,
-        });
-      }
-      res.render("groups/groupList", { groupList: groupList, title: "Group List" }); //renders page under groups/grouplist.handlebars
-      return;
-    }
-    res.render("groups/groupList", { groupList: false }); //renders page under groups/grouplist.handlebars
-    return;
-  } catch (e) {
-    res.status(400).json({ error: xss("Could not get group list") });
-  }
-});
+
 
 //gets user's groups 
 router.get('/', async (req, res) => {
@@ -73,7 +48,7 @@ router.post('/join', async (req, res) => {
     } catch (e) {
         res.status(400).json({ error: xss("Could not join group") });
     }
-    
+});
 
 router.post("/create", async (req, res) => {
   try {
