@@ -53,7 +53,7 @@
           <div class="col-md-4">
             <div class="profile-img">
               <img src="${img}" alt="${
-        img.includes("../public") ? "Poster Unvailable for" : "Poster for"
+        img.includes("../public") ? 'Poster Unvailable for' : 'Poster for'
       } ${movie.title}" width="270" height="200">
             </div>
           </div>
