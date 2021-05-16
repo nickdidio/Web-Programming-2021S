@@ -164,7 +164,11 @@ const addVote = async (groupId, movieId) => {
           item.movie
         );
         //TODO: set active to false
-        await setMovieToWatched(group.currentSession.sessionMembers, movieId);
+        try {
+            await setMovieToWatched(group.currentSession.sessionMembers, movieId);
+        } catch(e) {
+            throw new Error("Could not add movie to Watched list.")
+        }
         return { movieId, winner: true };
       } else {
         console.log(item.votes + " " + group.currentSession.voteCountNeeded);
@@ -316,12 +320,13 @@ const applyFilters = async (filters, movieId) => {
   return true;
 };
 const setMovieToWatched = async (sessionMembers, movieId) => {
+    let parsed = utils.checkId(movieId)
   for (member of sessionMembers) {
     user = "";
     try {
       user = await users.getUserById("" + member);
     } catch (e) {
-      //console.log("idiot")
+        
       console.log(e);
       return;
     }

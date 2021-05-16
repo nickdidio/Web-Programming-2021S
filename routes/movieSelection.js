@@ -7,6 +7,7 @@ const pastSessions = require("../data/pastSessions");
 const movies = require("../data/movies");
 const session = require("express-session");
 const utils = require("../utils");
+const xss = require("xss")
 router.use(express.static("public"));
 
 // sesh.active -> once a user enters starts judging, they're 'active' until a movie is selected as a winner by the group
@@ -41,7 +42,7 @@ router.get("/", async (req, res) => {
   }
   // fresh join (after leaving, or new session member)
   if (!sesh.chosen && !sesh.active) {
-    console.log("shouldnt get here");
+    //console.log("shouldnt get here");
     if (
       group.currentSession.sessionMembers.includes(sesh.user._id) &&
       group.currentSession.active
@@ -190,7 +191,7 @@ router.post("/choice/:dec", async (req, res) => {
   if (!req.session.user) {
     res.status(403).send("You must be logged in to access this page!");
     return;
-  } else if (!req.params.dec) {
+  } else if (!req.params.dec || typeof(req.params.dec) != "string") {
     res.status(400).send("Must provide a judgement! (yes/no).");
     return;
   }
@@ -228,7 +229,7 @@ router.post("/choice/:dec", async (req, res) => {
         movieList: grpSession.movie_list,
         filters: grpSession.filters,
         chosen: result.movieId,
-        active: false,
+        active: false
       };
       //console.log("MOVIE RESULT: ", result.movieId)
       sesh.chosen = true;

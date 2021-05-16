@@ -19,7 +19,8 @@ router.get("/", async (req, res) => {
           groupList.push({name: group.groupName, id: groupId, leader: leader, active: group.currentSession.active, user: user.firstName});
       }
       res.render('groups/groupList', {groupList: groupList, title: "Group List"}) //renders page under groups/grouplist.handlebars
-      return}
+      return
+    }
   } catch (e) {
         res.status(500).render("errors/error",{ error: "Could not get group list" });
     res.render("groups/groupList", { groupList: false }); //renders page under groups/grouplist.handlebars
@@ -64,6 +65,17 @@ router.get("/", async (req, res) => {
 //Adds user to new group with id of id
 router.post("/join", async (req, res) => {
   //todo: check user input
+  try {
+    utils.checkId(req.body.groupId);
+  } catch (e) {
+    res.status(400);
+    res.render("errors/error", {
+      title: "error",
+      code: 400,
+      error: xss("Invalid group id"),
+    });
+    return;
+  }
   if (!req.session.user) {
     res.status(400).send("You must be logged in to access this page!");
   }
@@ -82,6 +94,10 @@ router.post("/join", async (req, res) => {
 });
 
 router.post("/create", async (req, res) => {
+  if(!req.body.groupName || typeof(req.body.groupName) != "string") {
+      res.render("errors/error", {error: "Group name must be a valid string!", code: 400})
+      return
+  }
   try {
     let request = xss(req.body.groupName);
     let groupName = request;
@@ -98,6 +114,17 @@ router.post("/create", async (req, res) => {
 
 router.post("/activate", async (req, res) => {
   //todo: check user input
+  try {
+    utils.checkId(req.body.groupId);
+  } catch (e) {
+    res.status(400);
+    res.render("errors/error", {
+      title: "error",
+      code: 400,
+      error: xss("Invalid group id"),
+    });
+    return;
+  }
   try {
     sesh = req.session;
     sesh.groupID = req.body.groupId;
