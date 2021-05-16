@@ -66,7 +66,7 @@ const addGroupMember = async (groupId, userId) => {
     const updateInfo = await groupCollection.updateOne({_id: parsedGroupId}, {$set: group});
     if (updateInfo.modifiedCount === 0) throw new Error ('Could not add group member');
     //Update user's groups
-    let user = await users.getUserById(userId);
+    let user = await users.getUserById(""+parsedUserId);
     user.userGroups.push(groupId);
     await users.updateUser(userId, user);
 
@@ -224,7 +224,7 @@ const updateWatchList = async(groupId, watchList, userId) => {
     let group;
     try {
         group = await getGroupById(groupId);
-        user = await getUserById(userId);
+        user = await getUserById(""+parsedUserId);
     } catch (e) {
         throw new Error ("UserId or GroupId not found!")
     }
@@ -280,9 +280,15 @@ const applyFilters = async(filters, movieId) => {
     return true
 }
 const setMovieToWatched = async(sessionMembers, movieId) => {   
-    utils.checkId(movieId)
-    for (let member of sessionMembers) {
-        let user = await users.getUserById(member.toString());
+    for (member of sessionMembers) {
+        user = ''
+        try {
+            user = await users.getUserById(""+member);
+        } catch(e) {
+            //console.log("idiot")
+            console.log(e)
+            return
+        }
         //adds to watched
         let watchListIndex = user.watchedMovieList.indexOf(movieId);
         if (watchListIndex == -1) {
@@ -294,7 +300,7 @@ const setMovieToWatched = async(sessionMembers, movieId) => {
             user.watchList.splice(index, 1)
         }
         console.log(user)
-        await users.updateUser(member.toString(), user)
+        await users.updateUser(""+member, user)
     }
     return true; //returns true if successful
 }
