@@ -35,12 +35,7 @@ const createPastSession = async(groupId, {sessionDate, sessionMembers, voteCount
 };
 
 const getPastSessionById = async(sessionId) => {
-    let parsedSessionId;
-    try {
-        parsedSessionId = utils.checkId(sessionId);
-    } catch(e) {
-        throw new Error ("Could not get group: Invalid ID for group")
-    }
+    let parsedSessionId = utils.checkId(sessionId);
     const psCollection = await pastSessions();
     return psCollection.findOne({ _id: parsedSessionId});;
 }

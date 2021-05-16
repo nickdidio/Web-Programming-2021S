@@ -109,12 +109,12 @@ const main = async () => {
     inception = await movies.createMovie(...Object.values(inceptionObj));
     console.log(inception);
   } catch (e) {
-    //console.log(e);
+    console.log(e);
   }
 
   try {
     sorry = await movies.createMovie(...Object.values(sorryObj));
-    //console.log(sorry);
+    console.log(sorry);
   } catch (e) {
     console.log(e);
   }
