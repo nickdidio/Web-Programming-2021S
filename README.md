@@ -8,7 +8,7 @@ The way we remove these obstacles is by focusing the list of movies groups pick 
 In order to seed the database run "npm run seed", this will populate the databases with users,
 groups, reviews, and movies
 
-# IMPORTANT: (1) To test simultaneous functionality you will need to run each user in their own browser. Different tabs in the same browser will cause conflicts
+# IMPORTANT: (1) To test simultaneous functionality you will need to run each user in their own browser. Different tabs in the same browser will cause conflicts (multiple users in multiple browser sessions)
 
 # (2) This application works best with only ONE user (Group Leader) and no one else.
 
