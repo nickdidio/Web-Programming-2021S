@@ -452,7 +452,8 @@ img {
 }
 
 .log-in-btn {
-  color: #767676;
+  background-color: #101010;
+  color: #f7f7f7;
 }
 
 .button-primary {
