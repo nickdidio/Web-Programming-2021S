@@ -3,7 +3,7 @@
 <div class = "container">
     <form id="group-form" method="POST" action="/groups/create">
             <div class="groupName">
-                <label for="groupName">Create New Group: 
+                <label for="groupname">Create New Group: 
                     <input id="groupName" type="text" name="groupName" placeholder="Group Name" required = "required">
                 </label>
             </div>
@@ -11,7 +11,7 @@
     </form>
     <form id="join-form" method="POST" action="/groups/join">
             <div class="groupId">
-                <label for="groupId">Join Existing Group: 
+                <label for="groupid">Join Existing Group: 
                     <input id="groupId" type="text" name="groupId" placeholder="Friend's Group ID" required = "required">
                 </label>
             </div>
@@ -28,18 +28,7 @@
                 <form class="btn" action="/groups/activate" method="post">
                     <input type="text" name="groupId" value="{{id}}" hidden/>
 
-                    <input type='number' name="runtime" id="runtime">
-                    <label for= "runtime">Max Runtime (minutes)</label>
-                    <div>
-                    <input type="checkbox" name="fantasy" id = "fantasy">
-                    <label for= "fantasy">Fantasy</label>
-                    <input type="checkbox" name="animated" id = "animated">
-                    <label for= "animated">Animated</label>
-                    <input type="checkbox" name="comedy" id = "comedy">
-                    <label for= "comedy">Comedy</label>
-                    <input type="checkbox" name="drama" id = "drama">
-                    <label for= "drama">Drama</label>
-                    </div>
+                
                     <input type="checkbox" name="g" id = "g">
                     <label for= "g">G</label>
                     <input type="checkbox" name="pg" id = "pg">
@@ -50,7 +39,6 @@
                     <label for= "r">R</label>
                     <input type="checkbox" name="nc17" id = "nc17">
                     <label for= "nc17">NC-17</label>
-                    </div>
                     <input type="submit" name="make" value="Make Session"/>
 
                 </form>
