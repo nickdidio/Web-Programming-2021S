@@ -274,8 +274,14 @@ const applyFilters = async(filters, movieId) => {
     }
     if (filters.mpaa){
         if (movie.mpaaRating == 'NR'){
-            return false;
+            return true;
+        } else {
+            let index = filters.mpaa.indexOf(movie.mpaaRating);
+            if (index == -1) {
+                return false;
         }
+        }
+
     }
     return true
 }
