@@ -247,15 +247,15 @@ const validSession = ({
 //gets users watchlist, runs it through current session filter, both returns and modifies watchList
 const updateWatchList = async (groupId, watchList, userId) => {
   let parsedUserId = utils.checkId(userId);
-  utils.checkId(groupId);
+  let parsedGroupId = utils.checkId(groupId);
   if (!Array.isArray(watchList)) {
     throw new Error("Watchlist must be of type list");
   }
   let user;
   let group;
   try {
-    group = await getGroupById(groupId);
-    user = await getUserById(userId);
+    group = await getGroupById(parsedGroupId);
+    user = await getUserById(parsedUserId);
   } catch (e) {
     throw new Error("UserId or GroupId not found!");
   }
@@ -283,8 +283,8 @@ const updateWatchList = async (groupId, watchList, userId) => {
 
 //returns true or false if movie pases filters
 const applyFilters = async (filters, movieId) => {
-  utils.checkId(movieId);
-  let movie = await movies.getMovieById(movieId);
+  let parsedMovieId = utils.checkId(movieId);
+  let movie = await movies.getMovieById(parsedMovieId);
   if (!movie) {
     throw new Error("No movie exists with that ID");
   }
@@ -316,6 +316,7 @@ const applyFilters = async (filters, movieId) => {
   return true;
 };
 const setMovieToWatched = async (sessionMembers, movieId) => {
+  let parsedMovieId = utils.checkId(movieId);
   for (member of sessionMembers) {
     user = "";
     try {
@@ -326,12 +327,12 @@ const setMovieToWatched = async (sessionMembers, movieId) => {
       return;
     }
     //adds to watched
-    let watchListIndex = user.watchedMovieList.indexOf(movieId);
+    let watchListIndex = user.watchedMovieList.indexOf(parsedMovieId);
     if (watchListIndex == -1) {
-      user.watchedMovieList.push(movieId);
+      user.watchedMovieList.push(parsedMovieId);
     }
     //removes from want to watch
-    let index = user.watchList.indexOf(movieId);
+    let index = user.watchList.indexOf(parsedMovieId);
     if (index > -1) {
       user.watchList.splice(index, 1);
     }

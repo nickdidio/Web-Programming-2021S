@@ -6,10 +6,15 @@ const movies = mongoCollections.movies;
 const bcrypt = require("bcrypt");
 const utils = require("../utils");
 
-
-function checkUserParams(email, firstName, lastName, username, password){
+function checkUserParams(email, firstName, lastName, username, password) {
   const strArgs = [email, firstName, lastName, username, password];
-  const strArgNames = ["email", "first name", "last name", "username", "password"];
+  const strArgNames = [
+    "email",
+    "first name",
+    "last name",
+    "username",
+    "password",
+  ];
 
   strArgs.forEach((arg, idx) => {
     if (!arg || typeof arg !== "string" || arg.trim() === "") {
@@ -64,8 +69,8 @@ let exportedMethods = {
   //Update a User
   async updateUser(id, updatedUser) {
     let parsedUserId = utils.checkId(id);
-    const {email, firstName, lastName, username, password} = updatedUser;
-    checkUserParams(email,firstName,lastName,username,password);
+    const { email, firstName, lastName, username, password } = updatedUser;
+    checkUserParams(email, firstName, lastName, username, password);
     const user = await this.getUserById(id);
 
     let userUpdateInfo = {
@@ -94,7 +99,8 @@ let exportedMethods = {
     const parsedUserId = utils.checkId(userId);
     const parsedReviewId = utils.checkId(reviewId);
     let currentUser = await this.getUserById(userId);
-    if(!reviewTitle || typeof reviewTitle !== "string") throw "review title must exist and be of type string";
+    if (!reviewTitle || typeof reviewTitle !== "string")
+      throw "review title must exist and be of type string";
     const userCollection = await users();
     const updateInfo = await userCollection.updateOne(
       { _id: parsedUserId },
@@ -109,12 +115,13 @@ let exportedMethods = {
 
   // Remoview Review from User
   async removeReviewFromUser(userId, reviewId) {
+    let parsedUserId = utils.checkId(userId);
+    let parsedReviewId = utils.checkId(reviewId);
     let currentUser = await this.getUserById(userId);
-    let parsedUserId = utils.checkId(userId)
     const userCollection = await users();
     const updateInfo = await userCollection.updateOne(
       { _id: parsedUserId },
-      { $pull: { reviews: { id: reviewId } } }
+      { $pull: { reviews: { id: parsedReviewId } } }
     );
     if (!updateInfo.matchedCount && !updateInfo.modifiedCount)
       throw "Update failed";
