@@ -10,7 +10,7 @@ groups, reviews, and movies
 
 # IMPORTANT: (1) To test simultaneous functionality you will need to run each user in their own browser. Different tabs in the same browser will cause conflicts
 
-# (2) This application works best with only ONE user ().
+# (2) This application works best with only ONE user (Group Leader) and no one else.
 
 Home Page: Main page where users can create decision groups, join decision groups, leave decision groups, edit their profile, edit their want to watch list, and edit their have watched list.
 
