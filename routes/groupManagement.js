@@ -4,35 +4,28 @@ const userDB = require("../data/users");
 const groupDB = require("../data/groups");
 const utils = require("../utils");
 const xss = require("xss");
+const { groups } = require("../config/mongoCollections");
 
 //gets user's groups
 router.get("/", async (req, res) => {
   try {
     let userId = utils.checkId(req.session.user._id);
-    let user = await userDB.getUserById(userId); //get userid from request
+    let user = await userDB.getUserById(""+userId); //get userid from request
     if (user.userGroups) {
       let groupList = [];
       for (let groupId of user.userGroups) {
-        let group = await groupDB.getGroupById(groupId);
-        let leader = (group.groupLeaderId.toString() == userId.toString());
-        groupList.push({
-          name: group.groupName,
-          id: groupId,
-          leader: leader,
-          active: group.currentSession.active
-        });
+          let group = await groupDB.getGroupById(groupId);
+          let leader = (group.groupLeaderId.toString() === userId.toString())
+          groupList.push({name: group.groupName, id: groupId, leader: leader, active: group.currentSession.active, user: user.firstName});
       }
-      res.render("groups/groupList", {
-        groupList: groupList,
-        title: "Group List",
-      }); //renders page under groups/grouplist.handlebars
-      return;
-    }
+      res.render('groups/groupList', {groupList: groupList, title: "Group List"}) //renders page under groups/grouplist.handlebars
+      return}
+  } catch (e) {
+        res.status(500).render("errors/error",{ error: "Could not get group list" });
     res.render("groups/groupList", { groupList: false }); //renders page under groups/grouplist.handlebars
     return;
-  } catch (e) {
-    res.status(400).json({ error: xss("Could not get group list") });
-  }
+
+  } 
 });
 
 //gets user's groups
@@ -56,7 +49,7 @@ router.get("/", async (req, res) => {
           user: user.firstName,
         });
       }
-      res.render("groups/groupList", { groupList: groupList }); //renders page under groups/grouplist.handlebars
+      res.render("groups/groupList", { groupList: groupList }); 
       return;
     }
     res.render("groups/groupList", { groupList: false });
@@ -65,6 +58,7 @@ router.get("/", async (req, res) => {
     res
       .status(500)
       .render("errors/error", { error: "Could not get group list" });
+      return;
   }
 });
 //Adds user to new group with id of id
@@ -80,8 +74,10 @@ router.post("/join", async (req, res) => {
     let groupId = request.toString();
     group = groupDB.addGroupMember(groupId, userId);
     res.redirect(`/pick?id=${groupId}`);
+    return;
   } catch (e) {
     res.status(400).json({ error: xss("Could not join group") });
+    return;
   }
 });
 
@@ -91,8 +87,10 @@ router.post("/create", async (req, res) => {
     let groupName = request;
     await groupDB.createGroup(req.session.user._id, groupName);
     res.redirect(".");
+    return;
   } catch (e) {
     res.status(400).json({ error: xss("Could not create group") });
+    return;
   }
 });
 
@@ -103,14 +101,48 @@ router.post("/activate", async (req, res) => {
   try {
     sesh = req.session;
     sesh.groupID = req.body.groupId;
+    filt = {
+      genres: [],
+      mpaa: []
+    }
+
+    if(req.body.fantasy) {
+      filt.genres.push("Fantasy")
+    }
+    if(req.body.animated) {
+      filt.genres.push("Animation")
+    }
+    if(req.body.comedy) {
+      filt.genres.push("Comedy")
+    }
+    if(req.body.drama) {
+      filt.genres.push("Drama")
+    }
+
+    if(req.body.g) {
+      filt.mpaa.push("G")
+    }
+    if(req.body.pg) {
+      filt.mpaa.push("PG")
+    }
+    if(req.body.pg13) {
+      filt.mpaa.push("PG-13")
+    }
+    if(req.body.r) {
+      filt.mpaa.push("R")
+    }
+    if(req.body.nc17) {
+      filt.mpaa.push("NC-17")
+    }
+
     group = await groupDB.getGroupById(req.body.groupId);
-    console.log("GroupId: " + req.body.groupId);
+    //console.log("GroupId: " + req.body.groupId);
     let new_session = {
       sessionDate: group.currentSession.sessionDate,
       sessionMembers: group.currentSession.sessionMembers,
       voteCountNeeded: (Math.floor(group.currentSession.sessionMembers.length / 2) + 1),
       movieList: [],
-      filters: group.currentSession.filters,
+      filters: group.currentSession.filt,
       chosen: "na",
       active: true,
     };
@@ -120,7 +152,10 @@ router.post("/activate", async (req, res) => {
       movies = await userDB.getWatchList("" + member);
       //console.log(movies)
       for (m of movies) {
-        new_session.movieList.push({ movie: m, votes: 0 });
+        allowed = await groupDB.applyFilters(filt, m)
+        if(allowed) {
+          new_session.movieList.push({ movie: m, votes: 0 });
+        }
       }
     }
     console.log(await groupDB.updateSession(req.body.groupId, new_session));

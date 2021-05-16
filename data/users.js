@@ -63,7 +63,7 @@ let exportedMethods = {
 
   //Update a User
   async updateUser(id, updatedUser) {
-    const parsedUserId = utils.checkId(id);
+    let parsedUserId = utils.checkId(id);
     const {email, firstName, lastName, username, password} = updatedUser;
     checkUserParams(email,firstName,lastName,username,password);
     const user = await this.getUserById(id);
@@ -95,11 +95,10 @@ let exportedMethods = {
     const parsedReviewId = utils.checkId(reviewId);
     let currentUser = await this.getUserById(userId);
     if(!reviewTitle || typeof reviewTitle !== "string") throw "review title must exist and be of type string";
-
     const userCollection = await users();
     const updateInfo = await userCollection.updateOne(
       { _id: parsedUserId },
-      { $addToSet: { reviews: { id: parsedReviewId, title: reviewTitle } } }
+      { $addToSet: { reviews: { id: reviewId, title: reviewTitle } } }
     );
 
     if (!updateInfo.matchedCount && !updateInfo.modifiedCount)
@@ -111,13 +110,11 @@ let exportedMethods = {
   // Remoview Review from User
   async removeReviewFromUser(userId, reviewId) {
     let currentUser = await this.getUserById(userId);
-    const parsedUserId = utils.checkId(userId);
-    const parsedReviewId = utils.checkId(reviewId);
-
+    let parsedUserId = utils.checkId(userId)
     const userCollection = await users();
     const updateInfo = await userCollection.updateOne(
       { _id: parsedUserId },
-      { $pull: { reviews: { id: parsedReviewId } } }
+      { $pull: { reviews: { id: reviewId } } }
     );
     if (!updateInfo.matchedCount && !updateInfo.modifiedCount)
       throw "Update failed";
