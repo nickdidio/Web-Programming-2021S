@@ -228,13 +228,13 @@ const validSession = ({
 }) => {
   if (!sessionDate) {
     throw new Error("Could not update session, as sessionDate is invalid");
-  } else if (!sessionMembers.isArray()) {
+  } else if (!Array.isArray(sessionMembers)) {
     throw new Error("Could not update session, as sessionMembers is invalid");
   } else if (typeof voteCountNeeded != "number") {
     throw new Error("Could not update session, as voteCount is invalid");
-  } else if (!movieList.isArray()) {
+  } else if (!Array.isArray(movieList)) {
     throw new Error("Could not update session, as movieList is invalid");
-  } else if (typeof filters != "object") {
+  } else if (!filters) {
     throw new Error("Could not update session, as filters is invalid");
   } else if (typeof chosen != string) {
     throw new Error("Could not update session, as chosen is invalid");
