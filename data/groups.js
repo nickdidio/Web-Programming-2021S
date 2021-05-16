@@ -168,6 +168,7 @@ const addVote = async(groupId, movieId) => {
 const updateSession = async(groupId, {sessionDate, sessionMembers, voteCountNeeded, movieList, filters, chosen, active}) => {
     let parsedGroupId = utils.checkId(groupId);
     const groupCollection = await groups();   
+    await validSession({sessionDate, sessionMembers, voteCountNeeded, movieList, filters, chosen, active});
     let updatedSession = {
         sessionDate,
         sessionMembers,
@@ -257,6 +258,7 @@ const applyFilters = async(filters, movieId) => {
     if (!movie) {
         throw new Error ("No movie exists with that ID")
     }
+    
     if (typeof(filters) != 'object') {
         throw new Error ("Invalid filters")
     }
