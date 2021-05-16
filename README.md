@@ -8,21 +8,12 @@ The way we remove these obstacles is by focusing the list of movies groups pick 
 In order to seed the database run "npm run seed", this will populate the databases with users,
 groups, reviews, and movies
 
-IMPORTANT: To test simultaneous functionality you will need to run each user in their own browser. Different tabs in the same browser will cause conflicts
+# IMPORTANT: (1) To test simultaneous functionality you will need to run each user in their own browser. Different tabs in the same browser will cause conflicts
 
-Home Page (D): Main page where users can create decision groups, join decision groups, leave decision groups, edit their profile, edit their want to watch list, and edit their have watched list.
+# (2) This application works best with only ONE user ().
 
-User Profile (D): Each user will have a username, password, display name, a list of movies they would like to watch, a list of movies they have watched before, and a list of decision groups they have joined before.
+Home Page: Main page where users can create decision groups, join decision groups, leave decision groups, edit their profile, edit their want to watch list, and edit their have watched list.
 
-# TODO
+User Profile: Each user will have a username, password, display name, a list of movies they would like to watch, a list of movies they have watched before, and a list of decision groups they have joined before.
 
-1. Get rid of Find A movie > Movie Selection link
-2. Get rid of "REVIEWS" button on profile _COMPLETE_
-3. Totally Test (D) _COMPLETE_
-4. Change Image _DELETED_
-5. My Watch List Styling (D) _COMPLETE_
-6. Show More Details Page Styling (D) _COMPLETE_
-7. Movie Details and Review Styling (D) _COMPLETE_
-8. Seeding the Database \*\*
-9. Want to Watch List Styling (D) _COMPLETE_
-   Run "npm start" in command line to set up the server, the home page will be available at "http://localhost:3000/"
+Run "npm start" in command line to set up the server, the home page will be available at "http://localhost:3000/"
