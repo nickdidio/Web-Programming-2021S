@@ -8,6 +8,8 @@ The way we remove these obstacles is by focusing the list of movies groups pick 
 In order to seed the database run "npm run seed", this will populate the databases with users,
 groups, reviews, and movies
 
+IMPORTANT: To test simultaneous functionality you will need to run each user in their own browser. Different tabs in the same browser will cause conflicts
+
 Home Page (D): Main page where users can create decision groups, join decision groups, leave decision groups, edit their profile, edit their want to watch list, and edit their have watched list.
 
 User Profile (D): Each user will have a username, password, display name, a list of movies they would like to watch, a list of movies they have watched before, and a list of decision groups they have joined before.
