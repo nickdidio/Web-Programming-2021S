@@ -423,13 +423,19 @@ img {
 .hero-title {
   max-width: 16em;
   margin: 0;
-  padding: 70px 0;
+  padding: 20px 0;
   font-size: 30px;
   font-weight: bold;
   line-height: 0.9;
   justify-content: center;
-  color: #767676;
+  color: #101010;
   font-family: "PT Sans Caption", sans-serif;
+}
+
+.hero p {
+  padding: 1%;
+  text-align: left;
+  color: #101010;
 }
 
 @media only screen and (min-width: 32em) {
@@ -441,7 +447,7 @@ img {
 
 .hero-footer {
   display: flex;
-  margin-bottom: 6em;
+  margin-bottom: 9em;
 }
 
 .button {
@@ -452,7 +458,8 @@ img {
 }
 
 .log-in-btn {
-  color: #767676;
+  background-color: #101010;
+  color: #f7f7f7;
 }
 
 .button-primary {

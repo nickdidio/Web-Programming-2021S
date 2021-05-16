@@ -18,15 +18,15 @@ Write a New Review
                   <label for="reviewTextArea">Review {{this.title}}</label>
                   <textarea class="form-control" id="reviewTextArea" name="reviewText" rows="3" required="required"></textarea>
                   <br>
-                  <div class="alert alert-danger" id="reviewTextAlert" hidden="true">
+                  <div class="alert alert-danger" id="reviewTextAlert" hidden>
                      New review text must be non-empty
                   </div>
                   <label for="newReviewRating">Rate the movie from 1 to 5</label>
                   <br>
-                  <input type="number" name="rating" id="newReviewRating" max="5" min="1" default="" required="required"/>
+                  <input type="number" name="rating" id="newReviewRating" max="5" min="1" required="required"/>
                   <br>
                   <label for="redirectLink" hidden></label>
-                  <input type="text" name="redirect" value="{{this.redirect}}" hidden/>
+                  <input type="text" name="redirect" id="redirectLink" value="{{this.redirect}}" hidden/>
                </div>
                <div class="modal-footer">
                   <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
