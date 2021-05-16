@@ -3,16 +3,16 @@ const app = express();
 const bcrypt = require("bcrypt");
 const static = express.static(__dirname + "/public");
 const configRoutes = require("./routes");
-const session = require("express-session")
+const session = require("express-session");
 
 app.use(express.json());
 
 app.use(
   session({
-    name: 'FlikPik',
+    name: "FlikPik",
     secret: "609dbae6e2ff9c73a4f129e8",
     saveUninitialized: true,
-    resave: false
+    resave: false,
   })
 );
 
@@ -26,7 +26,7 @@ app.set("view engine", "handlebars");
 
 configRoutes(app);
 
-app.listen(3000, () => {
+app.listen(3000, "0.0.0.0", () => {
   console.log("We've now got a server!");
   console.log("Your routes will be running on http://localhost:3000");
 });

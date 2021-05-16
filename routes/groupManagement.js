@@ -9,17 +9,17 @@ const xss = require("xss");
 router.get("/", async (req, res) => {
   try {
     let userId = utils.checkId(req.session.user._id);
-    let user = await userDB.getUserById(""+userId); //get userid from request
+    let user = await userDB.getUserById("" + userId); //get userid from request
     if (user.userGroups) {
       let groupList = [];
       for (let groupId of user.userGroups) {
         let group = await groupDB.getGroupById(groupId);
-        let leader = (group.groupLeaderId.toString() == userId.toString());
+        let leader = group.groupLeaderId.toString() == userId.toString();
         groupList.push({
           name: group.groupName,
           id: groupId,
           leader: leader,
-          active: group.currentSession.active
+          active: group.currentSession.active,
         });
       }
       res.render("groups/groupList", {
@@ -31,8 +31,8 @@ router.get("/", async (req, res) => {
     res.render("groups/groupList", { groupList: false }); //renders page under groups/grouplist.handlebars
     return;
   } catch (e) {
-    console.log(e)
-    res.status(400).json({ error: xss("Could not get group list") });
+    console.log(e);
+    res.status(400).json({ error: xss(e.toString()) });
   }
 });
 
@@ -90,10 +90,10 @@ router.post("/create", async (req, res) => {
   try {
     let request = xss(req.body.groupName);
     let groupName = request;
-    await groupDB.createGroup(req.session.user._id, groupName);
+    await groupDB.createGroup(req.session.user._id.toString(), groupName);
     res.redirect(".");
   } catch (e) {
-    res.status(400).json({ error: xss("Could not create group") });
+    res.status(400).json({ error: xss(e.toString()) });
   }
 });
 
@@ -109,7 +109,8 @@ router.post("/activate", async (req, res) => {
     let new_session = {
       sessionDate: group.currentSession.sessionDate,
       sessionMembers: group.currentSession.sessionMembers,
-      voteCountNeeded: (Math.floor(group.currentSession.sessionMembers.length / 2) + 1),
+      voteCountNeeded:
+        Math.floor(group.currentSession.sessionMembers.length / 2) + 1,
       movieList: [],
       filters: group.currentSession.filters,
       chosen: "na",
