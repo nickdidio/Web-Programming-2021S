@@ -6,35 +6,39 @@
             {{#each movieList}}
             <li class="list-group-item">
                 <div class="media align-items-lg-center flex-column flex-lg-row p-3">
-            <img src={{this.img}} alt={{this.title}} width="200" class="ml-lg-5 order-1 order-lg-2">
+                    <img src={{this.img}} alt="{{this.title}}" width="200" class="ml-lg-5 order-1 order-lg-2">
                     <div class="media-body order-2 order-lg-1">
                         <h1 class="mt-0 font-weight-bold mb-2">{{this.title}}</h1>
-                        <p class="font-italic text-muted mb-0 small"><a href={{this.moreDetailsRoute}}> Show more details</a></p>
-                            <h6 class="font-weight-bold mb-0"><button type="submit" class="removeLink btn btn btn-warning" id={{this._id}}>Remove this movie
-                            from my list</button></h6>
+                        <p class="font-italic text-muted mb-0 small"><a href={{this.moreDetailsRoute}}> Show more
+                                details</a></p>
+                        <h6 class="font-weight-bold mb-0"><button type="submit" class="removeLink btn btn-warning"
+                                id={{this._id}}>Remove this movie
+                                from my list</button></h6>
                         <div class="d-flex align-items-center justify-content-between mt-1">
                         </div>
                     </div>
                 </div>
-            {{!-- <div class="row" style="width: 25rem">
-                <div class="profile-img">
-                <img src={{this.img}} alt={{this.title}} class="card-img-top">
-                </div>
-                <div class="card-body col-md-8">
-                    <h2 class="card-title">{{this.title}}</h2>
-                </div>
-                        <br>
-                        <br>
-                <div class="col-sm">
-                    <button type="submit" class="removeLink btn btn btn-warning" id={{this._id}}>Remove this movie
-                    from my list</button>
-                </div>
-                <div class="col-sm">
+                {{!-- <div class="row" style="width: 25rem">
+                    <div class="profile-img">
+
+                        <img src={{this.img}} alt={{this.title}} class="card-img-top">
+                    </div>
+                    <div class="card-body col-md-8">
+                        <h2 class="card-title">{{this.title}}</h2>
+                    </div>
+                    <br>
+                    <br>
+                    <div class="col-sm">
+                        <button type="submit" class="removeLink btn btn btn-warning" id={{this._id}}>Remove this movie
+                            from my list</button>
+                    </div>
+                    <div class="col-sm">
+
                         <a href={{this.moreDetailsRoute}}> Show more details</a>
-                </div>
-                        <br>
-                        <br>
-            </div> --}}
+                    </div>
+                    <br>
+                    <br>
+                </div> --}}
             </li>
             {{else}}
             <p class="error">You {{listName}} list is empty</p>

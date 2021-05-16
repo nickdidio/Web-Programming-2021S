@@ -9,30 +9,22 @@ const xss = require("xss");
 router.get("/", async (req, res) => {
   try {
     let userId = utils.checkId(req.session.user._id);
-    let user = await userDB.getUserById(userId); //get userid from request
+    let user = await userDB.getUserById(""+userId); //get userid from request
     if (user.userGroups) {
       let groupList = [];
       for (let groupId of user.userGroups) {
-        let group = await groupDB.getGroupById(groupId);
-        let leader = (group.groupLeaderId.toString() == userId.toString());
-        groupList.push({
-          name: group.groupName,
-          id: groupId,
-          leader: leader,
-          active: group.currentSession.active
-        });
+          let group = await groupDB.getGroupById(groupId);
+          let leader = (group.groupLeaderId.toString() === userId.toString())
+          groupList.push({name: group.groupName, id: groupId, leader: leader, active: group.currentSession.active, user: user.firstName});
       }
-      res.render("groups/groupList", {
-        groupList: groupList,
-        title: "Group List",
-      }); //renders page under groups/grouplist.handlebars
-      return;
-    }
+      res.render('groups/groupList', {groupList: groupList, title: "Group List"}) //renders page under groups/grouplist.handlebars
+      return}
+  } catch (e) {
+        res.status(500).render("errors/error",{ error: "Could not get group list" });
     res.render("groups/groupList", { groupList: false }); //renders page under groups/grouplist.handlebars
     return;
-  } catch (e) {
-    res.status(400).json({ error: xss("Could not get group list") });
-  }
+
+  } 
 });
 
 //gets user's groups
@@ -56,7 +48,7 @@ router.get("/", async (req, res) => {
           user: user.firstName,
         });
       }
-      res.render("groups/groupList", { groupList: groupList }); //renders page under groups/grouplist.handlebars
+      res.render("groups/groupList", { groupList: groupList }); 
       return;
     }
     res.render("groups/groupList", { groupList: false });
@@ -65,6 +57,7 @@ router.get("/", async (req, res) => {
     res
       .status(500)
       .render("errors/error", { error: "Could not get group list" });
+      return;
   }
 });
 //Adds user to new group with id of id
@@ -80,8 +73,10 @@ router.post("/join", async (req, res) => {
     let groupId = request.toString();
     group = groupDB.addGroupMember(groupId, userId);
     res.redirect(`/pick?id=${groupId}`);
+    return;
   } catch (e) {
     res.status(400).json({ error: xss("Could not join group") });
+    return;
   }
 });
 
@@ -91,8 +86,10 @@ router.post("/create", async (req, res) => {
     let groupName = request;
     await groupDB.createGroup(req.session.user._id, groupName);
     res.redirect(".");
+    return;
   } catch (e) {
     res.status(400).json({ error: xss("Could not create group") });
+    return;
   }
 });
 

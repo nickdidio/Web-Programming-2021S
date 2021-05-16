@@ -10,10 +10,44 @@ const howlObj = {
   img: "https://image.tmdb.org/t/p/w500/TkTPELv4kC3u1lkloush8skOjE.jpg",
   releaseYear: "2004-11-19",
   runtime: 119,
-  mpaaRating: "NR",
+  mpaaRating: "PG",
   genre: ["Fantasy", "Animation", "Adventure"],
   TMDbId: 4935,
 };
+
+const windObj = {
+  title: "The Wind Rises",
+  desc: "A lifelong love of flight inspires Japanese aviation engineer Jiro Horikoshi, whose storied career includes the creation of the A-6M World War II fighter plane.",
+  img: "https://www.themoviedb.org/t/p/w600_and_h900_bestv2/jcjNEfMVwBrqDpj0hys1XmTwfpM.jpg",
+  releaseYear: "2014-02-21",
+  runtime: 126,
+  mpaaRating: "PG-13",
+  genre: ["War", "Animation", "History", "Drama", "Romance"],
+  TMDbId: 149870,
+};
+
+const MKObj = {
+  title: "Mortal Kombat",
+  desc: "Washed-up MMA fighter Cole Young, unaware of his heritage, and hunted by Emperor Shang Tsung's best warrior, Sub-Zero, seeks out and trains with Earth's greatest champions as he prepares to stand against the enemies of Outworld in a high stakes battle for the universe.",
+  img: "https://www.themoviedb.org/t/p/w600_and_h900_bestv2/xGuOF1T3WmPsAcQEQJfnG7Ud9f8.jpg",
+  releaseYear: "2021-04-23",
+  runtime: 110,
+  mpaaRating: "R",
+  genre: ["Action", "Fantasy", "Adventure"],
+  TMDbId: 460465,
+};
+
+const soulObj = {
+  title: "Soul",
+  desc: "Joe Gardner is a middle school teacher with a love for jazz music. After a successful gig at the Half Note Club, he suddenly gets into an accident that separates his soul from his body and is transported to the You Seminar, a center in which souls develop and gain passions before being transported to a newborn child. Joe must enlist help from the other souls-in-training, like 22, a soul who has spent eons in the You Seminar, in order to get back to Earth.",
+  img: "https://www.themoviedb.org/t/p/w600_and_h900_bestv2/xGuOF1T3WmPsAcQEQJfnG7Ud9f8.jpg",
+  releaseYear: "2020-12-25",
+  runtime: 101,
+  mpaaRating: "PG",
+  genre: ["Family", "Fantasy", "Animation", "Comedy", "Drama"],
+  TMDbId: 508442,
+};
+
 
 const inceptionObj = {
   title: "Inception",
@@ -38,7 +72,7 @@ const sorryObj = {
 };
 
 const main = async () => {
-  let howl, inception, sorry, fawkes, generic, reilly, booth, group1;
+  let howl, inception, sorry, fawkes, generic, reilly, booth, group1, nickerdoodles, d, group2, wind, mk, soul;
   //Reset database 
   const db = await connection();
   await db.dropDatabase();
@@ -47,18 +81,25 @@ const main = async () => {
     fawkes = await users.addUser("job@place.com", "john", "johnson", "notanassassin", "remember5november");
     generic = await users.addUser("generic@mail.com", "user", "name", "username", "password");
     reilly = await users.addUser("rtfitz99@gmail.com", "Reilly", "Fitzgerald", "ReillyFitz", "coffee");
+    d = await users.addUser("idontknowdsemail@gmail.com", "D", "Newsome", "DNews", "coffee");
+    nickerdoodles = await users.addUser("nickerdoodles@rocketmail.com", "Nick", "The Brick", "NickTheBrick", "password")
     booth = await users.addUser("lincoln@theatre.gov", "John Wilkes", "Booth", "BoomHeadShot", "sicsempertyrannus");
-    group1 = await groups.createGroup(reilly._id, "The Boyz")
-    await groups.addGroupMember(group1._id.toString(), fawkes._id.toString());
+    group1 = await groups.createGroup(reilly._id.toString(), "Best Buds")
+    group2 = await groups.createGroup(booth._id.toString(), "The Assassins")
+    await groups.addGroupMember(group2._id.toString(), fawkes._id.toString());
     await groups.addGroupMember(group1._id.toString(), generic._id.toString());
+    await groups.addGroupMember(group2._id.toString(), generic._id.toString());
     group1 = await groups.getGroupById(group1._id.toString())
-    //console.log(group1);
+    console.log(group1)
   } catch (e) {
     console.log(e);
   }
 
   try {
     howl = await movies.createMovie(...Object.values(howlObj));
+    wind = await movies.createMovie(...Object.values(windObj));
+    mk = await movies.createMovie(...Object.values(MKObj));
+    soul = await movies.createMovie(...Object.values(soulObj));
     //console.log(howl);
   } catch (e) {
     console.log(e);
@@ -66,14 +107,14 @@ const main = async () => {
 
   try {
     inception = await movies.createMovie(...Object.values(inceptionObj));
-    //console.log(inception);
+    console.log(inception);
   } catch (e) {
     console.log(e);
   }
 
   try {
     sorry = await movies.createMovie(...Object.values(sorryObj));
-    //console.log(sorry);
+    console.log(sorry);
   } catch (e) {
     console.log(e);
   }
@@ -91,65 +132,58 @@ const main = async () => {
   }
 
   try {
-    review1 = await reviews.createReview(
+    let review1 = await reviews.createReview(
       "2021-05-03",
       "Amazingful",
       5,
-      "username1",
+      "ReillyFitz",
       howl._id.toString()
     );
 
-    review2 = await reviews.createReview(
+    let review2 = await reviews.createReview(
       "2021-05-02",
       "Okayful",
       3,
-      "username2",
+      "notanassasin",
       howl._id.toString()
     );
 
-    review3 = await reviews.createReview(
+    let review3 = await reviews.createReview(
       "2021-05-01",
       "Awful",
       1,
-      "username3",
+      "NickTheBrick",
       howl._id.toString()
     );
+    let review4 = await reviews.createReview("2021-05-04", "Literally my favorite movie please watch this", 5, "ReillyFitz", wind._id.toString())
+    let review5 = await reviews.createReview("2021-05-04", "meh", 4, "NickTheBrick", wind._id.toString())
+    let review6 = await reviews.createReview("2020-05-04", "Literal Garbage", 2, "notanassassin", mk._id.toString())
+
   } catch (e) {
     console.log(e);
   }
 
   try {
-    console.log(await reviews.getMovieReviews(howl._id));
+    //console.log(await reviews.getMovieReviews(howl._id));
   } catch (e) {
     console.log(e);
   }
 
     try {
-      console.log(await movies.getAllMovies());
+      //console.log(await movies.getAllMovies());
     } catch (e) {
       console.log(e);
     }
-
-    //Test adding movies to users then creating a session
-    let sessionDate = group1.currentSession.sessionDate;
-    let sessionMembers = group1.currentSession.sessionMembers;
-    let voteCountNeeded = 2;
-    let howlId = howl._id
-    let sorryId = sorry._id
-    let inceptionId = inception._id
-    let movieList = [{movie: howlId, votes: 0}, {movie: sorryId, votes: 0}, {movie: inceptionId, votes:0}];
-    let filter = group1.currentSession.filters
-    let chosen = group1.currentSession.chosen
-    let active = false
-    let updatedSession = {sessionDate, sessionMembers, voteCountNeeded, movieList, filter, chosen, active}
-    console.log("Hey listen!")
-    console.log(group1)
     try {
-      let value = await users.addToWatchList(fawkes._id.toString(), howl._id);
-      await users.addToWatchList(fawkes._id.toString(), inception._id);
+      //await users.addToWatchList(fawkes._id.toString(), howl._id);
+      //await users.addToWatchList(fawkes._id.toString(), inception._id);
       await users.addToWatchList(fawkes._id.toString(), sorry._id);
+      await users.addToWatchList(d._id.toString(), sorry._id);
+      await users.addToWatchList(nickerdoodles._id.toString(), sorry._id);
+      await users.addToWatchList(nickerdoodles._id.toString(), howl._id);
       await users.addToWatchList(reilly._id.toString(), sorry._id);
-      await groups.setMovieToWatched([fawkes._id, reilly._id], sorry._id)
+      await groups.setMovieToWatched([reilly._id], wind._id)
+      await groups.setMovieToWatched([reilly._id], sorry._id)
     }catch (e) {
       console.log(e)
     }
