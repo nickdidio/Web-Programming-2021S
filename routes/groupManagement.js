@@ -102,21 +102,7 @@ router.post("/activate", async (req, res) => {
     sesh = req.session;
     sesh.groupID = req.body.groupId;
     filt = {
-      genres: [],
       mpaa: []
-    }
-
-    if(req.body.fantasy) {
-      filt.genres.push("Fantasy")
-    }
-    if(req.body.animated) {
-      filt.genres.push("Animation")
-    }
-    if(req.body.comedy) {
-      filt.genres.push("Comedy")
-    }
-    if(req.body.drama) {
-      filt.genres.push("Drama")
     }
 
     if(req.body.g) {
