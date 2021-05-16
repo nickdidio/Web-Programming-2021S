@@ -92,7 +92,7 @@ const getGroupById = async (groupId) => {
     throw new Error("Could not get group: Invalid ID for group");
   }
   const groupCollection = await groups();
-  return groupCollection.findOne({ _id: parsedGroupId });
+  return await groupCollection.findOne({ _id: parsedGroupId });
 };
 
 const deleteGroup = async (groupId) => {
