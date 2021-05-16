@@ -234,7 +234,7 @@ router.post("/choice/:dec", async (req, res) => {
       sesh.chosen = true;
       sesh.active = false;
 
-      groups.updateSession(sesh.groupID, new_session);
+      await groups.updateSession(sesh.groupID, new_session);
 
       res.redirect(`/pick?id=${sesh.groupID}`);
       return;
