@@ -341,6 +341,7 @@ const applyFilters = async (filters, movieId) => {
     if (movie.mpaaRating == "NR") {
       return false;
     }
+<<<<<<< HEAD
   }
   return true;
 };
@@ -353,6 +354,33 @@ const setMovieToWatched = async (sessionMembers, movieId) => {
       //console.log("idiot")
       console.log(e);
       return;
+||||||| 7f655e8
+    if (filters.runtime) {
+        if (filters.runtime > movie.runtime) {
+            return false;
+        }
+    }
+    if (filters.mpaa){
+        if (movie.mpaaRating == 'NR'){
+            return false;
+        }
+=======
+    if (filters.runtime) {
+        if (filters.runtime > movie.runtime) {
+            return false;
+        }
+    }
+    if (filters.mpaa){
+        if (movie.mpaaRating == 'NR'){
+            return true;
+        } else {
+            let index = filters.mpaa.indexOf(movie.mpaaRating);
+            if (index == -1) {
+                return false;
+        }
+        }
+
+>>>>>>> 282d16ca6458af98cd2496cb3d6109cd9b8c9a19
     }
     //adds to watched
     user.watchedMovieList.push(movieId);

@@ -34,7 +34,16 @@ router.get("/", async (req, res) => {
       .render("errors/error", { error: "Could not get group list" });
     res.render("groups/groupList", { groupList: false }); //renders page under groups/grouplist.handlebars
     return;
+<<<<<<< HEAD
   }
+||||||| 7f655e8
+  } catch (e) {
+    console.log(e)
+    res.status(400).json({ error: xss("Could not get group list") });
+  }
+=======
+  } 
+>>>>>>> 282d16ca6458af98cd2496cb3d6109cd9b8c9a19
 });
 
 //gets user's groups

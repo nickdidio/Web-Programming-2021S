@@ -25,20 +25,43 @@
             <li>
                 <p>{{this.name}} | Invite others with this link: Group Code: {{this.id}}</p>
                 {{#if leader}}
-                <button></button>
                 <form class="btn" action="/groups/activate" method="post">
                     <input type="text" name="groupId" value="{{id}}" hidden/>
+
+                    <input type='number' name="runtime" id="runtime">
+                    <label for= "runtime">Max Runtime (minutes)</label>
+                    <div>
+                    <input type="checkbox" name="fantasy" id = "fantasy">
+                    <label for= "fantasy">Fantasy</label>
+                    <input type="checkbox" name="animated" id = "animated">
+                    <label for= "animated">Animated</label>
+                    <input type="checkbox" name="comedy" id = "comedy">
+                    <label for= "comedy">Comedy</label>
+                    <input type="checkbox" name="drama" id = "drama">
+                    <label for= "drama">Drama</label>
+                    </div>
+                    <input type="checkbox" name="g" id = "g">
+                    <label for= "g">G</label>
+                    <input type="checkbox" name="pg" id = "pg">
+                    <label for= "pg">PG</label>
+                    <input type="checkbox" name="pg13" id = "pg13">
+                    <label for= "pg">PG-13</label>
+                    <input type="checkbox" name="r" id = "r">
+                    <label for= "r">R</label>
+                    <input type="checkbox" name="nc17" id = "nc17">
+                    <label for= "nc17">NC-17</label>
+                    </div>
                     <input type="submit" name="make" value="Make Session"/>
+
                 </form>
                 {{/if}}
                 {{#if active}}
-                <button></button>
                 <form class="btn" action="/groups/join" method="post">
                     <input type="text" name="groupId" value="{{id}}" hidden/>
                     <input type="submit" name="join" value="Join Live Session"/>
                 </form>
                 {{/if}}
-                
+                <br><br>
             </li>
 
             {{/each}}
