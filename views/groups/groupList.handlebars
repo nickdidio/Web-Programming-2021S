@@ -31,27 +31,28 @@
                     <input type='number' name="runtime" id="runtime">
                     <label for= "runtime">Max Runtime (minutes)</label>
                     <div>
-                    <input type="checkbox" name="genres" id = "Fantasy">
+                    <input type="checkbox" name="fantasy" id = "fantasy">
                     <label for= "fantasy">Fantasy</label>
-                    <input type="checkbox" name="genres" id = "Animated">
-                    <label for= "fantasy">Animated</label>
-                    <input type="checkbox" name="genres" id = "Comedy">
-                    <label for= "fantasy">Comedy</label>
-                    <input type="checkbox" name="genres" id = "Drama">
-                    <label for= "fantasy">Drama</label>
+                    <input type="checkbox" name="animated" id = "animated">
+                    <label for= "animated">Animated</label>
+                    <input type="checkbox" name="comedy" id = "comedy">
+                    <label for= "comedy">Comedy</label>
+                    <input type="checkbox" name="drama" id = "drama">
+                    <label for= "drama">Drama</label>
                     </div>
-                    <input type="radio" name="rating" id = "g">
+                    <input type="checkbox" name="g" id = "g">
                     <label for= "g">G</label>
-                    <input type="radio" name="rating" id = "pg">
+                    <input type="checkbox" name="pg" id = "pg">
                     <label for= "pg">PG</label>
-                    <input type="radio" name="rating" id = "pg13">
+                    <input type="checkbox" name="pg13" id = "pg13">
                     <label for= "pg">PG-13</label>
-                    <input type="radio" name="rating" id = "r">
+                    <input type="checkbox" name="r" id = "r">
                     <label for= "r">R</label>
-                    <input type="radio" name="rating" id = "nc17">
+                    <input type="checkbox" name="nc17" id = "nc17">
                     <label for= "nc17">NC-17</label>
                     </div>
                     <input type="submit" name="make" value="Make Session"/>
+
                 </form>
                 {{/if}}
                 {{#if active}}
