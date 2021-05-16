@@ -4,6 +4,7 @@ const userDB = require("../data/users");
 const groupDB = require("../data/groups");
 const utils = require("../utils");
 const xss = require("xss");
+const { groups } = require("../config/mongoCollections");
 
 //gets user's groups
 router.get("/", async (req, res) => {
@@ -99,14 +100,48 @@ router.post("/activate", async (req, res) => {
   try {
     sesh = req.session;
     sesh.groupID = req.body.groupId;
+    filt = {
+      genres: [],
+      mpaa: []
+    }
+
+    if(req.body.fantasy) {
+      filt.genres.push("Fantasy")
+    }
+    if(req.body.animated) {
+      filt.genres.push("Animation")
+    }
+    if(req.body.comedy) {
+      filt.genres.push("Comedy")
+    }
+    if(req.body.drama) {
+      filt.genres.push("Drama")
+    }
+
+    if(req.body.g) {
+      filt.mpaa.push("G")
+    }
+    if(req.body.pg) {
+      filt.mpaa.push("PG")
+    }
+    if(req.body.pg13) {
+      filt.mpaa.push("PG-13")
+    }
+    if(req.body.r) {
+      filt.mpaa.push("R")
+    }
+    if(req.body.nc17) {
+      filt.mpaa.push("NC-17")
+    }
+
     group = await groupDB.getGroupById(req.body.groupId);
-    console.log("GroupId: " + req.body.groupId);
+    //console.log("GroupId: " + req.body.groupId);
     let new_session = {
       sessionDate: group.currentSession.sessionDate,
       sessionMembers: group.currentSession.sessionMembers,
       voteCountNeeded: (Math.floor(group.currentSession.sessionMembers.length / 2) + 1),
       movieList: [],
-      filters: group.currentSession.filters,
+      filters: group.currentSession.filt,
       chosen: "na",
       active: true,
     };
@@ -116,7 +151,10 @@ router.post("/activate", async (req, res) => {
       movies = await userDB.getWatchList("" + member);
       //console.log(movies)
       for (m of movies) {
-        new_session.movieList.push({ movie: m, votes: 0 });
+        allowed = await groupDB.applyFilters(filt, m)
+        if(allowed) {
+          new_session.movieList.push({ movie: m, votes: 0 });
+        }
       }
     }
     console.log(await groupDB.updateSession(req.body.groupId, new_session));
