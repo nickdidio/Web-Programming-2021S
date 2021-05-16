@@ -14,7 +14,7 @@ const createPastSession = async(groupId, {sessionDate, sessionMembers, voteCount
     } catch(e) {
         throw new Error ("Could not create group: Invalid ID")
     }
-    if (!sessionMembers.isArray() ||!movieList.isArray()) {
+    if (!Array.isArray(sessionMembers) ||!Array.isArray(movieList)) {
         throw new Error ("Must have an array of session members and movielist")
     }
     if (typeof(voteCountNeeded) != 'number'){
